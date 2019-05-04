@@ -27,6 +27,7 @@ public class ImageDisplaySystem extends RunnerSystem {
 
     /**
      * Displays images of desired entities
+     * and positions them in the front or back based on their z components
      */
     @Override
     public void run() {
@@ -39,13 +40,10 @@ public class ImageDisplaySystem extends RunnerSystem {
 
     private void displayImage(Entity entity) {
         ImageView image = (ImageView) entity.getComponent(ImageViewComponent.class).getValue();
-        if (entity.hasComponents(ZPositionComponent.class)) {
-            if (entity.getComponent(ZPositionComponent.class).getValue().equals(1.0)) {
-                image.toFront();
-            }
-            else {
-                image.toBack();
-            }
+        if (entity.hasComponents(ZPositionComponent.class) && entity.getComponent(ZPositionComponent.class).getValue().equals(1.0)) {
+            image.toFront();
+        } else {
+            image.toBack();
         }
         myGroup.getChildren().add(image);
     }

@@ -32,7 +32,10 @@ public class ScrollingSystem extends RunnerSystem {
     }
 
     /**
-     * Scrolls screen if entity in buffer zones
+     * Scrolls screen to the right if the main entity is in the right
+     * buffer zone and to the left if the main entity is in the left buffer
+     * zone. Breaks when main entity is found for efficiency because only
+     * one entity will have the camera component
      */
     @Override
     public void run(){
@@ -46,13 +49,11 @@ public class ScrollingSystem extends RunnerSystem {
 
     private void scrollOnMainCharacter(Entity entity){
         Double x = (Double) entity.getComponent(XPositionComponent.class).getValue();
-        Double origin = myGroup.getTranslateX();
         Double xMinBoundary = myScene.getWidth() * LEFT_BUFFER_ZONE;
         Double xMaxBoundary = myScene.getWidth() * RIGHT_BUFFER_ZONE;
-        if (x < xMinBoundary - origin) {
+        if (x < xMinBoundary - myGroup.getTranslateX()) {
             myGroup.setTranslateX(-1 * x + xMinBoundary);
-        }
-        if (x > xMaxBoundary - origin) {
+        } else if (x > xMaxBoundary - myGroup.getTranslateX()) {
             myGroup.setTranslateX(-1 * x + xMaxBoundary);
         }
     }

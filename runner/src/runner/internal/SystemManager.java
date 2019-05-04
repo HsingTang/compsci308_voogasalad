@@ -96,7 +96,7 @@ public class SystemManager {
         mySystems.add(new SoundSystem(components7, myLevelRunner, myAudioManger));
         Collection<Class<? extends Component>> components = new ArrayList<>();
         components.add(ProgressionComponent.class);
-        mySystems.add(new GameOverSystem(components, myLevelRunner, myGroup, myStage, myAnimation, mySceneWidth, mySceneHeight, myLevelChanger, myLevelCount, myAudioManger));
+        mySystems.add(new GameOverSystem(components, myLevelRunner, myGroup, myStage, myAnimation, myAudioManger));
         Collection<Class<? extends Component>> components9 = new ArrayList<>();
         components9.add(SaveComponent.class);
         mySystems.add(new SavingSystem(components9, myLevelRunner, myEngine, myLevel, myGame, myUsername, myGameName, myAuthorName));

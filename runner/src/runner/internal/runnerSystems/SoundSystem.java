@@ -28,6 +28,8 @@ public class SoundSystem extends RunnerSystem {
 
     /**
      * Plays sound if PlayAudioComponent exists
+     * Calls the audio manager to handle threading
+     * and plays sound while game continues to run
      */
     @Override
     public void run() {

@@ -29,8 +29,7 @@ public class NewUserPage extends VBox {
     private HiddenField reenter = new HiddenField(REENTER_PASSWORD);
     private DataManager myDataManager  = new DataManager();
     /**
-     * This page will prompt the user either enter the authoring environment to create games or go to the game center so
-     * they can play games
+     * This page will prompt the user to enter in a new password
      * @author Anna Darwish
      */
     public NewUserPage(SwitchToUserOptions goBack, SwitchToUserPage enterGame){

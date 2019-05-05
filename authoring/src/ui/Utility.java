@@ -238,9 +238,13 @@ public class Utility {
         return result;
     }
 
-    public static void closeInputStream(FileInputStream fileInputStream){   //closed
+    /**
+     * This method takes in an input stream and closes it and catches the possible exceptions
+     * @param fileInputStream
+     */
+    public static void closeInputStream(FileInputStream fileInputStream){
         try {
-            fileInputStream.close();    //closed
+            fileInputStream.close();
         } catch (IOException e) {
             ResourceBundle resourceBundle = ResourceBundle.getBundle(UTILITY_RESOURCES);
             String header = resourceBundle.getString("CloseInputStreamError");
@@ -250,6 +254,11 @@ public class Utility {
         }
     }
 
+    /**
+     * This method takes in an ImageWithEntity and sets up drag and drop.
+     * It is used in the Viewer as well as the UserCreatedTypesPane
+     * @param imageWithEntity
+     */
     public static void setupDragAndDropImage(ImageWithEntity imageWithEntity){
         Dragboard db = imageWithEntity.startDragAndDrop(TransferMode.MOVE);
         ClipboardContent content = new ClipboardContent();

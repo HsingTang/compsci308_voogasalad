@@ -1,6 +1,5 @@
 package ui.panes;
 
-import engine.external.Entity;
 import javafx.collections.MapChangeListener;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -52,6 +51,4 @@ public class UserDefinedTypeSubPane extends GridPane {
             }
         });
     }
-
-
 }

@@ -41,6 +41,9 @@ public class DefaultTypeXMLReaderFactory {
     private Map<String, Map<String, String>> myNameToComponents;    //Name of default -> (map from components names -> values)
     private List<Node> myRootsList;
 
+    /**
+     * Creates an instance of DefaultTypeXMLReaderFactory
+     */
     public DefaultTypeXMLReaderFactory(){
         myNameToCategory = new HashMap<>();
         myNameToComponents= new HashMap<>();
@@ -52,7 +55,7 @@ public class DefaultTypeXMLReaderFactory {
     /**
      * Gets the defaultNames/options associated with a category
      * @param category String of a category
-     * @return List fo Strings of deafultNames for the category
+     * @return List fo Strings of defaultNames for the category
      */
     public List<String> getDefaultNames(String category){
         List<String> result = new ArrayList<>();
@@ -197,5 +200,4 @@ public class DefaultTypeXMLReaderFactory {
         ErrorBox errorBox = new ErrorBox(info[0], info[1]);
         errorBox.display();
     }
-
 }

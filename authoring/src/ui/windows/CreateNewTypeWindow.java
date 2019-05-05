@@ -132,9 +132,9 @@ public class CreateNewTypeWindow extends Stage {
         Button button = Utility.makeButton(this, buttonResources[1], buttonResources[0]);
         myGridPane.add(button, 0, myGridPane.getRowCount());
 
-        FileInputStream fileInputStream = null; //closed
+        FileInputStream fileInputStream = null;
         try {
-            fileInputStream = new FileInputStream(GENERAL_RESOURCES.getString("no_image"));  //closed
+            fileInputStream = new FileInputStream(GENERAL_RESOURCES.getString("no_image"));
         } catch (FileNotFoundException e) {
             // Do nothing
         }
@@ -145,6 +145,7 @@ public class CreateNewTypeWindow extends Stage {
 
     }
 
+    @SuppressWarnings("unused")
     private void openImageAssetManager(){
         ImageManager assetManager = new ImageManager();
         assetManager.showAndWait();
@@ -166,10 +167,12 @@ public class CreateNewTypeWindow extends Stage {
         myButtonNode = Utility.createButtonBar(buttonList);
     }
 
+    @SuppressWarnings("unused")
     private void handleCloseButton(){
         this.close();
     }
 
+    @SuppressWarnings("unused")
     private void handleCreateButton(){
         if(checkValidInputs()){
             String typeLabel = myTextField.getText();

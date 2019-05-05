@@ -27,7 +27,9 @@ import java.util.ResourceBundle;
 
 /**
  * @author Carrie Hunner
- * This is a page that will display all of the types created by the user
+ * This is a page that will display all of the types created by the user.
+ * Each of these will be set up to be draggable such that the user can drag and when dropped, a duplicate
+ * ImageWithEntity will be created such that it can be used in the game
  */
 public class UserCreatedTypesPane extends VBox {
     private EntityMenu myEntityMenu;
@@ -41,7 +43,7 @@ public class UserCreatedTypesPane extends VBox {
 
     /**
      * Creates a pane that displayes the user created types
-     * @param objectManager
+     * @param objectManager used to create new AuthoringEntities and to keep track of them
      */
     public UserCreatedTypesPane(ObjectManager objectManager){
         myObjectManager = objectManager;
@@ -81,6 +83,12 @@ public class UserCreatedTypesPane extends VBox {
         }
     }
 
+    /**
+     * Adds a new user created type to the window
+     * @param originalEntity The entity whose properties will want to be duplicated when a drag event occurs.
+     * @param defaultName The name of the default type such that it can be used with the Default
+     *                    TypeXMLParser to make another entity
+     */
     public void addUserDefinedType(Entity originalEntity, String defaultName){
         String label = (String) originalEntity.getComponent(NameComponent.class).getValue();
         String category = myDefaultTypesFactory.getCategory(defaultName);

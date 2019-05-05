@@ -1,6 +1,5 @@
 package ui.panes;
 
-import data.external.GameCenterData;
 import engine.external.Entity;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
@@ -16,7 +15,7 @@ import java.util.ResourceBundle;
 /**
  * @author Carrie Hunner
  * This class creates the page displaying the default types
- * provided
+ * provided using an EntityMenu as a layout template.
  */
 public class DefaultTypesPane extends VBox{
     private EntityMenu myEntityMenu;
@@ -28,8 +27,13 @@ public class DefaultTypesPane extends VBox{
     private static final String RESOURCE = "default_entity_type";
     private static final String TITLE_KEY = "DefaultTitle";
 
+
     /**
      * Creates a new page to display the default types
+     * @param userCreatedTypesPane Takes in a UserCreatedTypes pane such that it can call the addUserCreateType
+     *                             when a new type is created
+     * @param objectManager Takes in an ObjectManager because that is needed when creating a new type and calling
+     *                      that window.
      */
     public DefaultTypesPane(UserCreatedTypesPane userCreatedTypesPane, ObjectManager objectManager)     {
         myResources = ResourceBundle.getBundle(RESOURCE);

@@ -9,6 +9,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Utility class for quickly loading information into the database
+ */
 public class DatabaseLoader {
 
     private static final List<String> USER_NAMES = List.of("Megan", "ICouldAlwaysEat", "gamez_n_gainz", "DimaFayyad",
@@ -26,12 +29,6 @@ public class DatabaseLoader {
 
     public static void main(String[] args) {
         DatabaseEngine.getInstance().open();
-//        createUser("Ryan", "testPassword");
-//        createUser("Person2", "passwordTwo");
-//        validateUsers();
-//        System.out.println();
-//        createUsers();
-//        setProfPic("Megan", "Images/megan_prof_pic.png");
         setBio("ICouldAlwaysEat", "You can just press control+alt+any random letter and IntelliJ will make something " +
                 "good happen to your code");
         setBio("gamez_n_gainz", "Mind yo modules");

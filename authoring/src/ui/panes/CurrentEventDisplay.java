@@ -1,14 +1,9 @@
 package ui.panes;
 import engine.external.actions.Action;
-import engine.external.component.NameComponent;
 import engine.external.conditions.Condition;
 import engine.external.conditions.StringEqualToCondition;
 import engine.external.events.Event;
 import events.EventFactory;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -17,25 +12,32 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import ui.UIException;
 import ui.manager.AddKeyCode;
-import ui.manager.LabelManager;
 
 import java.util.*;
-
+    /**
+     * This class is one of the rows of events displayed when an entity's events pane is opened to be viewed or modified.
+     * The constructor takes in a map queried from the event of its component information, which are its conditions and
+     * actions. It also sets up an edit tool bar for the user to modify the event, remove it, or add/replace a keycode
+     * associated with the event, which is why it takes in several functional interfaces in order to update event when
+     * particular controls are invoked. It does depend on receiving this mapping specifically, so it is only used by
+     * see @CurrentEventDisplay
+     * @author Anna Darwish
+     */
     class CurrentEventDisplay extends GridPane {
     private Event myEvent;
     private Editor myEventRemover;
     private Editor myEventModifier;
     private AddKeyCode myKeyCodeAdder;
+
     private ResourceBundle myKeyCodes = ResourceBundle.getBundle("keycode");
     private ResourceBundle myErrorMessage = ResourceBundle.getBundle("error_messages");
     private ResourceBundle myKeyCodesDisplay = ResourceBundle.getBundle("concrete_keycode");
     private ResourceBundle KEY_DISPLAY = ResourceBundle.getBundle("display_keycodes");
+
     private static final String EDIT = "Edit";
     private static final String REMOVE = "Remove";
-    private static final String DELIMITER = ".";
     private static final String IGNORE_NAME_CONDITION = "NameComponent";
     private static final String CSS = "current-events-display";
-
 
     CurrentEventDisplay(Map<Class<?>, List<?>> myMap, Event myEvent, Editor eventRemover, Editor eventModifier, AddKeyCode addKeyCode){
         this.myEvent = myEvent;

@@ -9,7 +9,7 @@ import manager.SwitchToUserPage;
 
 import java.util.ResourceBundle;
 /**
- * This is the login display that a user sees in the lower right pane of the splash page - a user enters their credentials
+ * This is a login display that a user sees in the lower right pane of the splash page - a user enters their credentials
  * here
  * @author Anna Darwish
  */

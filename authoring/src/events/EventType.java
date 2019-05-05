@@ -2,7 +2,10 @@ package events;
 
 import java.util.Arrays;
 import java.util.List;
-
+/**
+ * This enum was helpful for reflection and translating between displaying options for the users to create events and
+ * instantiating them according to the user's request
+ */
 public enum EventType {
 
     BottomCollision ("Bottom Collision","Interactive", "engine.external.events.BottomCollisionEvent"),

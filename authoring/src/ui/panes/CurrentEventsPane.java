@@ -9,7 +9,12 @@ import ui.manager.*;
 
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * This is the main scroll pane the user views when they select to modify events. It maintains a mapping between a
+ * set of events and the display to ensure the two are visually updated for the user when the events are updated
+ * internally
+ * @author Anna Darwish
+ */
 public class CurrentEventsPane extends ScrollPane {
     private static final String CSS_CLASS = "current-events-pane";
     private ObservableList<Event> myCurrentEvents;
@@ -21,7 +26,6 @@ public class CurrentEventsPane extends ScrollPane {
     private Editor myRemover;
     private AddKeyCode myKeyCodeEditor;
     private Map<Event, CurrentEventDisplay> myMap = new HashMap<>();
-
     public CurrentEventsPane(ObservableList<Event> myEvents){
         myCurrentEvents = myEvents;
 
@@ -34,7 +38,7 @@ public class CurrentEventsPane extends ScrollPane {
         myRemover = this::removeCurrentEvent;
         myKeyCodeEditor = this::addKeyCode;
 
-        for (Event event: myEvents) { //TODO workaround: check if null?
+        for (Event event: myEvents) {
             CurrentEventDisplay currEventDisplay = new CurrentEventDisplay(event.getEventInformation(),event,myRemover,
                     myEditor, myKeyCodeEditor);
             if (currEventDisplay.getChildren().size() != 0) {
@@ -47,7 +51,9 @@ public class CurrentEventsPane extends ScrollPane {
         this.setFitToWidth(true);
 
     }
-
+    /**
+     * This method adds another CurrentEventDisplay when an Event is created, added to the scrollpane to be displayed
+     */
     public RefreshEvents getRefreshEvents(){
         return myCurrentEventsRefresher;
     }

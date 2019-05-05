@@ -29,7 +29,9 @@ public class NewUserPage extends VBox {
     private HiddenField reenter = new HiddenField(REENTER_PASSWORD);
     private DataManager myDataManager  = new DataManager();
     /**
-     * This page will prompt the user to enter in a new password
+     * This page will prompt the user to enter in a new username and password when they are creating a new account
+     * It validates the account as being in line with certain policies, such as password length, and also verifies that
+     * the username is not already in the database before creating the account
      * @author Anna Darwish
      */
     public NewUserPage(SwitchToUserOptions goBack, SwitchToUserPage enterGame){

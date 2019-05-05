@@ -17,8 +17,8 @@ public class SplashPage extends VBox {
     private UserLoginDisplay myLogin;
 
     /**
-     * This page will prompt the user to enter their credentials so they can login to their future account
-     *
+     * This is the first page that is displayed when the user loads in the launcher. It displays prompts to either
+     * enter credentials so they can login, or they may select to create a new account
      * @author Anna Darwish
      */
 

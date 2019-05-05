@@ -50,14 +50,23 @@ public class CreateGameDisplay extends AnchorPane {
     private static final String LARGER_STYLE = "bigger-title";
     private static final String IMAGE_PREFIX = "byteme_default_launcher_gameIcon_";
     private static final String CORRUPT = "corrupt_game";
+    private static final String FILE_QUERY_PATH = "user.home";
+    private static final String DATABASE_DELIMITER = "_";
+
     private String myUserName;
     private SwitchToNewGameAuthoring openNewGame;
     private SwitchToAuthoring openOldGame;
     private ChoiceBox<String> gameNames = new ChoiceBox<>();
+
+    private static final double TOP_ANCHOR = 20;
+    private static final double LEFT_ANCHOR = 30;
+    private static final double BOTTOM_ANCHOR = 70;
+    private static final double RIGHT_ANCHOR = 100;
+    private static final double ANCHOR_OFFSET = 270;
     /**
-     * This page will prompt the user to enter information about the new game they wish to create, such as its cover image,
-     * title, and description. Then, it will create a new GameDisplay object to be passed to the authoring environment so they
-     * can create a folder for the user to put other necessary files in, such as images they want to use in the creation
+     * This page switches between prompting the user to enter in information for a new game and then entering the authoring
+     * environment to design a game from scratch, or selecting from a drop down menu of games they have previously
+     * created to edit in the authoring environment
      * of their game
      * @author Anna Darwish
      */
@@ -79,8 +88,8 @@ public class CreateGameDisplay extends AnchorPane {
         labels.getChildren().add(newGame);
         labels.getChildren().add(modifyGame);
 
-        AnchorPane.setTopAnchor(labels,20.0);
-        AnchorPane.setLeftAnchor(labels,30.0);
+        AnchorPane.setTopAnchor(labels,TOP_ANCHOR);
+        AnchorPane.setLeftAnchor(labels,LEFT_ANCHOR);
         this.getChildren().add(labels);
         this.getChildren().add(emptyBox);
         makeNewGamePreferences();
@@ -91,7 +100,7 @@ public class CreateGameDisplay extends AnchorPane {
     }
 
     private void setMiddlePreferences(VBox gameCreationType){
-        setBottomAnchor(gameCreationType,70.0);
+        setBottomAnchor(gameCreationType,BOTTOM_ANCHOR);
         this.getChildren().remove(1);
         this.getChildren().add(1,gameCreationType);
     }
@@ -103,7 +112,7 @@ public class CreateGameDisplay extends AnchorPane {
         myGameInfo.getStyleClass().add(INNER_BOX_STYLE);
         myCreator.setOnMouseClicked(mouseEvent -> {
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+            fileChooser.setInitialDirectory(new File(System.getProperty(FILE_QUERY_PATH)));
             myFile =  fileChooser.showOpenDialog(new Stage());
         });
         LauncherSymbol mySymbol = new LauncherSymbol(CREATE_LAUNCHER);
@@ -114,13 +123,13 @@ public class CreateGameDisplay extends AnchorPane {
         newGamePreferences.getChildren().add(myGameInfo);
         newGamePreferences.getChildren().add(mySymbol);
         newGamePreferences.getStyleClass().add(INNER_BOX_STYLE);
-        AnchorPane.setLeftAnchor(newGamePreferences,100.0 - myGameInfo.getWidth()/2.0);
+        AnchorPane.setLeftAnchor(newGamePreferences,RIGHT_ANCHOR - myGameInfo.getWidth()/2.0);
 
     }
     //game name, game description, image,
     private void enterAuthoringToMakeNewGame(){
         DataManager dataManager = new DataManager();
-        String imageFileName = IMAGE_PREFIX + gameName.getTextEntered() + "_" + myUserName +"_"+ myFile.getName();
+        String imageFileName = IMAGE_PREFIX + gameName.getTextEntered() + DATABASE_DELIMITER + myUserName +DATABASE_DELIMITER+ myFile.getName();
         dataManager.saveImage(imageFileName,myFile);
         GameCenterData myData = new GameCenterData(gameName.getTextEntered(),gameDescription.getTextEntered(),imageFileName,myUserName);
         openNewGame.switchScene(myData);
@@ -144,9 +153,9 @@ public class CreateGameDisplay extends AnchorPane {
         modifyGamePreferences.getStyleClass().add(CHOICEBOX_DISPLAY);
         modifyGamePreferences.getChildren().add(gameNames);
         modifyGamePreferences.getChildren().add(mySymbol);
-        AnchorPane.setLeftAnchor(modifyGamePreferences,270.0 - modifyGamePreferences.getWidth()/2.0);
-        setTopAnchor(gameNames,20.0);
-        setLeftAnchor(gameNames,270.0-modifyGamePreferences.getWidth()/2.0);
+        AnchorPane.setLeftAnchor(modifyGamePreferences,ANCHOR_OFFSET - modifyGamePreferences.getWidth()/2.0);
+        setTopAnchor(gameNames,TOP_ANCHOR);
+        setLeftAnchor(gameNames,ANCHOR_OFFSET-modifyGamePreferences.getWidth()/2.0);
         modifyGamePreferences.getStyleClass().add(INNER_BOX_STYLE);
     }
 
@@ -164,10 +173,5 @@ public class CreateGameDisplay extends AnchorPane {
         }
     }
 
-
-    private void makeGameInfo(InformativeField field, int buttonWidth){
-        field.setMaxWidth(buttonWidth);
-        field.setAlignment(Pos.CENTER);
-    }
 
 }

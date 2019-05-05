@@ -11,9 +11,14 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import ui.manager.RefreshEvents;
-import ui.manager.Refresher;
 
-
+/**
+ * This is meant to model a general event that simply prompts the user for a single condition and a single action.
+ * When saving, it has to have slightly more robust error checking than other AuthoringEvent subclasses do, in the
+ * case that the user inputs a combination of values we don't accept for conditions.
+ * @see AuthoringEvent
+ * @author Anna Darwish
+ */
 public class AuthoringConditionalEvent extends AuthoringEvent {
     private static final String USER_PROMPT = "Condition:";
     private static final String CONDITION_RESOURCE = "conditions";
@@ -31,6 +36,10 @@ public class AuthoringConditionalEvent extends AuthoringEvent {
     public AuthoringConditionalEvent(String entityName){
         myEntityName = entityName;
     }
+    /**
+     * This VBox will display a broad range of options for conditions based upon the components that an entity may have
+     * such as its x-position or its current image
+     */
     @Override
     public VBox generateEventOptions(){
         VBox eventOptions = new VBox();

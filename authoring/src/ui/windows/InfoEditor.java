@@ -18,6 +18,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Window for editing game metadata like title, description, image
+ * @author Harry Ross
+ */
 public class InfoEditor extends Stage {
 
     private GameCenterData myData;
@@ -32,6 +36,10 @@ public class InfoEditor extends Stage {
     private static final String NO_IMAGE_ICON = "no_image.png";
     private static final List<String> INFO_LABELS = Arrays.asList("Game Title", "Description", "Image");
 
+    /**
+     * Creates new InfoEditor based on given GameCenterData
+     * @param data metadata to populate view with
+     */
     public InfoEditor(GameCenterData data) {
         this.setResizable(false);
         myData = data;

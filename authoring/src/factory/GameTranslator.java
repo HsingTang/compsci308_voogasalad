@@ -30,16 +30,26 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Class that translates Authoring versions of objects into classes usable by the rest of the project
  * @author Harry Ross
  */
 public class GameTranslator {
 
     private ObjectManager myObjectManager;
 
+    /**
+     * Creates a new GameTranslator with the given ObjectManager
+     * @param objectManager ObjectManager for authoring environment user is saving/loading to
+     */
     public GameTranslator(ObjectManager objectManager) {
         myObjectManager = objectManager;
     }
 
+    /**
+     * Translates current environment state into Game object
+     * @return Game object representing translated state from authoring environment
+     * @throws UIException if errors occur while saving
+     */
     public Game saveGame() throws UIException {
         Game translatedGame = new Game();
         Map<Entity, String> typeMap = new HashMap<>();
@@ -161,6 +171,12 @@ public class GameTranslator {
         }
     }
 
+    /**
+     * Loads Game object and translates into data usable by authoring environment
+     * @param game Game being loaded
+     * @param currentLevel Object property to set level focus properly
+     * @throws UIException if error occurs during load
+     */
     public void loadGame(Game game, ObjectProperty<Propertable> currentLevel) throws UIException {
         for (Entity type : game.getUserCreatedTypes().keySet()) {
             AuthoringEntity newType = new AuthoringEntity(type, myObjectManager);

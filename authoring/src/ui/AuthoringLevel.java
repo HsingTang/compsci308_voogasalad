@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Authoring version of Level, holds property map to be observed by other classes in Authoring Environment
  * @author Harry Ross
  */
 public class AuthoringLevel implements Propertable {
@@ -21,6 +22,11 @@ public class AuthoringLevel implements Propertable {
     private static final List<? extends Enum> PROP_VAR_NAMES = Arrays.asList(LevelField.values());
     private static final Integer DEFAULT_ROOM_SIZE = 1200;
 
+    /**
+     * Creates a new AuthoringLevel with given label and ObjectManager
+     * @param label String label of new level
+     * @param manager ObjectManager to associate with new AuthoringLevel
+     */
     public AuthoringLevel(String label, ObjectManager manager) {
         myObjectManager = manager;
         myEntities = new ArrayList<>();
@@ -43,14 +49,23 @@ public class AuthoringLevel implements Propertable {
             myObjectManager.updateLevelLabel(valueRemoved, valueAdded);
     }
 
+    /**
+     * Adds specified AuthoringEntity to level
+     * @param newEntity AuthoringEntity to add to level
+     */
     public void addEntity(AuthoringEntity newEntity) {
         myEntities.add(newEntity);
     }
 
+    /**
+     * Returns list of AuthoringEntities assigned to level
+     * @return List of AuthoringEntities in level
+     */
     public List<AuthoringEntity> getEntities() {
         return myEntities;
     }
 
+    @Override
     public ObservableMap<Enum, String> getPropertyMap() {
         return myPropertyMap;
     }

@@ -14,12 +14,20 @@ import ui.Utility;
 
 import java.util.Arrays;
 
+/**
+ * Window that displays additional properties for the user to select from for an AuthoringEntity
+ * @author Harry Ross
+ */
 public class PropertySelector extends Stage {
 
     private Propertable myAuthEntity;
     private ListView<String> myProptions;
     private EntityField myAddedField;
 
+    /**
+     * Creates a new PropertySelector for given Propertable
+     * @param prop Propertable to add selected field to
+     */
     public PropertySelector(Propertable prop) {
         myAuthEntity = prop;
         myProptions = new ListView<>();
@@ -58,6 +66,10 @@ public class PropertySelector extends Stage {
         this.close();
     }
 
+    /**
+     * Returns selected field
+     * @return EntityField selected by user
+     */
     public EntityField getAddedField() {
         return myAddedField;
     }

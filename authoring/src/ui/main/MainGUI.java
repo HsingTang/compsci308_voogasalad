@@ -23,8 +23,8 @@ import ui.ErrorBox;
 import ui.Propertable;
 import ui.PropertableType;
 import ui.UIException;
-import ui.manager.GroupManager;
-import ui.manager.InfoEditor;
+import ui.windows.GroupEditor;
+import ui.windows.InfoEditor;
 import ui.manager.ObjectManager;
 import ui.panes.DefaultTypesPane;
 import ui.panes.LevelsPane;
@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
+ * Main class for ByteMe Authoring Environment, loads GUI and respective backend for a loaded Game
  * @author Harry Ross
  * @author Carrie Hunner
  */
@@ -65,7 +66,6 @@ public class MainGUI {
     private ObjectProperty<Propertable> mySelectedEntity;
     private ObjectProperty<Propertable> myCurrentLevel;
     private Scene myScene;
-    private String myAuthorName = "harry";
 
     private static final double STAGE_MIN_HEIGHT = 600;
     private static final double PROP_PANE_HEIGHT = 210;
@@ -76,9 +76,13 @@ public class MainGUI {
     private static final ResourceBundle GENERAL_RESOURCES = ResourceBundle.getBundle("authoring_general");
     private static final ResourceBundle SAVING_ASSETS_RESOURCES = ResourceBundle.getBundle("mainGUI_assets");
 
-    public MainGUI() { // Default constructor for creating a new game from scratch
+    /**
+     * Creates new MainGUI for a game being started from scratch with given metadata
+     * @param data Metadata for new game
+     */
+    public MainGUI(GameCenterData data) { // Default constructor for creating a new game from scratch
         myLoadedGame = new Game();
-        myGameData = new GameCenterData();
+        myGameData = data;
         defaultGameData();
         myStage = new Stage();
         myDataManager = new DataManager();
@@ -98,11 +102,14 @@ public class MainGUI {
         myObjectManager.setGameCenterData(myGameData);
     }
 
+    /**
+     * Creates new MainGUI for an already existing Game
+     * @param game Game to load
+     * @param gameData Corresponding metadata for loaded Game
+     */
     public MainGUI(Game game, GameCenterData gameData) {
-        this();
+        this(gameData);
         myLoadedGame = game;
-        myGameData = gameData;
-        myObjectManager.setGameCenterData(myGameData);
         loadDatabaseGame();
     }
 
@@ -115,27 +122,23 @@ public class MainGUI {
         myStage.setMinWidth(myStage.getWidth());
     }
 
-    private void createMainGUI(boolean load) { //TODO clean up
+    private void createMainGUI(boolean load) {
         BorderPane mainBorderPane = new BorderPane();
         Scene mainScene = new Scene(mainBorderPane);
         HBox propPaneBox = new HBox();
         propPaneBox.getStyleClass().add("prop-pane-box");
         HBox entityPaneBox = new HBox();
         entityPaneBox.getStyleClass().add("entity-pane-box");
-
         myCreatedTypesPane = createTypePanes(entityPaneBox, mainScene, load);
         createViewersForExistingLevels();
-
         createPropertiesPanes(propPaneBox, mainScene);
         myViewerBox = new HBox(myViewers.get(myCurrentLevel.getValue()));
         myViewerBox.prefHeightProperty().bind(mainScene.heightProperty());
         myViewerBox.prefWidthProperty().bind(mainScene.widthProperty());
-
         mainBorderPane.setCenter(myViewerBox);
         mainBorderPane.setRight(entityPaneBox);
         mainBorderPane.setTop(addMenu());
         mainBorderPane.setBottom(propPaneBox);
-
         mainScene.getStylesheets().add(myCurrentStyle.getValue());
         mainBorderPane.getCenter().getStyleClass().add("main-center-pane");
         myScene = mainScene;
@@ -166,7 +169,6 @@ public class MainGUI {
         return new Viewer(levelBasis, myCreatedTypesPane, mySelectedEntity, myObjectManager);
     }
 
-    @SuppressWarnings("Duplicates")
     private void createPropertiesPanes(HBox propPaneBox, Scene mainScene) {
         try {
             LevelsPane levelsPane = new LevelsPane(myObjectManager, myCurrentLevel);
@@ -189,7 +191,7 @@ public class MainGUI {
 
     private MenuBar addMenu() {
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(createMenu("File", "New", "Open", "Save"), //TODO make this better
+        menuBar.getMenus().addAll(createMenu("File", "New", "Open", "Save"),
                 createMenu("Edit", "Info", "Groups", "Images", "Audio"), createMenu("View", "Fullscreen"));
         return menuBar;
     }
@@ -202,7 +204,8 @@ public class MainGUI {
                 try {
                     this.getClass().getDeclaredMethod((String) bundle.getObject(option)).invoke(this);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    ErrorBox error = new ErrorBox("Menu Reflection Error", "Error in reflected Menu method");
+                    error.display();
                 }
             }));
         }
@@ -217,7 +220,7 @@ public class MainGUI {
 
     @SuppressWarnings("unused")
     private void newGame() {
-        MainGUI newWorkspace = new MainGUI();
+        MainGUI newWorkspace = new MainGUI(new GameCenterData());
         newWorkspace.launch(false);
     }
 
@@ -225,19 +228,18 @@ public class MainGUI {
     private void openGame() {
         DataManager dataManager = new DataManager();
         try {
-            List<String> gameNames = dataManager.loadUserGameNames(myAuthorName);
+            List<String> gameNames = dataManager.loadUserGameNames(myGameData.getAuthorName());
             LoadGameSelector selector = new LoadGameSelector(gameNames);
             selector.showAndWait();
 
             if(selector.getSelectedGame() != null) {
                 String selectedGameTitle = selector.getSelectedGame();
-                Game loadedGame = (Game) dataManager.loadGameData(selectedGameTitle, myAuthorName);
-                GameCenterData loadedGameData = dataManager.loadGameInfo(selectedGameTitle, myAuthorName);
+                Game loadedGame = (Game) dataManager.loadGameData(selectedGameTitle, myGameData.getAuthorName());
+                GameCenterData loadedGameData = dataManager.loadGameInfo(selectedGameTitle, myGameData.getAuthorName());
                 MainGUI newWorkspace = new MainGUI(loadedGame, loadedGameData);
                 newWorkspace.launch(true);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             ErrorBox error = new ErrorBox("Load", "Error loading from database");
         }
     }
@@ -246,7 +248,7 @@ public class MainGUI {
         GameTranslator translator = new GameTranslator(myObjectManager);
         myObjectManager.removeAllLevels();
         try {
-            translator.populateObjectManager(myLoadedGame, myCurrentLevel);
+            translator.loadGame(myLoadedGame, myCurrentLevel);
         } catch (UIException e) {
             ErrorBox error = new ErrorBox("Load Error", e.getMessage());
             error.display();
@@ -260,17 +262,16 @@ public class MainGUI {
     private void saveGame() {
         GameTranslator translator = new GameTranslator(myObjectManager);
         try {
-            Game exportableGame = translator.translate();
+            Game exportableGame = translator.saveGame();
             myDataManager = new DataManager();
-            myDataManager.saveGameData(myGameData.getTitle(), myAuthorName, exportableGame);
-            myDataManager.saveGameInfo(myGameData.getTitle(), myAuthorName, myGameData);
+            myDataManager.saveGameData(myGameData.getTitle(), myGameData.getAuthorName(), exportableGame);
+            myDataManager.saveGameInfo(myGameData.getTitle(), myGameData.getAuthorName(), myGameData);
 
             saveFolderToDataBase(GENERAL_RESOURCES.getString("images_filepath"));
             saveFolderToDataBase(GENERAL_RESOURCES.getString("audio_filepath"));
 
             DatabaseEngine.getInstance().open();
         } catch (UIException e) {
-            e.printStackTrace();
             ErrorBox errorBox = new ErrorBox("Save Error", e.getMessage());
             errorBox.showAndWait();
         }
@@ -278,8 +279,8 @@ public class MainGUI {
 
     @SuppressWarnings("unused")
     private void openGroupManager() {
-        GroupManager groupManager = new GroupManager(myObjectManager);
-        groupManager.showAndWait();
+        GroupEditor groupEditor = new GroupEditor(myObjectManager);
+        groupEditor.showAndWait();
     }
 
     @SuppressWarnings("unused")
@@ -291,7 +292,6 @@ public class MainGUI {
     @SuppressWarnings("unused")
     private void openImageAssets() {
         ImageManager manager = new ImageManager(myObjectManager);
-        System.out.println("object manager is null: " + myObjectManager == null);
         manager.show();
     }
 
@@ -322,10 +322,14 @@ public class MainGUI {
     }
 
     private void defaultGameData() {
-        myGameData.setImageLocation("");
-        myGameData.setTitle("New Game");
-        myGameData.setDescription("A fun new game");
-        myGameData.setAuthorName(myAuthorName);
+        if (myGameData.getTitle() == null)
+            myGameData.setTitle("New Game");
+        if (myGameData.getImageLocation() == null)
+            myGameData.setImageLocation("");
+        if (myGameData.getDescription() == null)
+           myGameData.setDescription("A fun new game");
+        if (myGameData.getAuthorName() == null)
+           myGameData.setAuthorName("default");
     }
 
     private void saveFolderToDataBase(String outerDirectoryPath){
@@ -349,7 +353,6 @@ public class MainGUI {
             loadAssets((GENERAL_RESOURCES.getString("audio_filepath")), userUploadedAudio);
         } catch (SQLException e) {
             //TODO deal with this
-            e.printStackTrace();
         }
     }
 
@@ -363,14 +366,12 @@ public class MainGUI {
             }
         } catch (IOException e) {
             //TODO: handle error
-            e.printStackTrace();
         }
     }
 
     public void clearFolder(String outerDirectoryPath){
         DatabaseEngine.getInstance().close();
         File outerDirectory = new File(outerDirectoryPath);
-        System.out.println("Directory: " + outerDirectory.getName());
         for(File file : outerDirectory.listFiles()){
             file.delete();
         }

@@ -14,7 +14,8 @@ public class UserOptionsDisplay extends HBox {
      * @author Anna Darwish
      */
 
-    public UserOptionsDisplay(SwitchToUserOptions switchToPageBeforeAuthoring, SwitchToUserOptions switchToLauncher,SwitchToUserOptions logout){
+   public UserOptionsDisplay(SwitchToUserOptions switchToPageBeforeAuthoring, SwitchToUserOptions switchToLauncher,SwitchToUserOptions logout){
+
         this.getStyleClass().add(CSS_STYLE_NAME);
         this.setTranslateY(OFFSET_VALUE);
         setUpImages(switchToPageBeforeAuthoring,switchToLauncher);

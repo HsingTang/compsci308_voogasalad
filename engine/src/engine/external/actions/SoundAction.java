@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 
 public class SoundAction extends StringAction {
     public SoundAction(String pathname) {
+        super.setMyNewValue(pathname);
         setAbsoluteAction(pathname, SoundComponent.class);
         myComponentClass = SoundComponent.class;
     }

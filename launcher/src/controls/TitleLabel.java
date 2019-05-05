@@ -6,7 +6,6 @@ import java.util.ResourceBundle;
 
 public class TitleLabel extends Label {
     private static final String WELCOME_RESOURCE = "launcher_display";
-    private static final String FADE_DURATION_KEY = "fade_duration";
     private static final String STYLE = "welcome.css";
     private static final String SMALL_STYLE = "small-label";
 
@@ -17,7 +16,6 @@ public class TitleLabel extends Label {
     public TitleLabel(String resourceKey){
         ResourceBundle myResources = ResourceBundle.getBundle(WELCOME_RESOURCE);
         String myWelcomeLabel = myResources.getString(resourceKey);
-        //setUpDisplay();
         this.setText(myWelcomeLabel);
         this.getStylesheets().add(STYLE);
     }

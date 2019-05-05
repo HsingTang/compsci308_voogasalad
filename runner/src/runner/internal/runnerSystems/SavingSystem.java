@@ -4,15 +4,10 @@ import data.external.DataManager;
 import engine.external.Engine;
 import engine.external.Entity;
 import engine.external.Level;
-import engine.external.component.AudioComponent;
 import engine.external.component.Component;
-import engine.external.component.PlayAudioComponent;
 import engine.external.component.SaveComponent;
-import javafx.scene.chart.PieChart;
 import runner.external.Game;
-import runner.internal.AudioManager;
 import runner.internal.LevelRunner;
-
 import java.sql.SQLException;
 import java.util.Collection;
 
@@ -27,6 +22,7 @@ public class SavingSystem extends RunnerSystem {
     private String myUsername;
     private String myGamename;
     private String myAuthorname;
+    private final String CANNOT_SAVE = "Unable to save game";
 
     /**
      * Constructor for SoundSystem
@@ -65,7 +61,7 @@ public class SavingSystem extends RunnerSystem {
         try {
             dataManager.saveCheckpoint(myUsername, myGamename, myAuthorname, myGame);
         } catch (SQLException e){
-            System.out.println("Unable to save game");
+            System.out.println(CANNOT_SAVE);
         }
     }
 }

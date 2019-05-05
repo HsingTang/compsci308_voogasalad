@@ -21,6 +21,7 @@ import javafx.scene.shape.Line;
 import ui.AuthoringEntity;
 import ui.AuthoringLevel;
 import ui.EntityField;
+import ui.ErrorBox;
 import ui.LevelField;
 import ui.Propertable;
 import ui.Utility;
@@ -228,14 +229,13 @@ public class Viewer extends ScrollPane {
                 menuItem.setOnAction(actionEvent -> {
                     try {
                         method.invoke(this, imageView);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        ErrorBox error = new ErrorBox("Viewer Error", "Error applying right click handler");
+                        error.display();
                     }
                 });
             } catch (NoSuchMethodException e) {
-                e.printStackTrace();
+                //TODO
             }
             contextMenu.getItems().add(menuItem);
         }

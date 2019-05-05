@@ -69,7 +69,7 @@
     -fx-background-color: white;
 }
 
-.combo-box, .combo-box-popup .list-cell  {
+.combo-box, .combo-box-popup .list-cell, .choice-box, .choice-box-popup .list-cell {
     -fx-background-color: #606060;
     -fx-text-fill: white;
 }
@@ -79,17 +79,22 @@
     -fx-background-color: #555555;
 }
 
-.combo-box-popup {
+.combo-box-popup, .choice-box-popup  {
     -fx-effect: dropshadow( three-pass-box, rgba(0,0,0,0.6), 15, 0, 0, 0  );
 }
 
-.combo-box-popup .list-view {
+.combo-box-popup .list-view, .choice-box-popup .list-view {
     -fx-background-color: #606060;
 }
 
-.combo-box .list-cell {
+.combo-box .list-cell, .choice-box .list-cell {
     -fx-text-fill: white;
     -fx-background-color: transparent;
+}
+
+.choice-box .list-cell .label {
+    -fx-font-weight: normal;
+    -fx-font-size: 12;
 }
 
 .titled-pane {
@@ -188,6 +193,10 @@
 
 .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
     -fx-border-color: #505050;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
 }
 
 
@@ -431,10 +440,10 @@
 }
 
 .event-manager-vbox {
-     -fx-border-insets: 20 0 0 0;
-     -fx-alignment: center;
-     -fx-text-alignment: center;
- }
+    -fx-border-insets: 20 0 0 0;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
 
 
 .event-manager-vbox .label {
@@ -535,4 +544,24 @@
 .event-pop-up {
     -fx-min-height: 400;
     -fx-min-width: 500;
+}
+
+.event-builder {
+    -fx-spacing: 10;
+    -fx-padding: 15;
+}
+
+.event-builder .label {
+    -fx-font-weight: normal;
+    -fx-font-size: 14;
+    -fx-text-fill: #aaaaaa;
+}
+
+.event-builder .choice-box .label {
+    -fx-font-size: 12;
+    -fx-text-fill: white;
+}
+
+.event-options {
+    -fx-spacing: 10;
 }

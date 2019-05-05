@@ -13,22 +13,31 @@ public class HeadsUpDisplay extends Node {
     private Double myLevel;
     private Text myLabel;
     private double xPosition;
-    private static final double DEFAULT_Y = 30.0;
+    private final double DEFAULT_Y = 30.0;
+    private final double DEFAULT_LIVES = 3.0;
+    private final double DEFAULT_LEVEL = 1.0;
+    private final double DEFAULT_SCORE = 0.0;
+    private final double DEFAULT_X_POSITION = 20.0;
+    private final String LOGO = "ByteMe   ";
+    private final String LEVEL_DISPLAY = "   Level: ";
+    private final String SCORE_DISPLAY = "   Score: ";
+    private final String LIVES_DISPLAY = "   Lives: ";
+    private final String HUD_ID = "HeadsUpDisplay";
 
     /**
      * Constructor for HeadsUpDisplay
      * @param width - width of screen
      */
     public HeadsUpDisplay(int width){
-        myLives = 3.0;
-        myLevel = 1.0;
-        myScore = 0.0;
-        xPosition = 20;
-        Text text = new Text ("ByteMe   " +
-                "   Level: " + myLevel.intValue() +
-                "   Score: " + myScore.intValue() +
-                "   Lives: " +myLives.intValue());
-        text.setId("HeadsUpDisplay");
+        myLives = DEFAULT_LIVES;
+        myLevel = DEFAULT_LEVEL;
+        myScore = DEFAULT_SCORE;
+        xPosition = DEFAULT_X_POSITION;
+        Text text = new Text (LOGO +
+                LEVEL_DISPLAY + myLevel.intValue() +
+                SCORE_DISPLAY + myScore.intValue() +
+                LIVES_DISPLAY +myLives.intValue());
+        text.setId(HUD_ID);
         myLabel = text;
         myLabel.setLayoutX(xPosition);
         myLabel.setLayoutY(DEFAULT_Y);
@@ -39,10 +48,10 @@ public class HeadsUpDisplay extends Node {
      * Called in game loop
      */
     public void updateLabel(){
-        myLabel.setText("ByteMe   " +
-                "   Level: " + myLevel.intValue() +
-                "   Score: " + myScore.intValue() +
-                "   Lives: " +myLives.intValue());
+        myLabel.setText(LOGO +
+                LEVEL_DISPLAY + myLevel.intValue() +
+                SCORE_DISPLAY + myScore.intValue() +
+                LIVES_DISPLAY + myLives.intValue());
     }
 
     /**
@@ -85,4 +94,7 @@ public class HeadsUpDisplay extends Node {
         myScore = score;
     }
 
+    public Double getLevel() {
+        return myLevel;
+    }
 }

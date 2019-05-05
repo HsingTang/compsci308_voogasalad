@@ -10,6 +10,9 @@ import runner.external.GameRunner;
  * @author Louis Jensen
  */
 public class RunnerTester extends Application {
+    private final String DEFAULT_GAME_TO_LOAD = "YeetRevised3";
+    private final String DEFAULT_AUTHOR = "defaultAuthor";
+    private final String DEFAULT_USER = "defaultUserName";
 
     /**
      * Runs application start method
@@ -25,7 +28,7 @@ public class RunnerTester extends Application {
      */
     @Override
     public void start (Stage primaryStage) throws Exception{
-        GameRunner runner = new GameRunner("YeetRevised3", "defaultAuthor", "defaultUserName");
+        GameRunner runner = new GameRunner(DEFAULT_GAME_TO_LOAD, DEFAULT_AUTHOR, DEFAULT_USER);
     }
 
     /**

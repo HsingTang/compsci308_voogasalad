@@ -136,7 +136,7 @@ public class CreateNewTypeWindow extends Stage {
         try {
             fileInputStream = new FileInputStream(GENERAL_RESOURCES.getString("no_image"));  //closed
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            // Do nothing
         }
         ImageView imageView = new ImageView(new Image(fileInputStream, PICTURE_SIZE, PICTURE_SIZE, false, false));  //closed
         Utility.closeInputStream(fileInputStream);  //closed

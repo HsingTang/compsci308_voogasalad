@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Enum class that defines valid property fields for an AuthoringEntity
  * @author Harry Ross
  */
 public enum EntityField {
@@ -64,6 +65,10 @@ public enum EntityField {
         myTextable = textable;
     }
 
+    /**
+     * Returns list of values that can be displayed and edited via TextFieldProperty as Strings
+     * @return list of values that can be displayed and edited via TextFieldProperty as Strings
+     */
     public static List<String> getTextFieldList() {
         List<String> rtn = new ArrayList<>();
         for (EntityField field : EntityField.values()) {
@@ -73,38 +78,70 @@ public enum EntityField {
         return rtn;
     }
 
+    /**
+     * Returns list of values that are given to every created AuthoringEntity
+     * @return list of values that are given to every created AuthoringEntity
+     */
     public static List<EntityField> getDefaultFields() {
         List<EntityField> defaultList = new ArrayList<>(Arrays.asList(EntityField.values()));
         defaultList.removeIf(field -> !field.myDefault);
         return defaultList;
     }
 
+    /**
+     * Returns list of values that are to be copied between copied AuthoringEntities
+     * @return list of values that are to be copied between copied AuthoringEntities
+     */
     public static List<EntityField> getCommonFields() {
         List<EntityField> commonList = new ArrayList<>(Arrays.asList(EntityField.values()));
         commonList.removeIf(field -> !field.myCommon);
         return commonList;
     }
 
+    /**
+     * Returns default String value for enum value
+     * @return default String value
+     */
     public String getDefaultValue() {
         return myDefaultValue;
     }
 
+    /**
+     * Returns Class of associated component for enum type
+     * @return class of associated component for enum type
+     */
     public Class<? extends Component> getComponentClass() {
         return myComponentClass;
     }
 
+    /**
+     * Returns data type as Class for an enum value
+     * @return Data type for enum value as class
+     */
     public Class<?> getComponentDataType() {
         return myComponentDataType;
     }
 
+    /**
+     * Returns whether or not an enum value can be represented in a TextFieldProperty
+     * @return whether or not an enum value can be represented in a TextFieldProperty
+     */
     public boolean isTextable() {
         return myTextable;
     }
 
+    /**
+     * Returns whether of not an enum value is to be given by default to a new AuthoringEntity in its property map
+     * @return whether of not an enum value is to be given by default to a new AuthoringEntity in its property map
+     */
     public boolean isDefault() {
         return myDefault;
     }
 
+    /**
+     * Returns String label associated with enum value
+     * @return String label associated with enum value
+     */
     public String getLabel() {
         return myLabel;
     }

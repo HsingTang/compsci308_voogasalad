@@ -139,6 +139,34 @@
     -fx-font-weight: normal;
 }
 
+.game-display .choice-box, .game-display .choice-box-popup .list-cell {
+    -fx-background-color: #606060;
+    -fx-text-fill: white;
+}
+
+.game-display .choice-box:hover, .game-display .choice-box .list-cell:hover, .game-display .choice-box:focused, .game-display .button:hover,
+.game-display .choice-box-popup .list-cell:hover {
+    -fx-background-color: #555555;
+}
+
+.game-display .choice-box-popup  {
+    -fx-effect: dropshadow( three-pass-box, rgba(0,0,0,0.6), 15, 0, 0, 0  );
+}
+
+.game-display .choice-box-popup .list-view {
+    -fx-background-color: #606060;
+}
+
+.game-display .choice-box .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+}
+
+.game-display .choice-box .list-cell .label {
+    -fx-font-weight: normal;
+    -fx-font-size: 12;
+}
+
 .group-manager .top-pane {
     -fx-text-fill: white;
 }
@@ -268,3 +296,4 @@
     -fx-text-alignment: center;
     -fx-text-fill: white;
 }
+

@@ -147,6 +147,8 @@ public class Event implements IEventEngine, IEventAuthoring {
         myInputs.remove(inputsToRemove);
     }
 
+    public List<KeyCode> getImmutableKeyCodes() {return new ArrayList<>(myInputs);}
+
     public void clearInputs() {
         myInputs.clear();
     }

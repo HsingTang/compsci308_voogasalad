@@ -1,13 +1,10 @@
 package ui.main;
 
 import data.external.DatabaseEngine;
+import data.external.GameCenterData;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import ui.ErrorBox;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainTester extends Application {
@@ -16,7 +13,7 @@ public class MainTester extends Application {
 
     @Override
     public void start(Stage stage) {
-        myMainGui = new MainGUI();
+        myMainGui = new MainGUI(new GameCenterData());
         myMainGui.launch(false);
     }
 

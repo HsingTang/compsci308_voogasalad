@@ -27,6 +27,7 @@ public class CenterView extends Application {
     public static final double STAGE_HEIGHT = 750;
     private static final Color BACKGROUND_COLOR = Color.rgb(46, 43, 51);
     private static final String CSS_LOCATION = "center.css";
+    private static final String DEFAULT_USER = "Megan";
 
     /**
      * @purpose method required for everything that extends Application, this starts up the application and shows the UI
@@ -34,7 +35,7 @@ public class CenterView extends Application {
      * @param stage the stage given to start that holds the display
      */
     public void start (Stage stage) {
-        CenterView view = new CenterView("Megan");
+        CenterView view = new CenterView(DEFAULT_USER);
         stage.setScene(view.getScene());
         stage.setResizable(false);
         stage.show();
@@ -80,8 +81,10 @@ public class CenterView extends Application {
         myScene = new Scene(root, STAGE_WIDTH, STAGE_HEIGHT, BACKGROUND_COLOR);
     }
 
-
-
+    /**
+     * @purpose stop the database engine from running when the gameCenter is closed
+     * @throws Exception if something goes wrong when stopping the application (thrown from super)
+     */
     @Override
     public void stop() throws Exception {
         super.stop();

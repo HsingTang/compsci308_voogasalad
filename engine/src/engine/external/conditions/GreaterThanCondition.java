@@ -20,6 +20,7 @@ public class GreaterThanCondition extends Condition {
         setPredicate((Predicate<Entity> & Serializable) entity -> (Double) entity.getComponent(component).getValue() > value);
         myComponentName = component.getSimpleName();
         myComponentClass = component;
+        myValue = value;
     }
 
     @Override

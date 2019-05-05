@@ -14,6 +14,7 @@ import ui.Propertable;
 import ui.manager.ObjectManager;
 
 /**
+ * Pane that displays list of created levels and allows user to click to transition between them
  * @author Harry Ross
  */
 public class LevelsPane extends TitledPane {
@@ -25,6 +26,11 @@ public class LevelsPane extends TitledPane {
     private static final String LEVELS_PANE_TITLE = "Levels";
     private static final String NEW_LEVEL_PREFIX = "New_Level_";
 
+    /**
+     * Creates new LevelsPane with given ObjectManager and CurrentLevel property
+     * @param manager ObjectManager to base levels list off of
+     * @param currentLevel Property to represent current level
+     */
     public LevelsPane(ObjectManager manager, ObjectProperty<Propertable> currentLevel) {
         myObjectManager = manager;
         myCurrentLevel = currentLevel;

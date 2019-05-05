@@ -9,17 +9,14 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import ui.manager.ObjectManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
+ * Authoring Environment version of Entity that contains property map to be observed by other classes
  * @author Harry Ross
  */
 public class AuthoringEntity implements Propertable {
 
     private ObservableMap<Enum, String> myPropertyMap;
     private ObjectManager myObjectManager;
-    private List<String> myInteractionListing = new ArrayList<>();
 
     private AuthoringEntity() { // Initialize default property map
         myPropertyMap = FXCollections.observableHashMap();
@@ -28,14 +25,23 @@ public class AuthoringEntity implements Propertable {
         }
     }
 
-    public AuthoringEntity(String label, ObjectManager manager) { // Create new type of AuthoringEntity from scratch
+    /**
+     * Creates new AuthoringEntity type from scratch
+     * @param label Label of new AuthoringEntity
+     * @param manager ObjectManager to associate with new AuthoringEntity
+     */
+    public AuthoringEntity(String label, ObjectManager manager) {
         this();
         myObjectManager = manager;
-        myPropertyMap.put(EntityField.LABEL, label); //TODO see if this can be removed
+        myPropertyMap.put(EntityField.LABEL, label);
         addPropertyListeners();
-        myObjectManager.addEntityType(this, "");
     }
 
+    /**
+     * Creates new AuthoringEntity type from an Entity used elsewhere in project
+     * @param basis Entity to base translated AuthoringEntity on
+     * @param manager ObjectManager to associate new AuthoringEntity with
+     */
     public AuthoringEntity(Entity basis, ObjectManager manager) { // Create new AuthoringEntity type from Entity
         this();
         myObjectManager = manager;
@@ -52,6 +58,10 @@ public class AuthoringEntity implements Propertable {
         addPropertyListeners();
     }
 
+    /**
+     * Creates a new AuthoringEntity instance from pre-existing instance
+     * @param copyBasis AuthoringEntity to base new copy on
+     */
     public AuthoringEntity(AuthoringEntity copyBasis) { // Create new AuthoringEntity instance from pre-existing type
         this();
         myObjectManager = copyBasis.myObjectManager;
@@ -79,6 +89,7 @@ public class AuthoringEntity implements Propertable {
         }
     }
 
+    @Override
     public ObservableMap<Enum, String> getPropertyMap() {
         return myPropertyMap;
     }
@@ -88,14 +99,11 @@ public class AuthoringEntity implements Propertable {
         return EntityField.class;
     }
 
+    /**
+     * Returns list of Events associated with this AuthoringEntity type
+     * @return List of Events for AuthoringEntities matching the label of this AuthoringEntity
+     */
     public ObservableList<Event> getEvents() {
         return myObjectManager.getEvents(this.myPropertyMap.get(EntityField.LABEL));
     }
-
-    public List<String> getInteractionListing(){ return myInteractionListing;} //TODO remove
-
-    public ObjectManager getObjectManager() { //TODO remove
-        return myObjectManager;
-    }
-
 }

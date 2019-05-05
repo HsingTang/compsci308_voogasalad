@@ -28,7 +28,7 @@ public class ImageWithEntity extends ImageView {
         updateY(authoringEntity.getPropertyMap().get(EntityField.Y));
         updateVisibility(authoringEntity.getPropertyMap().get(EntityField.VISIBLE));
         myAuthoringEntity.getPropertyMap().addListener((MapChangeListener<Enum, String>) change -> {handleChange(change);
-            System.out.println("Change observed");});
+        });
         Utility.closeInputStream(s);  //closed 2
     }
 
@@ -82,7 +82,6 @@ public class ImageWithEntity extends ImageView {
         else{
             this.opacityProperty().setValue(.5);
         }
-        System.out.println("Visible: " + visible);
     }
 
     /**

@@ -6,10 +6,16 @@ import ui.manager.LabelManager;
 import ui.manager.ObjectManager;
 
 /**
+ * Class that extends ComboBox for use in a PropertiesPane in the ByteMe Authoring Environment UI. This class
+ * detects changes in its own user input to propagate elsewhere.
  * @author Harry Ross
  */
 public class ComboBoxProperty extends ComboBox<String> implements ControlProperty {
 
+    /**
+     * Instantiates new ComboBoxProperty with specified prompt text
+     * @param prompt Prompt text to display in instance without a selected value.
+     */
     public ComboBoxProperty(String prompt) {
         this.setPromptText(prompt);
     }

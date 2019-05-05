@@ -68,6 +68,10 @@ public class Game {
         myUserCreatedTypes = userCreatedTypes;
     }
 
+    /**
+     * Gets the map of the types that the user authors
+     * @return Map containing entities and their types
+     */
     public Map<Entity, String> getUserCreatedTypes() {
         return myUserCreatedTypes;
     }

@@ -12,7 +12,6 @@ public class DataTestRunner {
      * Connects to database and creates new GameRunner
      */
     public static void main(String[] args){
-        System.out.println("DataTestRunner");
         if (! DatabaseEngine.getInstance().open()){
             System.exit(1);
         };

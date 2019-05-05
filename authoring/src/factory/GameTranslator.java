@@ -3,6 +3,7 @@ package factory;
 import engine.external.Entity;
 import engine.external.IEventEngine;
 import engine.external.Level;
+import engine.external.component.AssociatedEntityComponent;
 import engine.external.component.CameraComponent;
 import engine.external.component.CollisionComponent;
 import engine.external.component.Component;
@@ -29,34 +30,43 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Class that translates Authoring versions of objects into classes usable by the rest of the project
  * @author Harry Ross
  */
 public class GameTranslator {
 
     private ObjectManager myObjectManager;
 
+    /**
+     * Creates a new GameTranslator with the given ObjectManager
+     * @param objectManager ObjectManager for authoring environment user is saving/loading to
+     */
     public GameTranslator(ObjectManager objectManager) {
         myObjectManager = objectManager;
     }
 
-    public Game translate() throws UIException {
+    /**
+     * Translates current environment state into Game object
+     * @return Game object representing translated state from authoring environment
+     * @throws UIException if errors occur while saving
+     */
+    public Game saveGame() throws UIException {
         Game translatedGame = new Game();
         Map<Entity, String> typeMap = new HashMap<>();
 
         for (AuthoringLevel authLevel : myObjectManager.getLevels()) { // Translate Levels
-            translatedGame.addLevel(translateLevel(authLevel));
+            translatedGame.addLevel(saveLevel(authLevel));
         }
         for (AuthoringEntity key : myObjectManager.getTypeMap().keySet()) { // Translate Entity type map
-            Entity translatedType = translateEntity(key);
+            Entity translatedType = saveEntity(key);
             typeMap.put(translatedType, myObjectManager.getTypeMap().get(key));
         }
         translatedGame.addUserCreatedTypes(typeMap);
         return translatedGame;
     }
 
-    private Level translateLevel(AuthoringLevel authLevel) throws UIException {
+    private Level saveLevel(AuthoringLevel authLevel) throws UIException {
         Level newLevel = new Level();
-        boolean mainCharExists = false;
         if (authLevel.getEntities().isEmpty()) {
             throw new UIException("All levels must have at least one Entity");
         }
@@ -66,14 +76,24 @@ public class GameTranslator {
         newLevel.setWidth(Double.parseDouble(authLevel.getPropertyMap().get(LevelField.WIDTH)));
         newLevel.setHeight(Double.parseDouble(authLevel.getPropertyMap().get(LevelField.HEIGHT)));
 
+        saveLevelEntities(authLevel, newLevel);
+        checkRequiredComponents(newLevel);
+        return newLevel;
+    }
+
+    private void saveLevelEntities(AuthoringLevel authLevel, Level newLevel) throws UIException {
         for (AuthoringEntity authEntity : authLevel.getEntities()) { // Level entities!!!
-            newLevel.addEntity(translateEntity(authEntity));
+            newLevel.addEntity(saveEntity(authEntity));
             for (Event event : myObjectManager.getEvents(authEntity.getPropertyMap().get(EntityField.LABEL))) // Events!!!
                 newLevel.addEvent(event);
         }
         for (Entity entity : newLevel.getEntities()) { // Additional Components based on Events!!!
-            addAdditionalComponents(entity, newLevel);
+            saveAdditionalComponents(entity, newLevel);
         }
+    }
+
+    private void checkRequiredComponents(Level newLevel) throws UIException {
+        boolean mainCharExists = false;
         for (Entity entity : newLevel.getEntities()) { // Make sure a main character exists in translated level's Entity set
             if (entity.hasComponents(CameraComponent.class)) {
                 mainCharExists = true;
@@ -83,20 +103,20 @@ public class GameTranslator {
         if (!mainCharExists) {
             throw new UIException("One Entity per Level must be selected as Focus");
         }
-        return newLevel;
     }
 
-    private Entity translateEntity(AuthoringEntity authEntity) {
+    private Entity saveEntity(AuthoringEntity authEntity) throws UIException {
         Entity basisEntity = new Entity();
 
         for (EntityField field : EntityField.values()) {
             if (authEntity.getPropertyMap().containsKey(field) && !field.equals(EntityField.VISIBLE) && !field.equals(EntityField.FOCUS) && !field.equals(EntityField.EVENTS)) {
-                addComponent(field, basisEntity, authEntity);
+                saveComponent(field, basisEntity, authEntity);
             }
             else if (field.equals(EntityField.FOCUS) && Boolean.parseBoolean(authEntity.getPropertyMap().get(EntityField.FOCUS))) { // Main character found
                 basisEntity.addComponent(new CameraComponent(true));
                 basisEntity.addComponent(new LivesComponent(3.0));
                 basisEntity.addComponent(new ScoreComponent(0.0));
+                basisEntity.addComponent(new AssociatedEntityComponent(basisEntity));
             }
             else if (field.equals(EntityField.VISIBLE)) {
                 if (Boolean.parseBoolean(authEntity.getPropertyMap().get(EntityField.VISIBLE)))
@@ -108,27 +128,7 @@ public class GameTranslator {
         return basisEntity;
     }
 
-    private void addAdditionalComponents(Entity basisEntity, Level newLevel) {
-        //TODO group events, group collision events?
-        for (Event event : myObjectManager.getEvents((String) basisEntity.getComponent(NameComponent.class).getValue())) { // Cycle through each Entity for its Events in OM
-            if (CollisionEvent.class.isAssignableFrom(event.getClass())) {
-                basisEntity.addComponent(new CollisionComponent(true)); // Add CollisionComponent to the Entities that need it
-                String otherEntityLabel = ((CollisionEvent) event).getCollisionWithEntity();
-                for (Entity entity : newLevel.getEntities()) {                  // Add CollisionComponent to other actor
-                    if (entity.getComponent(NameComponent.class).getValue().equals(otherEntityLabel) && !entity.hasComponents(CollisionComponent.class))
-                        entity.addComponent(new CollisionComponent(true));
-                }
-            }
-            /*for (Action action : (List<Action>) event.getEventInformation().get(Action.class)) { //TODO see if this can stay commented
-                if (action.getClass().equals(SoundAction.class) && !basisEntity.hasComponents(SoundComponent.class))
-                    basisEntity.addComponent(new SoundComponent(""));
-                if (action.getClass().equals(ValueAction.class) && !basisEntity.hasComponents(ValueComponent.class))
-                    basisEntity.addComponent(new ValueComponent(0.0));
-            }*/
-        }
-    }
-
-    private void addComponent(EntityField field, Entity basisEntity, AuthoringEntity authEntity) {
+    private void saveComponent(EntityField field, Entity basisEntity, AuthoringEntity authEntity) throws UIException {
         Class<?> dataType = field.getComponentDataType();
         Class<? extends Component> componentClass = field.getComponentClass();
 
@@ -151,13 +151,33 @@ public class GameTranslator {
                     else if (dataType.equals(Boolean.class))
                         basisEntity.addComponent(componentClass.getConstructor(dataType).newInstance(Boolean.parseBoolean(newValue)));
                 } catch (Exception e) {
-                    System.out.println("Error translating components");
+                    throw new UIException("Error translating components");
                 }
             }
         }
     }
 
-    public void populateObjectManager(Game game, ObjectProperty<Propertable> currentLevel) throws UIException {
+    private void saveAdditionalComponents(Entity basisEntity, Level newLevel) {
+        //TODO group events, group collision events?
+        for (Event event : myObjectManager.getEvents((String) basisEntity.getComponent(NameComponent.class).getValue())) { // Cycle through each Entity for its Events in OM
+            if (CollisionEvent.class.isAssignableFrom(event.getClass())) {
+                basisEntity.addComponent(new CollisionComponent(true)); // Add CollisionComponent to the Entities that need it
+                String otherEntityLabel = ((CollisionEvent) event).getCollisionWithEntity();
+                for (Entity entity : newLevel.getEntities()) {                  // Add CollisionComponent to other actor
+                    if (entity.getComponent(NameComponent.class).getValue().equals(otherEntityLabel) && !entity.hasComponents(CollisionComponent.class))
+                        entity.addComponent(new CollisionComponent(true));
+                }
+            }
+        }
+    }
+
+    /**
+     * Loads Game object and translates into data usable by authoring environment
+     * @param game Game being loaded
+     * @param currentLevel Object property to set level focus properly
+     * @throws UIException if error occurs during load
+     */
+    public void loadGame(Game game, ObjectProperty<Propertable> currentLevel) throws UIException {
         for (Entity type : game.getUserCreatedTypes().keySet()) {
             AuthoringEntity newType = new AuthoringEntity(type, myObjectManager);
             myObjectManager.addEntityType(newType, game.getUserCreatedTypes().get(type));

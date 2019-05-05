@@ -1,4 +1,4 @@
-package ui.manager;
+package ui.windows;
 
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Button;
@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import ui.EntityField;
 import ui.Utility;
+import ui.manager.ObjectManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,14 +20,19 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
+ * Class for displaying, adding, removing, and modifying Group types
  * @author Harry Ross
  */
-public class GroupManager extends Stage {
+public class GroupEditor extends Stage {
 
     private ObjectManager myObjectManager;
     private ListView<String> myListView;
 
-    public GroupManager(ObjectManager objectManager) {
+    /**
+     * Creates new GroupEditor from given ObjectManager
+     * @param objectManager ObjectManager to populate Group names from
+     */
+    public GroupEditor(ObjectManager objectManager) {
         this.setResizable(false);
         this.setTitle("Group Manager");
         myObjectManager = objectManager;

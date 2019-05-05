@@ -257,7 +257,7 @@ public class DummyGameObjectMaker {
         flappyJump.addActions(new YPositionAction(NumericAction.ModifyType.RELATIVE,-.02));
         //flappyJump.addActions(new YAccelerationAction(NumericAction.ModifyType.ABSOLUTE,0.2));
         flappyJump.addActions(new ValueAction(NumericAction.ModifyType.RELATIVE,1.0));
-        flappyJump.addActions(new ChangeScoreAction(NumericAction.ModifyType.RELATIVE, 100.0));
+        flappyJump.addActions(new ScoreAction(NumericAction.ModifyType.RELATIVE, 100.0));
         //flappyJump.addActions(new SoundAction("bach_chaconne"));
 
         /**
@@ -400,7 +400,7 @@ public class DummyGameObjectMaker {
         flappyFallsEvent.addActions(new YPositionAction(NumericAction.ModifyType.ABSOLUTE, 200.0));
         flappyFallsEvent.addActions(new XPositionAction(NumericAction.ModifyType.ABSOLUTE, 50.0));
         flappyFallsEvent.addActions(new YVelocityAction(NumericAction.ModifyType.ABSOLUTE, 0.0));
-        flappyFallsEvent.addActions(new ChangeScoreAction(NumericAction.ModifyType.RELATIVE, -10.0));
+        flappyFallsEvent.addActions(new ScoreAction(NumericAction.ModifyType.RELATIVE, -10.0));
         AssociatedEntityAction updateGameLivesAction = new AssociatedEntityAction();
         updateGameLivesAction.setAction(NumericAction.ModifyType.RELATIVE, -1.0, LivesComponent.class);
         flappyFallsEvent.addActions(updateGameLivesAction);

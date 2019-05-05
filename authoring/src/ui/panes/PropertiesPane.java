@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.ResourceBundle;
 
 /**
+ * Class to display editable properties corresponding to fields tied to enums in a Propertable type
  * @author Harry Ross
  */
 public class PropertiesPane extends TitledPane {
@@ -38,6 +39,13 @@ public class PropertiesPane extends TitledPane {
 
     private static final String PROP_TYPE_EXT = " Properties";
 
+    /**
+     * Creates new PropertiesPane with given parameters
+     * @param manager ObjectManager to access for setting actions
+     * @param propType Type of Propertable to associate with this pane, for labeling purposes
+     * @param prop Propertable object to edit/update displayed fields from
+     * @throws UIException if an error occurs in creating or displaying properties
+     */
     public PropertiesPane(ObjectManager manager, PropertableType propType, ObjectProperty<Propertable> prop) throws UIException {
         myProp = prop;
         myPropType = propType;
@@ -119,7 +127,6 @@ public class PropertiesPane extends TitledPane {
                     myProp.getValue().getPropertyMap().get(Enum.valueOf(enumClass, name.toUpperCase())), myObjectManager.getLabelManager());
             instance.setAction(myObjectManager, myProp.getValue(), Enum.valueOf(enumClass, name.toUpperCase()), sep[2]);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new UIException("Error creating properties controls");
         }
         return newProp;

@@ -9,6 +9,9 @@ import ui.manager.LabelManager;
 import ui.manager.ObjectManager;
 
 /**
+ * Class that extends TextField for use in a PropertiesPane in the ByteMe Authoring Environment UI. This class
+ * both detects changes in its own user input to propagate elsewhere and detects changes in its bound property from
+ * other areas of the UI in order to update its displayed value
  * @author Harry Ross
  */
 public class TextFieldProperty extends TextField implements ControlProperty {
@@ -19,6 +22,9 @@ public class TextFieldProperty extends TextField implements ControlProperty {
 
     private static final String PROP_SYNTAX = "property_syntax";
 
+    /**
+     * Instantiates a new TextFieldProperty with default LabelManager and empty current value
+     */
     public TextFieldProperty() {
         myLabelManager = new LabelManager();
         myCurrentValue = "";

@@ -8,6 +8,7 @@ import javafx.animation.Animation;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import runner.internal.AudioManager;
 import runner.internal.GameBeatenScreen;
 import runner.internal.HeadsUpDisplay;
 import runner.internal.LevelRunner;
@@ -27,6 +28,7 @@ public class NextLevelSystem extends RunnerSystem {
     private Consumer myLevelChanger;
     private int myLevelCount;
     private HeadsUpDisplay myHUD;
+    private AudioManager myAudioManager;
 
     /**
      * Constructor for the progression system
@@ -42,7 +44,7 @@ public class NextLevelSystem extends RunnerSystem {
      */
     public NextLevelSystem(Collection<Class<? extends Component>> requiredComponents, LevelRunner levelRunner,
                           Group group, Stage stage, Animation animation, int width, int height,
-                          Consumer consumer, int numLevels, HeadsUpDisplay hud) {
+                          Consumer consumer, int numLevels, HeadsUpDisplay hud, AudioManager audioManager) {
         super(requiredComponents, levelRunner);
         myGroup = group;
         myStage = stage;
@@ -52,6 +54,7 @@ public class NextLevelSystem extends RunnerSystem {
         myLevelChanger = consumer;
         myLevelCount = numLevels;
         myHUD = hud;
+        myAudioManager = audioManager;
     }
 
     /**
@@ -68,11 +71,12 @@ public class NextLevelSystem extends RunnerSystem {
     }
 
     private void changeLevel(Entity entity){
-        System.out.println(entity.getComponent(NextLevelComponent.class).getValue());
         Double nextLevel = (Double) entity.getComponent(NextLevelComponent.class).getValue();
         if(nextLevel.intValue() > myLevelCount){
-        myAnimation.stop();
-        myGroup.getChildren().add(new GameBeatenScreen(myStage, myGroup.getTranslateX(), (Boolean) entity.getComponent(ProgressionComponent.class).getValue()).getNode());
+            myAnimation.stop();
+            myGroup.getChildren().add(new GameBeatenScreen(myStage, myGroup.getTranslateX(), (Boolean) entity.getComponent(ProgressionComponent.class).getValue(), myAudioManager).getNode());
+        } else if (nextLevel.intValue() < 0) {
+            entity.addComponent(new ProgressionComponent(false));
         } else {
             endLevel(nextLevel);
         }

@@ -14,12 +14,19 @@ import ui.Utility;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Window that allows user to select a game to load from a list of options
+ */
 public class LoadGameSelector extends Stage {
 
     private ListView<String> myListView;
     private List<String> myGameOptions;
     private String mySelectedGame;
 
+    /**
+     * Creates new LoadGameSelector with given game options
+     * @param gameOptions List of game options to display
+     */
     public LoadGameSelector(List<String> gameOptions) {
         myListView = new ListView<>();
         myGameOptions = gameOptions;
@@ -59,6 +66,10 @@ public class LoadGameSelector extends Stage {
         this.close();
     }
 
+    /**
+     * Returns game selected by user
+     * @return Selected game
+     */
     public String getSelectedGame() {
         return mySelectedGame;
     }

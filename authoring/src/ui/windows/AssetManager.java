@@ -114,11 +114,9 @@ abstract public class AssetManager extends Stage {
     private void createButtonPane() {
         String buttonString;
         if(myObjectManager == null){
-            System.out.println("object manager null");
             buttonString = RESOURCES.getString(SELECT_BUTTONS);
         }
         else{
-            System.out.println("object manager not null");
             buttonString = RESOURCES.getString(UPLOAD_BUTTONS);
         }
         String[] buttonInfo = buttonString.split(",");
@@ -284,7 +282,6 @@ abstract public class AssetManager extends Stage {
             File dest = new File(myAssetFolderPath + prefix + selectedFile.getName()); //any location
             Files.copy(selectedFile.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
-            e.printStackTrace();
             String[] text = RESOURCES.getString(IO_ERROR).split(",");
             ErrorBox errorBox = new ErrorBox(text[0], text[1]);
             errorBox.display();

@@ -25,6 +25,9 @@ public abstract class StringAction extends Action<String> {
         myNewValue = newValue;
         myComponentClass = componentClass;
     }
+    protected void setMyNewValue(String value){
+        myNewValue = value;
+    }
     public String toString(){
         return CHANGE + myComponentClass.getSimpleName().replaceAll(COMPONENT,"") + TO + myNewValue;
     }

@@ -1,11 +1,8 @@
 package ui.windows;
 
-import data.external.GameCenterData;
-import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
@@ -17,7 +14,6 @@ import ui.manager.ObjectManager;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-
 
 public class AudioManager extends AssetManager {
 
@@ -58,22 +54,13 @@ public class AudioManager extends AssetManager {
         vBox.setOnMouseClicked(mouseEvent -> {
             if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
                 mySelectedAssetName = file.getName();
-                System.out.println("Single click registered");
                 if(mouseEvent.getClickCount() == 2){
-                    System.out.println("Double click registered");
                     Media sound = new Media(file.toURI().toString());
                     MediaPlayer mediaPlayer = new MediaPlayer(sound);
                     mediaPlayer.play();
                 }
             }
         });
-//        vBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent mouseEvent) {
-//                mySelectedAssetName = file.getName();
-//                System.out.println("On selected");
-//            }
-//        });
         if(listView.getItems().contains(vBox)){
             listView.getItems().remove(vBox);
         }
@@ -97,7 +84,6 @@ public class AudioManager extends AssetManager {
         ListView listView = new ListView();
         return listView;
     }
-
 
     /**
      * This needs to be here for reflection purposes. In creating the buttons the

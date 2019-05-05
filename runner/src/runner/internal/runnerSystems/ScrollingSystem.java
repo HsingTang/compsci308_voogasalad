@@ -15,6 +15,8 @@ import java.util.Collection;
 public class ScrollingSystem extends RunnerSystem {
     private Group myGroup;
     private Scene myScene;
+    private final double LEFT_BUFFER_ZONE = 1.0 / 5.0;
+    private final double RIGHT_BUFFER_ZONE = 3.0 / 5.0;
 
     /**
      * Constructor for ScrollingSystem
@@ -45,8 +47,8 @@ public class ScrollingSystem extends RunnerSystem {
     private void scrollOnMainCharacter(Entity entity){
         Double x = (Double) entity.getComponent(XPositionComponent.class).getValue();
         Double origin = myGroup.getTranslateX();
-        Double xMinBoundary = myScene.getWidth()/5.0;
-        Double xMaxBoundary = myScene.getWidth()/4.0*3;
+        Double xMinBoundary = myScene.getWidth() * LEFT_BUFFER_ZONE;
+        Double xMaxBoundary = myScene.getWidth() * RIGHT_BUFFER_ZONE;
         if (x < xMinBoundary - origin) {
             myGroup.setTranslateX(-1 * x + xMinBoundary);
         }

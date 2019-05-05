@@ -69,10 +69,18 @@ public class GameCard {
         return myDisplay;
     }
 
+    /**
+     * @purpose implement the readMoreButton, which creates a new GamePage to be viewed
+     * @param data the GameCenterData that is being read more on
+     */
     public void readMoreButton(GameCenterData data) {
         new GamePage(data, myManager, myCurrentUser);
     }
 
+    /**
+     * @purpose implement the playGameButton, which launches the GameRunner
+     * @param data the data corresponding to the game being played
+     */
     public void playGameButton(GameCenterData data) {
         Utilities.launchGameRunner(data.getTitle(), data.getAuthorName(), myCurrentUser);
     }
@@ -122,6 +130,12 @@ public class GameCard {
         imageDescription.getStyleClass().add(TEXT_SELECTOR + myIndex);
         imageDescription.setWrappingWidth(DISPLAY_WIDTH - WRAP_OFFSET);
         contentPane.setCenter(imageDescription);
+        addRatingText(contentPane);
+        contentPane.getStyleClass().add(CONTENT_SELECTOR);
+        foreground.setCenter(contentPane);
+    }
+
+    private void addRatingText(BorderPane contentPane) {
         try {
             Text ratingText;
             if(myManager.getAverageRating(myGame.getTitle()) == 0) {
@@ -137,10 +151,8 @@ public class GameCard {
             BorderPane.setAlignment(ratingText, Pos.CENTER);
             contentPane.setBottom(ratingText);
         } catch (SQLException e) {
-            //todo: do something
+            //do nothing - in this case, no rating will display
         }
-        contentPane.getStyleClass().add(CONTENT_SELECTOR);
-        foreground.setCenter(contentPane);
     }
 
     private void addImage(BorderPane contentPane) {

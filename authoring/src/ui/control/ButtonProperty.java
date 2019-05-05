@@ -10,6 +10,7 @@ import ui.manager.ObjectManager;
 import java.lang.reflect.Constructor;
 
 /**
+ * Class that extends Button for use in a PropertiesPane in the ByteMe Authoring Environment UI.
  * @author Harry Ross
  */
 public class ButtonProperty extends Button implements ControlProperty {
@@ -20,7 +21,8 @@ public class ButtonProperty extends Button implements ControlProperty {
 
     @Override
     public void populateValue(Propertable prop, Enum type, String newVal, LabelManager labels) {
-        // Do nothing
+        // Do nothing, action does not apply to this implementor of ControlProperty as there is
+        // no value associated with a Button to set
     }
 
     /**

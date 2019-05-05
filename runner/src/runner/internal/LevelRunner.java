@@ -3,7 +3,15 @@ package runner.internal;
 import engine.external.Engine;
 import engine.external.Entity;
 import engine.external.Level;
+import engine.external.actions.NumericAction;
+import engine.external.actions.SoundAction;
+import engine.external.actions.ValueAction;
+import engine.external.component.ValueComponent;
+import engine.external.conditions.EqualToCondition;
+import engine.external.conditions.StringEqualToCondition;
+import engine.external.events.Event;
 import engine.external.component.LivesComponent;
+import engine.external.component.NameComponent;
 import engine.external.component.ScoreComponent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -51,12 +59,15 @@ public class LevelRunner {
     private int myLevelCount;
     private AudioManager myAudioManager;
     private Image myBackground;
-    private ImageView myImageViewBackgroud;
+    private ImageView myImageViewBackground;
     private Level myLevel;
     private String myUsername;
     private String myAuthorName;
     private String myGameName;
     private Game myGame;
+    private final String RUNNER_ID = "runnerStyle.css";
+    private final String GOOGLE_FONT_LINK = "https://fonts.googleapis.com/css?family=Gugi";
+    private final double HUD_HEIGHT = 40.0;
 
     /**
      * Constructor for level runner
@@ -79,6 +90,7 @@ public class LevelRunner {
         mySceneWidth = width;
         mySceneHeight = height;
         myCurrentKeys = new HashSet<>();
+        addMusic(level);
         myEngine = new Engine(level);
         myHUD = new HeadsUpDisplay(width);
         myEntities = myEngine.updateState(myCurrentKeys);
@@ -91,6 +103,22 @@ public class LevelRunner {
         startAnimation();
         addButtonsAndHUD();
         myStage.show();
+    }
+
+    private void addMusic(Level level) {
+        Entity soundEntity = new Entity();
+        soundEntity.addComponent(new NameComponent("###sound"));
+        soundEntity.addComponent(new ValueComponent(1.0));
+
+        Event makeSound = new Event();
+        makeSound.addConditions(new StringEqualToCondition(NameComponent.class, "###sound"));
+        makeSound.addConditions(new EqualToCondition(ValueComponent.class, 1.0));
+
+        if (level.getMusic() != null) makeSound.addActions(new SoundAction(level.getMusic()));
+        makeSound.addActions(new ValueAction(NumericAction.ModifyType.ABSOLUTE, 0.0));
+
+        level.addEntity(soundEntity);
+        level.addEvent(makeSound);
     }
 
     private void keepScoreAndLives(Double score, Double lives) {
@@ -112,9 +140,9 @@ public class LevelRunner {
     }
 
     private void addButtonsAndHUD() {
-        myHudBackground = new Rectangle(0,0,mySceneWidth, 40);
+        myHudBackground = new Rectangle(0,0, mySceneWidth, HUD_HEIGHT);
         myGroup.getChildren().add(myHudBackground);
-        myPauseButton = new PauseButton(this, myAnimation, myGroup, myStage, myAudioManager);
+        myPauseButton = new PauseButton(this, myAnimation, myGroup, myStage, myAudioManager, myHUD);
         myPause = myPauseButton.getPauseButton();
         myGroup.getChildren().add(myPause);
         canPause = true;
@@ -130,13 +158,12 @@ public class LevelRunner {
         myStage.setResizable(false);
         myGroup = new Group();
         myScene = new Scene(myGroup, mySceneWidth, mySceneHeight);
-        myImageViewBackgroud = new ImageView(myBackground);
-        myGroup.getChildren().addAll(myImageViewBackgroud);
-        //myScene.setFill(Color.BEIGE);
+        myImageViewBackground = new ImageView(myBackground);
+        myGroup.getChildren().addAll(myImageViewBackground);
         myScene.setOnKeyPressed(e -> handleKeyPress(e.getCode()));
         myScene.setOnKeyReleased(e -> handleKeyRelease(e.getCode()));
-        myScene.getStylesheets().add("runnerStyle.css");
-        myScene.getStylesheets().add("https://fonts.googleapis.com/css?family=Gugi");
+        myScene.getStylesheets().add(RUNNER_ID);
+        myScene.getStylesheets().add(GOOGLE_FONT_LINK);
         initializeSystems();
         updateGUI();
         myStage.setScene(myScene);
@@ -164,7 +191,7 @@ public class LevelRunner {
     }
 
     private void updateGUI(){
-        myGroup.getChildren().retainAll(myPause, myLabel, myHudBackground, myImageViewBackgroud);
+        myGroup.getChildren().retainAll(myPause, myLabel, myHudBackground, myImageViewBackground);
         for(RunnerSystem system : mySystems){
             system.update(myEntities);
         }

@@ -7,6 +7,8 @@ import ui.manager.LabelManager;
 import ui.manager.ObjectManager;
 
 /**
+ * Class that extends CheckBox for use in a PropertiesPane in the ByteMe Authoring Environment UI. This class
+ * detects changes in its own user input to propagate elsewhere.
  * @author Harry Ross
  */
 public class CheckBoxProperty extends CheckBox implements ControlProperty {

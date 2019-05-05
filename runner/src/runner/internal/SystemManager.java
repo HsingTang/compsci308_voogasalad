@@ -82,42 +82,27 @@ public class SystemManager {
         Collection<Class<? extends Component>> components2 = new ArrayList<>();
         components2.add(CameraComponent.class);
         mySystems.add(new ScrollingSystem(components2, myLevelRunner, myGroup, myScene));
-
         Collection<Class<? extends Component>> components3 = new ArrayList<>();
         components3.add(ImageViewComponent.class);
         mySystems.add(new ImageDisplaySystem(components3, myLevelRunner, myGroup));
-
         Collection<Class<? extends Component>> components4 = new ArrayList<>();
         components4.add(ScoreComponent.class);
         mySystems.add(new ScoringSystem(components4, myLevelRunner, myHUD));
-
         Collection<Class<? extends Component>> components5 = new ArrayList<>();
         components5.add(ScoreComponent.class);
         mySystems.add(new LivesSystem(components5, myLevelRunner, myHUD));
-
-//        Collection<Class<? extends Component>> components6 = new ArrayList<>();
-//        components6.add(NextLevelComponent.class);
-//        mySystems.add(new LevelSystem(components6, myLevelRunner, myHUD, myLevelCount));
-
         Collection<Class<? extends Component>> components7 = new ArrayList<>();
         components7.add(PlayAudioComponent.class);
         mySystems.add(new SoundSystem(components7, myLevelRunner, myAudioManger));
-
         Collection<Class<? extends Component>> components = new ArrayList<>();
         components.add(ProgressionComponent.class);
-        mySystems.add(new GameOverSystem(components, myLevelRunner,
-                myGroup, myStage, myAnimation, mySceneWidth,
-                mySceneHeight, myLevelChanger, myLevelCount));
-
+        mySystems.add(new GameOverSystem(components, myLevelRunner, myGroup, myStage, myAnimation, mySceneWidth, mySceneHeight, myLevelChanger, myLevelCount, myAudioManger));
         Collection<Class<? extends Component>> components9 = new ArrayList<>();
         components9.add(SaveComponent.class);
         mySystems.add(new SavingSystem(components9, myLevelRunner, myEngine, myLevel, myGame, myUsername, myGameName, myAuthorName));
-
         Collection<Class<? extends Component>> components8 = new ArrayList<>();
         components8.add(NextLevelComponent.class);
-        mySystems.add(new NextLevelSystem(components8, myLevelRunner,
-                myGroup, myStage, myAnimation, mySceneWidth,
-                mySceneHeight, myLevelChanger, myLevelCount, myHUD));
+        mySystems.add(new NextLevelSystem(components8, myLevelRunner, myGroup, myStage, myAnimation, mySceneWidth, mySceneHeight, myLevelChanger, myLevelCount, myHUD, myAudioManger));
     }
 
     /**

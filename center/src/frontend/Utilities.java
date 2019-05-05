@@ -11,25 +11,18 @@ package frontend;
 
 import data.external.DataManager;
 import data.external.GameCenterData;
-import frontend.games.GameCard;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import runner.external.GameRunner;
 import voogasalad.util.reflection.Reflection;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -55,6 +48,15 @@ public class Utilities {
         }
     }
 
+    /**
+     * @purpose load in an image to be displayed, then give it in the form of a BorderPane so that it can be easily used
+     * @param manager the DataManager loading in images
+     * @param imageLocation the title of the image to be loaded
+     * @param gameSize the size of the image to be loaded
+     * @param maxHeight the maximum height of the image
+     * @return the pane that holds the ImageView
+     * @throws FileNotFoundException if neither the searched for image nor the "no image found" image cannot be found
+     */
     public static Pane getImagePane(DataManager manager, String imageLocation, double gameSize, double maxHeight) throws FileNotFoundException {
         ImageView gameImage;
         try {
@@ -74,14 +76,26 @@ public class Utilities {
         return imagePane;
     }
 
+    /**
+     * @purpose launch the game runner. This is in utilities because it is used in many different places.
+     * @param gameName the name of which the game should be launched
+     * @param authorName the name of the author who created the game
+     * @param username the name of the current user logged in
+     */
     public static void launchGameRunner(String gameName, String authorName, String username) {
         try {
             new GameRunner(gameName, authorName, username);
         } catch (FileNotFoundException e) {
-            // todo: print error message
+            // do nothing, the GameRunner will not launch in this case.
         }
     }
 
+    /**
+     * @purpose create an HBox of buttons using reflection so that buttons don't have to be repeatedly created
+     * @param object an instance of the object that needs the buttons (for reflection)
+     * @param data the GameCenterData that the buttons are being made for
+     * @return an HBox that holds all of the desired buttons
+     */
     public static HBox makeButtons(Object object, GameCenterData data) {
         HBox buttonList = new HBox();
         buttonList.getStyleClass().add(BUTTON_LIST_SELECTOR);

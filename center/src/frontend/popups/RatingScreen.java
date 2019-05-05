@@ -1,3 +1,11 @@
+/**
+ * @Author Megan Phibbons
+ * @Date April 2019
+ * @Purpose Screen that allows users to rate a game.
+ * @Dependencies javafx, GamePane, Data.DataManager
+ * @Uses: This is called when the Rate Me button is pressed
+ */
+
 package frontend.popups;
 
 import data.external.DataManager;
@@ -25,6 +33,12 @@ public class RatingScreen extends Popup {
     private String myCurrentUser;
     private GameCenterData myData;
 
+    /**
+     * @purpose constructor that initializes the display and launches the popup
+     * @param data the GameCenterData that corresponds to the game being rated
+     * @param manager the DataManager that will eventually save the ratings
+     * @param user the current user logged into the Center
+     */
     public RatingScreen(GameCenterData data, DataManager manager, String user) {
         super(manager);
         myData = data;
@@ -33,6 +47,10 @@ public class RatingScreen extends Popup {
         display();
     }
 
+    /**
+     * @purpose allows for the reflection of the addRatingButton, which saves the GameRating to the DataManager
+     * @param data the data that should be saved
+     */
     public void addRatingButton(GameCenterData data) {
         try {
             myManager.addRating(new GameRating(myCurrentUser, data.getTitle(), data.getAuthorName(), myStars.getCurrentNumberOfStars(), myText.getText()));
@@ -43,6 +61,10 @@ public class RatingScreen extends Popup {
         ((Stage) myDisplay.getScene().getWindow()).close();
     }
 
+    /**
+     * @purpose allows for the reflection of the cancelButton, which closes the RatingScreen window
+     * @param data unused here, but necessary for reflection to work
+     */
     public void cancelButton(GameCenterData data) {
         ((Stage) myDisplay.getScene().getWindow()).close();
     }

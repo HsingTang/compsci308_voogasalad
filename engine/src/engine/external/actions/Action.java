@@ -2,7 +2,6 @@ package engine.external.actions;
 
 import engine.external.Entity;
 import engine.external.component.Component;
-import engine.external.component.NameComponent;
 
 import java.io.Serializable;
 import java.util.function.Consumer;
@@ -24,14 +23,19 @@ public abstract class Action<T> {
     protected Class<? extends Component<T>> myComponentClass;
 
 
+    /**
+     * Checks that the entity on which the action executes has the needed components.
+     * If the components are not found, they are added with a default value to the entity.
+     * This ensures that an entity created by the author in the game that does not have all needed components, but has associated actions, will still have these actions execute
+     *
+     * @param entity the entity to check for missing components, and if not found, to add the needed missing components to.
+     */
     public void checkComponents(Entity entity) {
         if (!entity.hasComponents(myComponentClass)) {
-            //System.out.println("Action adding missing component: " + myComponentClass);
             try {
                 entity.addComponent(myComponentClass.getConstructor().newInstance());
             } catch (Exception e) {
                 //Do nothing
-                //System.out.println("Could not instantiate new constructor");
             }
         }
     }

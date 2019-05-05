@@ -1,3 +1,11 @@
+/**
+ * @Author Megan Phibbons
+ * @Date April 2019
+ * @Purpose Displays individual ratings complete with user profile picture, number of stars, and their comment
+ * @Dependencies javafx, GameCenterData, and Data.DataManager
+ * @Uses: This class is called repeatedly by RatingList to avoid redundant code in RatingList
+ */
+
 package frontend.ratings;
 
 import data.external.DataManager;
@@ -20,6 +28,7 @@ public class SingleRating {
     private static final String PADDING_SELECTOR = "contentpadding";
     private static final String RATING_SELECTOR = "gamepageratingbody";
     private static final double WRAP_OFFSET = 100;
+    private static final int PADDING = 5;
     private GameRating myRating;
     private DataManager myManager;
     private GameCenterData myData;
@@ -29,6 +38,12 @@ public class SingleRating {
     private static final int IMAGE_WIDTH = 40;
     private static final String DEFAULT_IMAGE_LOCATION = "center/data/profile_information/images/default.png";
 
+    /**
+     * @purpose constructor that initializes all values and the display
+     * @param rating the rating information that needs to be displayed
+     * @param manager the DataManager that allows getting more information when necessary
+     * @param data the GameCenterData corresponding to the rated object
+     */
     public SingleRating(GameRating rating, DataManager manager, GameCenterData data) {
         myRating = rating;
         myManager = manager;
@@ -37,6 +52,10 @@ public class SingleRating {
         initializeDisplay();
     }
 
+    /**
+     * @purpose create a display that can be added into any other component of the project
+     * @return the pane corresponding to the current display
+     */
     public Pane getDisplay() {
         return myDisplay;
     }
@@ -78,7 +97,7 @@ public class SingleRating {
         Text username = new Text(myUsername);
         username.getStyleClass().add(BODY_SELECTOR);
         box.getChildren().add(username);
-        box.setSpacing(5);
+        box.setSpacing(PADDING);
         StarBox stars = new StarBox();
         stars.setStars(myRating.getNumberOfStars());
         box.getChildren().add(stars.getDisplay());

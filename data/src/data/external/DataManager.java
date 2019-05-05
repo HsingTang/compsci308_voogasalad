@@ -152,21 +152,16 @@ public class DataManager implements ExternalData {
         }
     }
 
+    /**
+     * Returns a GameCenterData object for the specified game
+     * @param gameName name of the game of the GameCenterData object to load
+     * @param authorName author name that wrote the game
+     * @return GameCenterData object for the specified game
+     * @throws SQLException if statement fails
+     */
     @Override
     public GameCenterData loadGameInfo(String gameName, String authorName) throws SQLException {
         return (GameCenterData) mySerializer.fromXML(myDatabaseEngine.loadGameInfo(gameName, authorName));
-    }
-
-    /**
-     * Loads the deserialized game data for gameName, needs to be cast and the cast should be checked
-     *
-     * @param gameName the game whose data is to be loaded
-     * @return deserialized game data that should be cast to a game object and the cast should be checked
-     */
-    @Override
-    @Deprecated
-    public Object loadGameData(String gameName) throws SQLException {
-        return loadGameData(gameName, DEFAULT_AUTHOR);
     }
 
     /**
@@ -230,20 +225,6 @@ public class DataManager implements ExternalData {
         return myDatabaseEngine.loadImage(imageName);
     }
 
-//    public List<String> getGameNames(){
-//        File file = new File(CREATED_GAMES_DIRECTORY);
-//        String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
-//        System.out.println(Arrays.toString(directories));
-//        if (directories != null) {
-//            return Arrays.asList(directories);
-//        }
-//        return new ArrayList<>();
-//    }
-
-//    private String transformGameNameToPath(String gameName, String filename) {
-//        return CREATED_GAMES_DIRECTORY + File.separator + gameName + File.separator + filename + XML_EXTENSION;
-//    }
-
     /**
      * Creates a user in the data base
      *
@@ -278,12 +259,11 @@ public class DataManager implements ExternalData {
      * Removes a user account
      *
      * @param userName user name of the user to remove
-     * @return true if the user is successfully removed
      * @throws SQLException if operation fails
      */
     @Override
-    public boolean removeUser(String userName) throws SQLException {
-        return myDatabaseEngine.removeUser(userName);
+    public void removeUser(String userName) throws SQLException {
+        myDatabaseEngine.removeUser(userName);
     }
 
     /**
@@ -291,12 +271,11 @@ public class DataManager implements ExternalData {
      *
      * @param gameName   name of the game to remove
      * @param authorName author of the game to remove
-     * @return true if game is successfully removed
      * @throws SQLException if operation fails
      */
     @Override
-    public boolean removeGame(String gameName, String authorName) throws SQLException {
-        return myDatabaseEngine.removeGame(gameName, authorName);
+    public void removeGame(String gameName, String authorName) throws SQLException {
+        myDatabaseEngine.removeGame(gameName, authorName);
     }
 
     /**
@@ -335,41 +314,89 @@ public class DataManager implements ExternalData {
         return mySerializer.fromXML(myDatabaseEngine.loadGameData(gameName, authorName));
     }
 
+    /**
+     * Loads all the images involved in a game specified by prefix
+     *
+     * @param prefix the gameName + the authorName
+     * @return a map of the image names to the input stream data
+     */
     @Override
     public Map<String, InputStream> loadAllImages(String prefix) throws SQLException {
         return myDatabaseEngine.loadAllImages(prefix);
     }
 
+    /**
+     * Loads all the images involved in a game specified by prefix
+     *
+     * @param prefix the gameName + the authorName
+     * @return a map of the sound names to the input stream data
+     */
     @Override
     public Map<String, InputStream> loadAllSounds(String prefix) throws SQLException {
         return myDatabaseEngine.loadAllSounds(prefix);
     }
 
+    /**
+     * Loads all the names of the games that a user has created
+     *
+     * @param userName user name of the user whose games are to be loaded
+     * @return list of the names of all the games of the user has created
+     * @throws SQLException if operation fails
+     */
     @Override
     public List<String> loadUserGameNames(String userName) throws SQLException {
         return myDatabaseEngine.loadAllGameNames(userName);
     }
 
+    /**
+     * Updates the specified user's password in the database
+     * @param userName user whose password should be updated
+     * @param newPassword the new password it should be updated to
+     * @return true if successful, false else
+     * @throws SQLException if statement fails
+     */
     @Override
     public boolean updatePassword(String userName, String newPassword) throws SQLException {
         return myDatabaseEngine.updatePassword(userName, newPassword);
     }
 
+    /**
+     * Adds a rating to the database for a specific game
+     * @param rating GameRating object that contains the rating information
+     * @throws SQLException if statement fails
+     */
     @Override
     public void addRating(GameRating rating) throws SQLException {
         myDatabaseEngine.addGameRating(rating);
     }
 
+    /**
+     * Returns the average rating for a game
+     * @param gameName name to retrieve the average rating for
+     * @return the average rating for the game gameName
+     * @throws SQLException if statement fails
+     */
     @Override
     public double getAverageRating(String gameName) throws SQLException {
         return myDatabaseEngine.getAverageRating(gameName);
     }
 
+    /**
+     * Returns a list of all the ratings for a specific game
+     * @param gameName name of the game to get the ratings for
+     * @return a list of all the ratings for a specific game
+     * @throws SQLException if statement fails
+     */
     @Override
     public List<GameRating> getAllRatings(String gameName) throws SQLException {
         return myDatabaseEngine.getAllRatings(gameName);
     }
 
+    /**
+     * Loads a list of all GameCenterData objects for the games authored by a specific user
+     * @param userName user whose games to retrieve
+     * @return a list of all GameCenterData objects for the games authored by a specific user
+     */
     @Override
     public List<GameCenterData> loadAllGameInfoObjects(String userName) {
         List<String> gameInfoObjectXMLs = new ArrayList<>();
@@ -381,10 +408,24 @@ public class DataManager implements ExternalData {
         return deserializeGameInfoObjects(gameInfoObjectXMLs);
     }
 
+    /**
+     * Method just used for testing purposes
+     * @param gameName name of the game to remove
+     * @param authorName author of the game to remove
+     * @throws SQLException if statement fails
+     */
     public void removeRating(String gameName, String authorName) throws SQLException {
         myDatabaseEngine.removeRating(gameName, authorName);
     }
 
+    /**
+     * Returns a map from the Timestamp to the deserialized checkpoint object
+     * @param userName of the person playing the game
+     * @param gameName of the game that's checkpoint should be loaded
+     * @param authorName author of the game that is being played
+     * @return a map from the Timestamp to the deserialized chekcpoint object
+     * @throws SQLException if statement fails
+     */
     @Override
     public Map<Timestamp, Object> getCheckpoints(String userName, String gameName, String authorName) throws SQLException {
         Map<Timestamp, Object> deserializedCheckpoints = new HashMap<>();
@@ -395,41 +436,79 @@ public class DataManager implements ExternalData {
         return deserializedCheckpoints;
     }
 
+    /**
+     * Saves a checkpoint to the database
+     * @param userName of the person playing the game
+     * @param gameName of the game that's checkpoint should be loaded
+     * @param authorName author of the game that is being played
+     * @param checkpoint the object that should be serialized as a checkpoint
+     * @throws SQLException if statement fails
+     */
     @Override
     public void saveCheckpoint(String userName, String gameName, String authorName, Object checkpoint) throws SQLException {
         myDatabaseEngine.saveCheckpoint(userName, gameName, authorName, mySerializer.toXML(checkpoint));
     }
 
+    /**
+     * Sets the profile pic for a user in the database
+     * @param userName user's username
+     * @param profilePic profile pic to set
+     * @throws SQLException if statement fails
+     */
     @Override
     public void setProfilePic(String userName, File profilePic) throws SQLException {
         myDatabaseEngine.setProfilePic(userName, profilePic);
     }
 
+    /**
+     * Sets the bio for a user in the database
+     * @param userName user's username
+     * @throws SQLException if statement fails
+     */
     @Override
     public void setBio(String userName, String bio) throws SQLException {
         myDatabaseEngine.setBio(userName, bio);
     }
 
+    /**
+     * Retrieves the profile picture of a user as an InputStream from the database
+     * @param userName user name of the user whose profile pic should be retrieved
+     * @return an InputStream of the profile picture for that user
+     * @throws SQLException if statement fails
+     */
     @Override
     public InputStream getProfilePic(String userName) throws SQLException {
         return myDatabaseEngine.getProfilePic(userName);
     }
 
+    /**
+     * Retrieves the bio of a user in the database
+     * @param userName user whose bio should be retrieved
+     * @return bio
+     * @throws SQLException if statement fails
+     */
     @Override
     public String getBio(String userName) throws SQLException {
         return myDatabaseEngine.getBio(userName);
     }
 
+    /**
+     * Just for testing purposes
+     * @param userName name of the user whose chekckpoint should be removed
+     * @param gameName game name
+     * @param authorName author name
+     * @throws SQLException if statement fails
+     */
     public void deleteCheckpoints(String userName, String gameName, String authorName) throws SQLException {
         myDatabaseEngine.deleteCheckpoint(userName, gameName, authorName);
     }
 
     /**
-     *
-     * @param userName
-     * @param gameName
-     * @param authorName
-     * @param score
+     * Saves the score of a game and a user to the database
+     * @param userName person playing the game
+     * @param gameName name of the game
+     * @param authorName author of the game
+     * @param score score for the game
      */
     @Override
     public void saveScore(String userName, String gameName, String authorName, Double score) {
@@ -437,19 +516,37 @@ public class DataManager implements ExternalData {
             myDatabaseEngine.saveScore(userName, gameName, authorName, score);
         } catch (SQLException e) {
             e.printStackTrace();
-            // do nothing, sometimes scores get lost
+            // do nothing, it is ok to drop a score or two
         }
     }
 
+    /**
+     * Loads all the scores for a given game
+     * @param gameName name of the game to get scores for
+     * @param authorName name of the author of the game
+     * @return list of the scores for a give game
+     */
     @Override
     public List<UserScore> loadScores(String gameName, String authorName) throws SQLException {
         return myDatabaseEngine.loadScores(gameName, authorName);
     }
 
+    /**
+     * Just used for testing purposes to remove score
+     * @param userName name of the user
+     * @param gameName game name
+     * @param authorName author name
+     * @throws SQLException if statement fails
+     */
     public void removeScores(String userName, String gameName, String authorName) throws SQLException {
         myDatabaseEngine.removeScores(userName, gameName, authorName);
     }
 
+    /**
+     * Deprecated version of the saveGameInfo method
+     * @param gameName name of the game
+     * @param gameInfo game center data to be saved
+     */
     @Deprecated
     public void saveGameInfo(String gameName, Object gameInfo){
         // do nothing, just included so it will compile just in case

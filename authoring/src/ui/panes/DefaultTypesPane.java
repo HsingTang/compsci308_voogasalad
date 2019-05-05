@@ -48,31 +48,36 @@ public class DefaultTypesPane extends VBox{
     private void populateEntityMenu(){
         List<String> tabNames = myDefaultTypesFactory.getCategories();
         for(String category : tabNames){
-            ArrayList<Pane> labelsList = new ArrayList<>();
-            List<String> specificTypes = myDefaultTypesFactory.getDefaultNames(category);
-            for(String name : specificTypes){
-                Label label = new Label(name);
-                VBox pane = createAndFormatVBox(name, label);
-                labelsList.add(pane);
-            }
-            myEntityMenu.addDropDown(category);
-            myEntityMenu.setDropDown(category, labelsList);
+            createAndFillDropDown(category);
         }
+    }
+
+    private void createAndFillDropDown(String category) {
+        ArrayList<Pane> labelsList = new ArrayList<>();
+        List<String> specificTypes = myDefaultTypesFactory.getDefaultNames(category);
+        for(String name : specificTypes){
+            Label label = new Label(name);
+            VBox pane = createAndFormatVBox(name, label);
+            labelsList.add(pane);
+        }
+        myEntityMenu.addDropDown(category);
+        myEntityMenu.setDropDown(category, labelsList);
     }
 
 
     private VBox createAndFormatVBox(String defaultName, Label label) {
         VBox pane = new VBox(label);
         pane.setFillWidth(true);
-        pane.setOnMouseClicked(mouseEvent -> {
-            CreateNewTypeWindow createNewTypeWindow = new CreateNewTypeWindow(defaultName, myObjectManager);
-            createNewTypeWindow.showAndWait();
-            Entity entity = createNewTypeWindow.getUserCreatedEntity();
-            if(entity != null){
-                myUserCreatedTypesPane.addUserDefinedType(entity, defaultName);
-            }
-        });
+        pane.setOnMouseClicked(mouseEvent -> handleMouseClick(defaultName));
         return pane;
     }
 
+    private void handleMouseClick(String defaultName) {
+        CreateNewTypeWindow createNewTypeWindow = new CreateNewTypeWindow(defaultName, myObjectManager);
+        createNewTypeWindow.showAndWait();
+        Entity entity = createNewTypeWindow.getUserCreatedEntity();
+        if(entity != null){
+            myUserCreatedTypesPane.addUserDefinedType(entity, defaultName);
+        }
+    }
 }

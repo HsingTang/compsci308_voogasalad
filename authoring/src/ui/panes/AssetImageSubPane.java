@@ -19,6 +19,7 @@ public class AssetImageSubPane extends GridPane {
     private int myImageSize;
     private static final int MAX_NUM_CHARS = 6;
     private static final int SPACING_SCALE = 10;
+    private static final String STYLE_SHEET = "asset-manager-labels";
     /**
      * Creates a SubPane that consists of an ImageView and
      * then text acting as a title below it
@@ -28,7 +29,7 @@ public class AssetImageSubPane extends GridPane {
     public AssetImageSubPane(String title, ImageView image){
         myImageSize = IMAGE_SIZE - IMAGE_OFFSET;
         Label text = new Label(cutText(title));
-        text.getStyleClass().add("asset-manager-labels");
+        text.getStyleClass().add(STYLE_SHEET);
 
         this.add(image, 0, 0);
         this.add(text, 0, 1);

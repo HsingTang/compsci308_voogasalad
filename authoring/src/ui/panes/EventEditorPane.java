@@ -21,7 +21,15 @@ import ui.manager.RefreshEvents;
 import voogasalad.util.reflection.Reflection;
 import java.util.List;
 import java.util.ResourceBundle;
-
+/**
+ * If a user wishes to modify an event by adding or removing conditions and actions, this class manages that display
+ * between two scroll-panes. This class uses methods from @EventFactory to generate bound controls that
+ * prompt the user in a similar manner to when they create new events. The methods here use resource files and
+ * events from @EventFactory so none of them have to be specific to a condition or an action
+ * @see EventFactory
+ * @see RefreshEvents
+ * @author Anna Darwish
+ */
 class EventEditorPane extends Stage {
 
     private static final String SAVE = "Save";
@@ -50,15 +58,7 @@ class EventEditorPane extends Stage {
     private StringProperty triggerValue = new SimpleStringProperty();  //value bound to trigger the actions associated with this event
 
     private RefreshEvents myEventRefresher;
-    /**
-     * If a user wishes to modify an event by adding or removing conditions and actions, this class manages that display
-     * between two scroll-panes. This class uses methods from @EventFactory to generate bound controls that
-     * prompt the user in a similar manner to when they create new events. The methods here use resource files and
-     * events from @EventFactory so none of them have to be specific to a condition or an action
-     * @see EventFactory
-     * @see RefreshEvents
-     * @author Anna Darwish
-     */
+
     EventEditorPane(Event unfinishedEvent, RefreshEvents eventDisplayRefresher){
         VBox rootOfScene = new VBox();
 

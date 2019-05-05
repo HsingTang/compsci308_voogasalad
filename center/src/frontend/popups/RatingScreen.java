@@ -55,8 +55,7 @@ public class RatingScreen extends Popup {
         try {
             myManager.addRating(new GameRating(myCurrentUser, data.getTitle(), data.getAuthorName(), myStars.getCurrentNumberOfStars(), myText.getText()));
         } catch (SQLException e) {
-            // todo: handle this
-            System.out.println("Adding rating was unsuccessful");
+            // do nothing, this should never get to this point but if it does then the rating will just not be added.
         }
         ((Stage) myDisplay.getScene().getWindow()).close();
     }

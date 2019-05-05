@@ -53,14 +53,6 @@ public class UserProfileDisplay extends Popup {
         display();
     }
 
-    /**
-     * @purpose close out of the window when finished
-     * @param data unused, but necesssary for reflection to work
-     */
-    public void closeButton(GameCenterData data) {
-        ((Stage) myDisplay.getScene().getWindow()).close();
-    }
-
     @Override
     protected void addHeader() {
         StackPane header = new StackPane();
@@ -113,7 +105,7 @@ public class UserProfileDisplay extends Popup {
 
     @Override
     protected void addButtons() {
-        // intentionally doing nothing here because this screen doesn't  need buttons
+        // this is intentionally left blank because no buttons are needed here.
     }
 
     @Override

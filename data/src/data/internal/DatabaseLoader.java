@@ -56,7 +56,7 @@ public class DatabaseLoader {
         try {
             dm.setBio(userName, bio);
         } catch (SQLException e) {
-            e.printStackTrace();
+            // do nothing, let user try again later, decided by team
         }
     }
 
@@ -65,7 +65,7 @@ public class DatabaseLoader {
         try {
             dm.setProfilePic(userName, new File(path));
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 

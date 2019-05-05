@@ -88,7 +88,7 @@ public class UserQuerier extends Querier {
             String storedHash = retrieveStoredHash(userName);
             return hashedPassword.equals(storedHash);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            // do nothing, should never fail
         } catch (SQLException e) {
             System.out.println(COULD_NOT_VALIDATE_USER + e.getMessage());
         }

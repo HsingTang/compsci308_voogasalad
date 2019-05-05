@@ -515,8 +515,7 @@ public class DataManager implements ExternalData {
         try {
             myDatabaseEngine.saveScore(userName, gameName, authorName, score);
         } catch (SQLException e) {
-            e.printStackTrace();
-            // do nothing, it is ok to drop a score or two
+            // do nothing, agreed upon by team
         }
     }
 

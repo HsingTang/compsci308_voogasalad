@@ -131,7 +131,6 @@ public class AssetQuerier extends Querier {
             }
         } catch (SQLException e) {
             System.out.println(COULD_NOT_LOAD_ASSET + e.getMessage());
-            e.printStackTrace();
         }
         return null;
     }

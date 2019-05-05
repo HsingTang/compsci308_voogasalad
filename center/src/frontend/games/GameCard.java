@@ -179,7 +179,7 @@ public class GameCard {
     }
 
     private void openUserPage(String author) {
-        new UserProfileDisplay(myGame, myManager, myCurrentUser, author);
+        new UserProfileDisplay(myManager, myCurrentUser, author);
     }
 
 }

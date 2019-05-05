@@ -14,7 +14,6 @@ import javafx.scene.image.ImageView;
 import java.io.FileInputStream;
 
 public class Star {
-    private boolean mySelected;
     private static final String OFF_LOCATION = "center/data/white-star.jpg";
     private static final String ON_LOCATION = "center/data/gold-star.jpg";
     private static final int STAR_WIDTH = 25;
@@ -44,7 +43,6 @@ public class Star {
      * @param selected the boolean of whether or not the star should be selected
      */
     public void setSelected(boolean selected) {
-        mySelected = selected;
         try {
             if(selected) {
                 myImageView = new ImageView(new Image(new FileInputStream(ON_LOCATION)));

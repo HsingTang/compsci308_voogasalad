@@ -2,14 +2,13 @@
  * @Author Megan Phibbons
  * @Date April 2019
  * @Purpose Displays individual ratings complete with user profile picture, number of stars, and their comment
- * @Dependencies javafx, GameCenterData, and Data.DataManager
+ * @Dependencies javafx, and Data.DataManager
  * @Uses: This class is called repeatedly by RatingList to avoid redundant code in RatingList
  */
 
 package frontend.ratings;
 
 import data.external.DataManager;
-import data.external.GameCenterData;
 import data.external.GameRating;
 import frontend.popups.GamePage;
 import javafx.geometry.Pos;
@@ -31,7 +30,6 @@ public class SingleRating {
     private static final int PADDING = 5;
     private GameRating myRating;
     private DataManager myManager;
-    private GameCenterData myData;
     private BorderPane myDisplay;
     private String myUsername;
 
@@ -42,12 +40,10 @@ public class SingleRating {
      * @purpose constructor that initializes all values and the display
      * @param rating the rating information that needs to be displayed
      * @param manager the DataManager that allows getting more information when necessary
-     * @param data the GameCenterData corresponding to the rated object
      */
-    public SingleRating(GameRating rating, DataManager manager, GameCenterData data) {
+    public SingleRating(GameRating rating, DataManager manager) {
         myRating = rating;
         myManager = manager;
-        myData = data;
         myUsername = rating.getUsername();
         initializeDisplay();
     }

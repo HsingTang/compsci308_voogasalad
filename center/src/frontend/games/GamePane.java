@@ -32,6 +32,7 @@ public class GamePane {
     private static final String SUBTITLE_SELECTOR = "subtitlefont";
     private static final String REFRESH_BUTTON_PATH = "center/data/refresh.png";
     private static final String SPACING_SELECTOR = "refreshspacing";
+    private static final String DEFAULT_LANGAUGE = "languages/English";
     private BorderPane myDisplay;
     private ResourceBundle myResources;
     private String myCurrentUser;
@@ -40,7 +41,7 @@ public class GamePane {
      * @purpose initialize the languages resource bundle and set up the game display.
      */
     public GamePane(String username) {
-        myResources = ResourceBundle.getBundle("languages/English");
+        myResources = ResourceBundle.getBundle(DEFAULT_LANGAUGE);
         myCurrentUser = username;
         myDisplay = new BorderPane();
         initializeDisplay();

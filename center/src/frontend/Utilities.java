@@ -110,4 +110,8 @@ public class Utilities {
         return buttonList;
     }
 
+    private Utilities() {
+        //intentionally empty, this is just to remove the implicit public constructor
+    }
+
 }

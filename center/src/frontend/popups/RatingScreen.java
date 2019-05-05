@@ -15,7 +15,7 @@ import frontend.Utilities;
 import frontend.ratings.StarBox;
 import javafx.geometry.Pos;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 

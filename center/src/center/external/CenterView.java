@@ -30,6 +30,15 @@ public class CenterView extends Application {
     private static final String DEFAULT_USER = "Megan";
 
     /**
+     * @purpose constructor of the CenterView so that it can be called elsewhere. This also initializes the scene to display.
+     * @param username The current user logged into the Launcher
+     */
+    public CenterView(String username) {
+        myCurrentUser = username;
+        initializeScene();
+    }
+
+    /**
      * @purpose method required for everything that extends Application, this starts up the application and shows the UI
      * on-screen
      * @param stage the stage given to start that holds the display
@@ -47,19 +56,6 @@ public class CenterView extends Application {
      */
     public static void main(String[] args){
         launch(args);
-    }
-
-    /**
-     * @purpose constructor for the CenterView class. This calls on a helper method that sets up the main scene.
-     */
-    @Deprecated
-    public CenterView() {
-        //initializeScene();
-    }
-
-    public CenterView(String username) {
-        myCurrentUser = username;
-        initializeScene();
     }
 
     /**

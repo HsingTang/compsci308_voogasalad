@@ -28,7 +28,6 @@ import java.sql.SQLException;
 public class UserProfileDisplay extends Popup {
     private String myUsername;
     private String myCurrentUser;
-    private GameCenterData myData;
 
     private static final double USER_WIDTH = 1100;
     private static final double USER_HEIGHT = 650;
@@ -42,14 +41,12 @@ public class UserProfileDisplay extends Popup {
 
     /**
      * @purpose constructor that fills all instance fields, initializes, and displays the popup
-     * @param data the GameCenterData corresponding to the card clicked
      * @param manager the datamanager to read in information from the database
      * @param currentUser the user currently logged into the GameCenter
      * @param username the username that is being viewed
      */
-    public UserProfileDisplay(GameCenterData data, DataManager manager, String currentUser, String username) {
+    public UserProfileDisplay(DataManager manager, String currentUser, String username) {
         super(manager);
-        myData = data;
         myUsername = username;
         myCurrentUser = currentUser;
         initializeDisplay();

@@ -34,6 +34,7 @@ public class HeaderBar {
     private static final String SUBTITLE_SELECTOR = "subtitlefont";
     private static final String DEFAULT_IMAGE_LOCATION = "center/data/profile_information/images/default.png";
     private static final int FIT_WIDTH = 50;
+    private static final int PADDING = 20;
 
 
     /**
@@ -70,7 +71,7 @@ public class HeaderBar {
 
     private void addSettingsPane() {
         BorderPane settingsPane = new BorderPane();
-        settingsPane.setPadding(new Insets(20));
+        settingsPane.setPadding(new Insets(PADDING));
         try {
             DataManager temporaryManager = new DataManager(); // todo: pass this in
             ImageView settings;

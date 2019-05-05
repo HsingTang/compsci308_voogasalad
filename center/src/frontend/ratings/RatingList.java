@@ -54,7 +54,7 @@ public class RatingList {
         myDisplay = new BorderPane();
         VBox allRatings = new VBox();
         for(GameRating rating : myRatings) {
-            SingleRating ratingDisplay = new SingleRating(rating, myManager, myData);
+            SingleRating ratingDisplay = new SingleRating(rating, myManager);
             allRatings.getChildren().add(ratingDisplay.getDisplay());
         }
         allRatings.setSpacing(PADDING);

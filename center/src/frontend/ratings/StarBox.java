@@ -54,11 +54,7 @@ public class StarBox {
     public void setStars(int index) {
         HBox newStars = new HBox();
         for(Star star : myStars) {
-            if(star.getIndex() < index) {
-                star.setSelected(true);
-            } else {
-                star.setSelected(false);
-            }
+            star.setSelected(star.getIndex() < index);
             setUpStar(star, newStars);
         }
         myCurrentNumberOfStars = index;

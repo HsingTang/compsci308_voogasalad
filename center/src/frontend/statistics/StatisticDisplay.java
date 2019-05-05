@@ -14,7 +14,6 @@ import data.external.UserScore;
 import frontend.Utilities;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;

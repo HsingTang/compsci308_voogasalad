@@ -7,6 +7,9 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Allows game center to easily upload new profile pictures for users and have them save to the database
+ */
 public class ImageChooser {
 
     private static final String PNG = "png";
@@ -18,12 +21,19 @@ public class ImageChooser {
     private String myUserName;
     private DataManager myDataManager;
 
+    /**
+     * Image chooser constructor
+     * @param userName name of the user, so image gets saved to the correct user
+     */
     public ImageChooser(String userName){
         myDataManager = new DataManager();
         myUserName = userName;
     }
 
-    public String uploadImage() {
+    /**
+     * Creates pop up that allows user to upload profile picture and then saves the profile pic to the database
+     */
+    public void uploadImage() {
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
         addExtensionsFilter(fileChooser);
@@ -34,11 +44,9 @@ public class ImageChooser {
                 System.out.println(selectedFile);
                 myDataManager.setProfilePic(myUserName, selectedFile);
             } catch (SQLException e) {
-                e.printStackTrace(); // Just for testing
+                // Do nothing if the upload fails, agreed upon handling with game center, let user try again later
             }
-            return savedName;
         }
-        return null;
     }
 
     private void addExtensionsFilter(FileChooser chooser) {

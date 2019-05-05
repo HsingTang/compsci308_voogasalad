@@ -239,7 +239,7 @@ public class DataTest {
             myDataManager.addRating(myGameRating2);
             assertEquals(4.5, myDataManager.getAverageRating(myFakeGameName1), 1e-8);
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // just for debugging purposes in tests
             fail();
         }
     }

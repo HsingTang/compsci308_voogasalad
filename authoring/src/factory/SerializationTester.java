@@ -72,12 +72,6 @@ public class SerializationTester {
     public void testSavingImages(){
         DataManager dm = new DataManager();
         dm.saveImage("flappy_bird", new File("runner/resources/flappy_bird.png"));
-//        DatabaseEngine de = new DatabaseEngine();
-//        try {
-//            de.printTable("Images");
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
     }
 
     public void testLoadingImages() throws IOException {

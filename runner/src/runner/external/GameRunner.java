@@ -52,7 +52,7 @@ public class GameRunner {
         try {
             return (Game) myDataManager.loadGameData(gameName, authorName);
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             return null;
         }
     }

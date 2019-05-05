@@ -88,7 +88,7 @@ public class UserQuerier extends Querier {
             String storedHash = retrieveStoredHash(userName);
             return hashedPassword.equals(storedHash);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            // do nothing, should never fail
         } catch (SQLException e) {
             System.out.println(COULD_NOT_VALIDATE_USER + e.getMessage());
         }
@@ -114,6 +114,13 @@ public class UserQuerier extends Querier {
         return updates == 1;
     }
 
+    /**
+     * Updates the specified user's password in the database
+     * @param userName user whose password should be updated
+     * @param password the new password it should be updated to
+     * @return true if successful, false else
+     * @throws SQLException if statement fails
+     */
     public boolean updatePassword(String userName, String password) throws SQLException {
         if (removeUser(userName)) {
             return createUser(userName, password);
@@ -156,6 +163,12 @@ public class UserQuerier extends Querier {
         return affectedRows > 0;
     }
 
+    /**
+     * Sets the profile pic for a user in the database
+     * @param userName user's username
+     * @param profilePic profile pic to set
+     * @throws SQLException if statement fails
+     */
     public void setProfilePic(String userName, File profilePic) throws SQLException {
         System.out.println("Called set profile pic");
         try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(profilePic))) {
@@ -168,12 +181,23 @@ public class UserQuerier extends Querier {
         }
     }
 
+    /**
+     * Sets the bio for a user in the database
+     * @param userName user's username
+     * @throws SQLException if statement fails
+     */
     public void setBio(String userName, String bio) throws SQLException {
         mySetUserBioStatement.setString(1, bio);
         mySetUserBioStatement.setString(2, userName);
         mySetUserBioStatement.execute();
     }
 
+    /**
+     * Retrieves the profile picture of a user as an InputStream from the database
+     * @param userName user name of the user whose profile pic should be retrieved
+     * @return an InputStream of the profile picture for that user
+     * @throws SQLException if statement fails
+     */
     public InputStream getProfilePic(String userName) throws SQLException {
         myGetUserProfilePicStatement.setString(1, userName);
         ResultSet resultSet = myGetUserProfilePicStatement.executeQuery();
@@ -184,6 +208,12 @@ public class UserQuerier extends Querier {
         }
     }
 
+    /**
+     * Retrieves the bio of a user in the database
+     * @param userName user whose bio should be retrieved
+     * @return bio
+     * @throws SQLException if statement fails
+     */
     public String getBio(String userName) throws SQLException {
         myGetUserBioStatement.setString(1, userName);
         ResultSet resultSet = myGetUserBioStatement.executeQuery();

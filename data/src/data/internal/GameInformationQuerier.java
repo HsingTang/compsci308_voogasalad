@@ -19,9 +19,7 @@ public class GameInformationQuerier extends Querier {
     private static final String GAME_INFO_COLUMN = "GameInfo";
     private static final String AUTHOR_NAME_COLUMN = "AuthorName";
 
-    private static final String SELECT_TWO_CONDITIONS_NOT_NULL = "SELECT %s FROM %s WHERE %s = ? AND %s = ? AND %s IS" +
-            " NOT NULL;";
-
+    private static final String SELECT_TWO_CONDITIONS_NOT_NULL = "SELECT %s FROM %s WHERE %s = ? AND %s = ? AND %s IS" + " NOT NULL;";
     private static final String GAME_DATA_INSERT = String.format(INSERT_THREE_VALUES, GAME_INFORMATION_TABLE_NAME, GAME_NAME_COLUMN, AUTHOR_NAME_COLUMN, GAME_DATA_COLUMN);
     private static final String GAME_INFO_INSERT = String.format(INSERT_THREE_VALUES, GAME_INFORMATION_TABLE_NAME, GAME_NAME_COLUMN, AUTHOR_NAME_COLUMN, GAME_INFO_COLUMN);
     private static final String UPDATE_GAME_DATA = String.format(UPDATE_ONE_COLUMN, GAME_DATA_INSERT, ON_DUPLICATE_UPDATE, GAME_DATA_COLUMN);
@@ -64,11 +62,6 @@ public class GameInformationQuerier extends Querier {
                 myRemoveGameStatement, myLoadGameNamesStatement);
     }
 
-
-//    public void updateGameEntryInfo(String gameName, String rawXML) throws SQLException{
-//        updateGameEntryInfo(gameName, DEFAULT_AUTHOR, rawXML);
-//    }
-
     /**
      * Deserializes the xml file stored at created_games/gameName/game_data.xml into an object
      *
@@ -79,6 +72,12 @@ public class GameInformationQuerier extends Querier {
         return loadXML(gameName, authorName, myLoadGameDataStatement, GAME_DATA_COLUMN);
     }
 
+    /**
+     * Loads the GameCenterData object associated with the specific gameName and authorName of the game
+     * @param gameName name of the game of the GameCenterData object to load
+     * @param authorName author name that wrote the game
+     * @return rawXML of a serialized Game Center Data object for the game specified by gameName and authorName
+     */
     public String loadGameInformation(String gameName, String authorName) throws SQLException{
         return loadXML(gameName, authorName, myLoadGameInformationStatement, GAME_INFO_COLUMN);
     }
@@ -88,7 +87,7 @@ public class GameInformationQuerier extends Querier {
      *
      * @return raw xml of game info objects
      */
-    public List<String> loadAllGameInformationXMLs() throws SQLException {
+    public List<String> loadAllSerializedGameInformationObjects() throws SQLException {
         List<String> gameInformations = new ArrayList<>();
         List<GamePrimaryKey> games = getGameNames();
         for (GamePrimaryKey game : games) {
@@ -169,6 +168,12 @@ public class GameInformationQuerier extends Querier {
         return myRemoveGameStatement.executeUpdate() > 0;
     }
 
+    /**
+     * Loads all the game names that a user has authored
+     * @param userName user in question
+     * @return list of all the names of the games that user has authored
+     * @throws SQLException if statement fails
+     */
     public List<String> loadAllGameNames(String userName) throws SQLException {
         List<String> gameNames = new ArrayList<>();
         myLoadGameNamesStatement.setString(1, userName);
@@ -179,7 +184,11 @@ public class GameInformationQuerier extends Querier {
         return gameNames;
     }
 
-    public List<String> loadAllGameInformationXMLs(String userName) throws SQLException {
+    /**
+     * Loads the raw xml for all the game info objects from the database to pass to the serializer
+     * @return raw xml of game info objects
+     */
+    public List<String> loadAllSerializedGameInformationObjects(String userName) throws SQLException {
         List<String> serializedGameInfoObjects = new ArrayList<>();
         List<GamePrimaryKey> games = getGameNames();
         for (GamePrimaryKey game : games) {

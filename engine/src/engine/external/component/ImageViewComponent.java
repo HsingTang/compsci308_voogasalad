@@ -4,7 +4,7 @@ import javafx.scene.image.ImageView;
 
 /**
  * @author Hsingchih Tang
- * For storing the visualization for Entities
+ * Stores the ImageView for an Entity if it also has a SpriteComponent
  * Not serializable; needs to be created in Engine
  */
 public class ImageViewComponent extends Component<ImageView> {

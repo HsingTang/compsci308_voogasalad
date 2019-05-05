@@ -8,6 +8,9 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * A Querier that is used to manage saving and loading game statistics such as high scores
+ */
 public class StatisticsQuerier extends Querier {
 
     private static final String STATISTICS_TABLE_NAME = "GameStatistics";
@@ -37,6 +40,13 @@ public class StatisticsQuerier extends Querier {
         myPreparedStatements = List.of(mySaveScoreStatement, myLoadScoresStatement);
     }
 
+    /**
+     * Saves the score of a game and a user to the database
+     * @param userName person playing the game
+     * @param gameName name of the game
+     * @param authorName author of the game
+     * @param score score for the game
+     */
     public void saveScore(String userName, String gameName, String authorName, Double score) throws SQLException {
         mySaveScoreStatement.setString(1, userName);
         mySaveScoreStatement.setString(2, gameName);
@@ -45,7 +55,12 @@ public class StatisticsQuerier extends Querier {
         mySaveScoreStatement.execute();
     }
 
-
+    /**
+     * Loads all the scores for a given game
+     * @param gameName name of the game to get scores for
+     * @param authorName name of the author of the game
+     * @return list of the scores for a give game
+     */
     public List<UserScore> loadScores(String gameName, String authorName) throws SQLException {
         List<UserScore> usersScoresList = new LinkedList<>();
         myLoadScoresStatement.setString(1, gameName);
@@ -57,6 +72,13 @@ public class StatisticsQuerier extends Querier {
         return usersScoresList;
     }
 
+    /**
+     * Removes high scores for a user from the database, used for testing purposes
+     * @param userName name of the user
+     * @param gameName name of the game
+     * @param authorName name of the author
+     * @throws SQLException if statement fails
+     */
     public void removeScores(String userName, String gameName, String authorName) throws SQLException {
         myRemoveScoresStatement.setString(1, userName);
         myRemoveScoresStatement.setString(2, gameName);

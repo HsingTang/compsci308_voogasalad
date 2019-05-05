@@ -10,6 +10,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A Querier that is used to manage saving and loading ratings
+ */
 public class RatingsQuerier extends Querier {
 
     private static final String GAME_RATINGS_TABLE_NAME = "GameRatings";
@@ -47,6 +50,11 @@ public class RatingsQuerier extends Querier {
         myPreparedStatements = List.of(myAverageRatingsStatement, myAllRatingsStatement, myUpdateRatingStatement, myRemoveRatingsStatement);
     }
 
+    /**
+     * Adds a rating to the database for a specific game
+     * @param rating GameRating object that contains the rating information
+     * @throws SQLException if statement fails
+     */
     public void addGameRating(GameRating rating) throws SQLException {
         myUpdateRatingStatement.setString(1, rating.getGameName());
         myUpdateRatingStatement.setString(2, rating.getAuthorName());
@@ -58,6 +66,12 @@ public class RatingsQuerier extends Querier {
         myUpdateRatingStatement.execute();
     }
 
+    /**
+     * Returns a list of all the ratings for a specific game
+     * @param gameName name of the game to get the ratings for
+     * @return a list of all the ratings for a specific game
+     * @throws SQLException if statement fails
+     */
     public List<GameRating> getAllRatings(String gameName) throws SQLException {
         List<GameRating> gameRatings = new LinkedList<>();
         myAllRatingsStatement.setString(1, gameName);
@@ -70,6 +84,12 @@ public class RatingsQuerier extends Querier {
         return gameRatings;
     }
 
+    /**
+     * Returns the average rating for a game
+     * @param gameName name to retrieve the average rating for
+     * @return the average rating for the game gameName
+     * @throws SQLException if statement fails
+     */
     public double getAverageRating(String gameName) throws SQLException {
         myAverageRatingsStatement.setString(1, gameName);
         ResultSet resultSet = myAverageRatingsStatement.executeQuery();
@@ -79,6 +99,12 @@ public class RatingsQuerier extends Querier {
         return -1.0D;
     }
 
+    /**
+     * Used for testing purposes
+     * @param gameName name of the game
+     * @param authorName name of the author
+     * @throws SQLException if statement fails
+     */
     public void removeAllGameRatings(String gameName, String authorName) throws SQLException {
         myRemoveRatingsStatement.setString(1, gameName);
         myRemoveRatingsStatement.setString(2, authorName);

@@ -1,22 +1,14 @@
 package ui.manager;
 
 import events.EventType;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ui.*;
 import ui.panes.CurrentEventsPane;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The EventManager handles displaying options for the user to create a new event according to the particular AuthoringEntity
@@ -30,11 +22,12 @@ public class EventManager extends Stage {
     private String myEntityName;
     private RefreshEvents myRefresher;
     private static final String TITLE = "Conditions \t\t\t\t Actions \t\t\t\t Modify Event";
-    private static final String ADD_EVENT = "+ Event";
+
     private static final String STYLE = "default.css";
     private static final String STYLE_CLASS = "event-manager";
     private static final String STYLE_VBOX = "event-manager-vbox";
-    private static final String BIGBUTTON = "BigButton";
+    private static final String INTERACTIVE = "Interactive";
+    private static final String CONDITIONAL = "Conditional";
     private LabelManager myLabelManager;
 
     public EventManager(Propertable prop, ObjectManager manager) { // Loads common Events for object instance based on type label
@@ -75,48 +68,23 @@ public class EventManager extends Stage {
     private VBox createEventsToolPane(){
         VBox myTools = new VBox();
         ChoiceBox<String> myEventsPopUp = new ChoiceBox<>(FXCollections.observableArrayList(EventType.allDisplayNames));
-        myEventsPopUp.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if (myEventsPopUp.getSelectionModel().getSelectedIndex() > -1) {
-                    AuthoringEvent myAuthoringEvent = makeAuthoringEvent(myEventsPopUp.getValue().replaceAll(" ", ""), myEntityName);
-                    myAuthoringEvent.addSaveComponents(myRefresher, myEntity.getEvents());
-                    myAuthoringEvent.render();
-                }
+        myEventsPopUp.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
+            if (myEventsPopUp.getSelectionModel().getSelectedIndex() > -1) {
+                AuthoringEvent myAuthoringEvent = makeAuthoringEvent(myEventsPopUp.getValue().replaceAll(" ", ""), myEntityName);
+                myAuthoringEvent.addSaveComponents(myRefresher, myEntity.getEvents());
+                myAuthoringEvent.render();
             }
         });
-//        myEventsPopUp.setOnAction(actionEvent -> {
-//            AuthoringEvent myAuthoringEvent = makeAuthoringEvent(myEventsPopUp.getValue().replaceAll(" ",""),myEntityName);
-//            myAuthoringEvent.addSaveComponents(myRefresher,myEntity.getEvents());
-//            myAuthoringEvent.render();
-//        });
-
-//        myEventsPopUp.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent mouseEvent) {
-//                if (myEventsPopUp.getSelectionModel().getSelectedIndex() > -1) {
-//                    AuthoringEvent myAuthoringEvent = makeAuthoringEvent(myEventsPopUp.getValue().replaceAll(" ", ""), myEntityName);
-//                    myAuthoringEvent.addSaveComponents(myRefresher, myEntity.getEvents());
-//                    myAuthoringEvent.render();
-//                }
-//            }
-//        });
-////        myEventsPopUp.getStylesheets().add(STYLE);
-//        myEventsPopUp.getStyleClass().add(BIGBUTTON);
         myTools.getChildren().add(myEventsPopUp);
         return myTools;
     }
 
 
-//    private void refreshEventListing(){
-//        this.setScene(createPane());
-//    }
-
     private AuthoringEvent makeAuthoringEvent(String eventName, String entityName){
-        if (EventType.valueOf(eventName).isInteractive().equals("Interactive")){
+        if (EventType.valueOf(eventName).isInteractive().equals(INTERACTIVE)){
             return new AuthoringInteractiveEvent(myLabelManager,eventName,entityName);
         }
-        else if (EventType.valueOf(eventName).isInteractive().equals("Conditional"))  {
+        else if (EventType.valueOf(eventName).isInteractive().equals(CONDITIONAL))  {
             return new AuthoringConditionalEvent(entityName);
         }
         else {

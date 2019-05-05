@@ -1,7 +1,7 @@
 package engine.external.component;
 
 /**
- * @Author Hsingchih Tang
+ * @author Hsingchih Tang
  * @author Lucas Liu
  * Stores a boolean variable indicating whether the audio file carried by
  * the same Entity via AudioComponent should be played

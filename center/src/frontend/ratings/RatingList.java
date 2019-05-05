@@ -8,8 +8,8 @@
 
 package frontend.ratings;
 
-import data.external.DataManager;
 import data.external.GameCenterData;
+import data.external.GameDataManager;
 import data.external.GameRating;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -23,7 +23,7 @@ public class RatingList {
     private GameCenterData myData;
     private BorderPane myDisplay;
     private List<GameRating> myRatings;
-    private DataManager myManager;
+    private GameDataManager myManager;
     private static final int PADDING = 10;
 
     /**
@@ -31,7 +31,7 @@ public class RatingList {
      * @param data the GameCenterData that the ratings are for
      * @param manager the DataManager that allows us to get existing ratings
      */
-    public RatingList(GameCenterData data, DataManager manager) {
+    public RatingList(GameCenterData data, GameDataManager manager) {
         myData = data;
         myManager = manager;
         try {

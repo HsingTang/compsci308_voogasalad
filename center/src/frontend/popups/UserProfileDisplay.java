@@ -8,8 +8,8 @@
 
 package frontend.popups;
 
-import data.external.DataManager;
 import data.external.GameCenterData;
+import data.external.UserDataManager;
 import frontend.Utilities;
 import frontend.games.GameList;
 import javafx.geometry.Pos;
@@ -29,6 +29,7 @@ public class UserProfileDisplay extends Popup {
     private String myUsername;
     private String myCurrentUser;
     private GameCenterData myData;
+    private UserDataManager myUserDataManager;
 
     private static final double USER_WIDTH = 1100;
     private static final double USER_HEIGHT = 650;
@@ -47,8 +48,9 @@ public class UserProfileDisplay extends Popup {
      * @param currentUser the user currently logged into the GameCenter
      * @param username the username that is being viewed
      */
-    public UserProfileDisplay(GameCenterData data, DataManager manager, String currentUser, String username) {
+    public UserProfileDisplay(GameCenterData data, UserDataManager manager, String currentUser, String username) {
         super(manager);
+        myUserDataManager = new UserDataManager();
         myData = data;
         myUsername = username;
         myCurrentUser = currentUser;
@@ -72,7 +74,7 @@ public class UserProfileDisplay extends Popup {
             Text username = new Text(myUsername);
             username.getStyleClass().add(TITLE_SELECTOR);
             BorderPane.setAlignment(username, Pos.CENTER);
-            Text bio = new Text(myManager.getBio(myUsername));
+            Text bio = new Text(myUserDataManager.getBio(myUsername));
             bio.setWrappingWidth(SUBTITLE_WRAP_LENGTH);
             bio.getStyleClass().add(BODY_SELECTOR);
             titleAndSubtitle.setTop(username);
@@ -86,7 +88,7 @@ public class UserProfileDisplay extends Popup {
     private void addUserNameInformation(Pane header, Pane titleAndSubtitle) {
         ImageView userImage;
         try {
-            userImage = new ImageView(new Image(myManager.getProfilePic(myUsername)));
+            userImage = new ImageView(new Image(myUserDataManager.getProfilePic(myUsername)));
         } catch(Exception e) {
             try {
                 userImage = new ImageView(new Image(new FileInputStream(DEFAULT_IMAGE_LOCATION)));

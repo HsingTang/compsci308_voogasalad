@@ -1,6 +1,6 @@
 package ui.windows;
 
-import data.external.DataManager;
+import data.external.AssetDataManager;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 import data.external.GameCenterData;
 import ui.ErrorBox;
 import ui.Utility;
-import ui.windows.ImageManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -78,7 +77,7 @@ public class InfoEditor extends Stage {
 
     private void createImageView(GridPane contentBox) {
         try {
-            DataManager myDataManager = new DataManager();
+            AssetDataManager myDataManager = new AssetDataManager();
             myImage = new ImageView(new Image(myDataManager.loadImage(myData.getImageLocation())));
         } catch (Exception e) {
             myImage = new ImageView(NO_IMAGE_ICON);

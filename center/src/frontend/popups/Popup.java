@@ -8,7 +8,10 @@
 
 package frontend.popups;
 
+import data.external.AssetDataManager;
 import data.external.DataManager;
+import data.external.GameDataManager;
+import data.external.UserDataManager;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -30,7 +33,9 @@ public abstract class Popup {
     private static final String STYLESHEET = "center.css";
 
     protected BorderPane myDisplay;
-    protected DataManager myManager;
+    protected GameDataManager myGameDataManager = new GameDataManager();
+    protected AssetDataManager myAssetDataManager = new AssetDataManager();
+    protected UserDataManager myUserDataManager = new UserDataManager();
     protected ResourceBundle myLanguageBundle;
 
 
@@ -39,7 +44,6 @@ public abstract class Popup {
      * @param manager the GameCenterData associated with the popup
      */
     public Popup(DataManager manager) {
-        myManager = manager;
         myLanguageBundle = ResourceBundle.getBundle(DEFAULT_LANGUAGE);
     }
 

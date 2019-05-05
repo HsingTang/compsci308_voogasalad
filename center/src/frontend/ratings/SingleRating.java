@@ -8,9 +8,10 @@
 
 package frontend.ratings;
 
-import data.external.DataManager;
 import data.external.GameCenterData;
+import data.external.GameDataManager;
 import data.external.GameRating;
+import data.external.UserDataManager;
 import frontend.popups.GamePage;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
@@ -30,7 +31,7 @@ public class SingleRating {
     private static final double WRAP_OFFSET = 100;
     private static final int PADDING = 5;
     private GameRating myRating;
-    private DataManager myManager;
+    private UserDataManager myManager;
     private GameCenterData myData;
     private BorderPane myDisplay;
     private String myUsername;
@@ -44,9 +45,9 @@ public class SingleRating {
      * @param manager the DataManager that allows getting more information when necessary
      * @param data the GameCenterData corresponding to the rated object
      */
-    public SingleRating(GameRating rating, DataManager manager, GameCenterData data) {
+    public SingleRating(GameRating rating, GameDataManager manager, GameCenterData data) {
         myRating = rating;
-        myManager = manager;
+        myManager = new UserDataManager();
         myData = data;
         myUsername = rating.getUsername();
         initializeDisplay();

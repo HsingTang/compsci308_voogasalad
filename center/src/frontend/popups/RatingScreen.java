@@ -8,8 +8,8 @@
 
 package frontend.popups;
 
-import data.external.DataManager;
 import data.external.GameCenterData;
+import data.external.GameDataManager;
 import data.external.GameRating;
 import frontend.Utilities;
 import frontend.ratings.StarBox;
@@ -39,7 +39,7 @@ public class RatingScreen extends Popup {
      * @param manager the DataManager that will eventually save the ratings
      * @param user the current user logged into the Center
      */
-    public RatingScreen(GameCenterData data, DataManager manager, String user) {
+    public RatingScreen(GameCenterData data, GameDataManager manager, String user) {
         super(manager);
         myData = data;
         myCurrentUser = user;
@@ -53,7 +53,8 @@ public class RatingScreen extends Popup {
      */
     public void addRatingButton(GameCenterData data) {
         try {
-            myManager.addRating(new GameRating(myCurrentUser, data.getTitle(), data.getAuthorName(), myStars.getCurrentNumberOfStars(), myText.getText()));
+            myGameDataManager.addRating(new GameRating(myCurrentUser, data.getTitle(), data.getAuthorName(),
+                    myStars.getCurrentNumberOfStars(), myText.getText()));
         } catch (SQLException e) {
             // todo: handle this
             System.out.println("Adding rating was unsuccessful");

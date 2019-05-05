@@ -3,12 +3,11 @@ package pane;
 import controls.InformativeField;
 import controls.LauncherSymbol;
 import controls.TitleLabel;
-import data.external.DataManager;
+import data.external.AssetDataManager;
 import data.external.GameCenterData;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import data.external.GameDataManager;
+import data.external.UserDataManager;
 import javafx.collections.FXCollections;
-import javafx.geometry.Pos;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -18,7 +17,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import manager.SwitchToAuthoring;
 import manager.SwitchToNewGameAuthoring;
-import manager.SwitchToUserOptions;
 import popup.ErrorPopUp;
 import runner.external.Game;
 
@@ -128,7 +126,7 @@ public class CreateGameDisplay extends AnchorPane {
     }
     //game name, game description, image,
     private void enterAuthoringToMakeNewGame(){
-        DataManager dataManager = new DataManager();
+        AssetDataManager dataManager = new AssetDataManager();
         String imageFileName = IMAGE_PREFIX + gameName.getTextEntered() + DATABASE_DELIMITER + myUserName +DATABASE_DELIMITER+ myFile.getName();
         dataManager.saveImage(imageFileName,myFile);
         GameCenterData myData = new GameCenterData(gameName.getTextEntered(),gameDescription.getTextEntered(),imageFileName,myUserName);
@@ -139,7 +137,7 @@ public class CreateGameDisplay extends AnchorPane {
     private void makeModifyGamePreferences(String userName){
         List<String> gameNamesList = new ArrayList<>();
         try {
-            DataManager myManager = new DataManager();
+            UserDataManager myManager = new UserDataManager();
             gameNamesList = myManager.loadUserGameNames(userName);
         }
         catch (SQLException e){
@@ -160,7 +158,7 @@ public class CreateGameDisplay extends AnchorPane {
     }
 
     private void enterAuthoringToModifyOldGame(){
-        DataManager dataManager = new DataManager();
+        GameDataManager dataManager = new GameDataManager();
         try {
             String gameName = gameNames.getAccessibleText();
             Game gameObject = (Game)dataManager.loadGameData(gameName, myUserName);

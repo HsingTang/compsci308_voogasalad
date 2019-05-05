@@ -1,8 +1,10 @@
 package ui.main;
 
-import data.external.DataManager;
+import data.external.AssetDataManager;
 import data.external.DatabaseEngine;
 import data.external.GameCenterData;
+import data.external.GameDataManager;
+import data.external.UserDataManager;
 import factory.GameTranslator;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -57,7 +59,9 @@ public class MainGUI {
     private Game myLoadedGame;
     private GameCenterData myGameData;
     private Stage myStage;
-    private DataManager myDataManager;
+    private GameDataManager myGameDataManager;
+    private UserDataManager myUserDataManager;
+    private AssetDataManager myAssetDataManager;
     private HBox myViewerBox;
     private UserCreatedTypesPane myCreatedTypesPane;
     private ObjectManager myObjectManager;
@@ -85,7 +89,9 @@ public class MainGUI {
         myGameData = data;
         defaultGameData();
         myStage = new Stage();
-        myDataManager = new DataManager();
+        myGameDataManager = new GameDataManager();
+        myUserDataManager = new UserDataManager();
+        myAssetDataManager = new AssetDataManager();
         myViewers = new HashMap<>();
 
         myCurrentLevel = new SimpleObjectProperty<>();
@@ -226,16 +232,16 @@ public class MainGUI {
 
     @SuppressWarnings("unused")
     private void openGame() {
-        DataManager dataManager = new DataManager();
         try {
-            List<String> gameNames = dataManager.loadUserGameNames(myGameData.getAuthorName());
+            List<String> gameNames = myUserDataManager.loadUserGameNames(myGameData.getAuthorName());
             LoadGameSelector selector = new LoadGameSelector(gameNames);
             selector.showAndWait();
 
             if(selector.getSelectedGame() != null) {
                 String selectedGameTitle = selector.getSelectedGame();
-                Game loadedGame = (Game) dataManager.loadGameData(selectedGameTitle, myGameData.getAuthorName());
-                GameCenterData loadedGameData = dataManager.loadGameInfo(selectedGameTitle, myGameData.getAuthorName());
+                Game loadedGame = (Game) myGameDataManager.loadGameData(selectedGameTitle, myGameData.getAuthorName());
+                GameCenterData loadedGameData = myGameDataManager.loadGameCenterData(selectedGameTitle,
+                        myGameData.getAuthorName());
                 MainGUI newWorkspace = new MainGUI(loadedGame, loadedGameData);
                 newWorkspace.launch(true);
             }
@@ -263,9 +269,8 @@ public class MainGUI {
         GameTranslator translator = new GameTranslator(myObjectManager);
         try {
             Game exportableGame = translator.saveGame();
-            myDataManager = new DataManager();
-            myDataManager.saveGameData(myGameData.getTitle(), myGameData.getAuthorName(), exportableGame);
-            myDataManager.saveGameInfo(myGameData.getTitle(), myGameData.getAuthorName(), myGameData);
+            myGameDataManager.saveGameData(myGameData.getTitle(), myGameData.getAuthorName(), exportableGame);
+            myGameDataManager.saveGameInfo(myGameData.getTitle(), myGameData.getAuthorName(), myGameData);
 
             saveFolderToDataBase(GENERAL_RESOURCES.getString("images_filepath"));
             saveFolderToDataBase(GENERAL_RESOURCES.getString("audio_filepath"));
@@ -336,17 +341,19 @@ public class MainGUI {
         File outerDirectory = new File(outerDirectoryPath);
         String methodName = SAVING_ASSETS_RESOURCES.getString(outerDirectory.getName());
         for(File file : outerDirectory.listFiles()){
-            Reflection.callMethod(myDataManager, methodName, file.getName(), file);
+            Reflection.callMethod(myAssetDataManager, methodName, file.getName(), file);
         }
     }
 
     private void loadAllAssets(){
         String prefix = SAVING_ASSETS_RESOURCES.getString("userUploaded") + myGameData.getTitle() + myGameData.getAuthorName();
         try {
-            Map<String, InputStream> defaultImages = myDataManager.loadAllImages(SAVING_ASSETS_RESOURCES.getString("defaults"));
-            Map<String, InputStream> userUploadedImages = myDataManager.loadAllImages(prefix);
-            Map<String, InputStream> defaultAudio = myDataManager.loadAllSounds(SAVING_ASSETS_RESOURCES.getString("defaults"));
-            Map<String, InputStream> userUploadedAudio = myDataManager.loadAllSounds(prefix);
+            Map<String, InputStream> defaultImages = myAssetDataManager.loadAllImages(SAVING_ASSETS_RESOURCES.getString(
+                    "defaults"));
+            Map<String, InputStream> userUploadedImages = myAssetDataManager.loadAllImages(prefix);
+            Map<String, InputStream> defaultAudio = myAssetDataManager.loadAllSounds(SAVING_ASSETS_RESOURCES.getString(
+                    "defaults"));
+            Map<String, InputStream> userUploadedAudio = myAssetDataManager.loadAllSounds(prefix);
             loadAssets(GENERAL_RESOURCES.getString("images_filepath"), defaultImages);
             loadAssets(GENERAL_RESOURCES.getString("images_filepath"), userUploadedImages);
             loadAssets(GENERAL_RESOURCES.getString("audio_filepath"), defaultAudio);

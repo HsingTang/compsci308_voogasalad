@@ -26,8 +26,7 @@ public class RatingsQuerier extends Querier {
     private static final String UPDATE_GAME_RATINGS = String.format(" %s = ?, %s = ?", RATING_COLUMN, COMMENTS_COLUMN);
     private static final String INSERT_GAME_RATINGS = String.format("INSERT INTO %s (%s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?)", GAME_RATINGS_TABLE_NAME, GAME_NAME_COLUMN, AUTHOR_NAME_COLUMN, USER_NAME_COLUMN, RATING_COLUMN, COMMENTS_COLUMN);
 
-    private static final String AVERAGE_RATINGS_STATEMENT = String.format("SELECT AVG(%s) AS %s FROM %s WHERE %s = ?",
-            RATING_COLUMN, AVERAGE, GAME_RATINGS_TABLE_NAME, GAME_NAME_COLUMN);
+    private static final String AVERAGE_RATINGS_STATEMENT = String.format("SELECT AVG(%s) AS %s FROM %s WHERE %s = ?", RATING_COLUMN, AVERAGE, GAME_RATINGS_TABLE_NAME, GAME_NAME_COLUMN);
     private static final String ALL_RATINGS_STATEMENT = String.format("SELECT * FROM %s WHERE %s = ?", GAME_RATINGS_TABLE_NAME, GAME_NAME_COLUMN);
     private static final String UPDATE_RATING_STATEMENT = String.format("%s %s %s", INSERT_GAME_RATINGS, ON_DUPLICATE_UPDATE, UPDATE_GAME_RATINGS);
     private static final String REMOVE_RATING_STATEMENT = String.format(DELETE_TWO_CONDITIONS, GAME_RATINGS_TABLE_NAME, GAME_NAME_COLUMN, AUTHOR_NAME_COLUMN);

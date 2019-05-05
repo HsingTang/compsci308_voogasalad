@@ -1,6 +1,6 @@
 package runner.internal.runnerSystems;
 
-import data.external.DataManager;
+import data.external.GameDataManager;
 import engine.external.Engine;
 import engine.external.Entity;
 import engine.external.Level;
@@ -57,7 +57,7 @@ public class SavingSystem extends RunnerSystem {
         for(Entity e : entitiesToSave){
             myLevel.addEntity(e);
         }
-        DataManager dataManager = new DataManager();
+        GameDataManager dataManager = new GameDataManager();
         try {
             dataManager.saveCheckpoint(myUsername, myGamename, myAuthorname, myGame);
         } catch (SQLException e){

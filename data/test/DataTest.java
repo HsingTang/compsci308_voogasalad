@@ -1,6 +1,8 @@
-import data.external.DataManager;
+import data.external.AssetDataManager;
 import data.external.DatabaseEngine;
+import data.external.GameDataManager;
 import data.external.GameRating;
+import data.external.UserDataManager;
 import data.external.UserScore;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -34,7 +36,9 @@ public class DataTest {
     private String myFakeGameData3;
     private GameRating myGameRating1;
     private GameRating myGameRating2;
-    private DataManager myDataManager;
+    private UserDataManager myUserDataManager;
+    private GameDataManager myGameDataManager;
+    private AssetDataManager myAssetDataManager;
 
     @BeforeAll
     protected static void openDatabaseConnection() {
@@ -45,7 +49,9 @@ public class DataTest {
 
     @BeforeEach
     protected void clearData() {
-        myDataManager = new DataManager();
+        myUserDataManager = new UserDataManager();
+        myGameDataManager = new GameDataManager();
+        myAssetDataManager = new AssetDataManager();
         instantiateVariables();
         clearDatabase();
     }
@@ -62,17 +68,17 @@ public class DataTest {
 
     private void clearDatabase() {
         try {
-            myDataManager.removeGame(myFakeGameName1, myUserName1);
-            myDataManager.removeGame(myFakeGameName1, myUserName2);
-            myDataManager.removeGame(myFakeGameName2, myUserName1);
-            myDataManager.removeGame(myFakeGameName2, myUserName2);
-            myDataManager.removeUser(myUserName1);
-            myDataManager.removeUser(myUserName2);
-            myDataManager.removeRating(myFakeGameName1, myUserName1);
-            myDataManager.deleteCheckpoints(myUserName1, myFakeGameName1, myUserName1);
-            myDataManager.deleteCheckpoints(myUserName2, myFakeGameName1, myUserName1);
-            myDataManager.removeScores(myUserName1, myFakeGameName1, myUserName1);
-            myDataManager.removeScores(myUserName2, myFakeGameName1, myUserName1);
+            myGameDataManager.removeGame(myFakeGameName1, myUserName1);
+            myGameDataManager.removeGame(myFakeGameName1, myUserName2);
+            myGameDataManager.removeGame(myFakeGameName2, myUserName1);
+            myGameDataManager.removeGame(myFakeGameName2, myUserName2);
+            myUserDataManager.removeUser(myUserName1);
+            myUserDataManager.removeUser(myUserName2);
+            myGameDataManager.removeRating(myFakeGameName1, myUserName1);
+            myGameDataManager.deleteCheckpoints(myUserName1, myFakeGameName1, myUserName1);
+            myGameDataManager.deleteCheckpoints(myUserName2, myFakeGameName1, myUserName1);
+            myGameDataManager.removeScores(myUserName1, myFakeGameName1, myUserName1);
+            myGameDataManager.removeScores(myUserName2, myFakeGameName1, myUserName1);
         } catch (SQLException exception) {
             // just debugging the test cases, does not get included
             exception.printStackTrace();
@@ -97,25 +103,25 @@ public class DataTest {
     @Test
     public void testCreateUser() {
         // Can only create one user for each user name
-        assertTrue(myDataManager.createUser(myUserName1, myCorrectPassword));
-        assertFalse(myDataManager.createUser(myUserName1, myIncorrectPassword));
+        assertTrue(myUserDataManager.createUser(myUserName1, myCorrectPassword));
+        assertFalse(myUserDataManager.createUser(myUserName1, myIncorrectPassword));
     }
 
     @Test
     public void testValidateUser() {
         // User is only validated if they enter the correct username and password
-        assertTrue(myDataManager.createUser(myUserName1, myCorrectPassword));
-        assertTrue(myDataManager.validateUser(myUserName1, myCorrectPassword));
-        assertFalse(myDataManager.validateUser(myUserName1, myIncorrectPassword));
-        assertFalse(myDataManager.validateUser(myUserName2, myCorrectPassword));
+        assertTrue(myUserDataManager.createUser(myUserName1, myCorrectPassword));
+        assertTrue(myUserDataManager.validateUser(myUserName1, myCorrectPassword));
+        assertFalse(myUserDataManager.validateUser(myUserName1, myIncorrectPassword));
+        assertFalse(myUserDataManager.validateUser(myUserName2, myCorrectPassword));
     }
 
     @Test
     public void testSaveAndLoadGameData() {
         // Data can save any object as "game data" and reload it as long as it is casted properly when loaded
         try {
-            myDataManager.saveGameData(myFakeGameName1, myUserName1, myFakeGameData1);
-            String loadedData = (String) myDataManager.loadGameData(myFakeGameName1, myUserName1);
+            myGameDataManager.saveGameData(myFakeGameName1, myUserName1, myFakeGameData1);
+            String loadedData = (String) myGameDataManager.loadGameData(myFakeGameName1, myUserName1);
             assertEquals(loadedData, myFakeGameData1);
         } catch (SQLException exception) {
             exception.printStackTrace(); // for debugging purposes in the test
@@ -127,18 +133,18 @@ public class DataTest {
     public void testInvalidConnection() {
         // If the connection is closed, SQLExceptions will be thrown
         DatabaseEngine.getInstance().close();
-        assertThrows(SQLException.class, () -> myDataManager.removeUser(myUserName1));
+        assertThrows(SQLException.class, () -> myUserDataManager.removeUser(myUserName1));
         DatabaseEngine.getInstance().open();
     }
 
     @Test
     public void testSaveOverride() {
         try {
-            myDataManager.saveGameData(myFakeGameName1, myUserName1, myFakeGameData1);
-            String loadedData = (String) myDataManager.loadGameData(myFakeGameName1, myUserName1);
+            myGameDataManager.saveGameData(myFakeGameName1, myUserName1, myFakeGameData1);
+            String loadedData = (String) myGameDataManager.loadGameData(myFakeGameName1, myUserName1);
             assertEquals(loadedData, myFakeGameData1);
-            myDataManager.saveGameData(myFakeGameName1, myUserName1, myFakeGameData2);
-            loadedData = (String) myDataManager.loadGameData(myFakeGameName1, myUserName1);
+            myGameDataManager.saveGameData(myFakeGameName1, myUserName1, myFakeGameData2);
+            loadedData = (String) myGameDataManager.loadGameData(myFakeGameName1, myUserName1);
             assertEquals(loadedData, myFakeGameData2);
         } catch (SQLException exception) {
             exception.printStackTrace(); // for debugging info in the tests
@@ -149,12 +155,12 @@ public class DataTest {
     @Test
     public void testGameNameAuthorNameUniqueness() {
         try {
-            myDataManager.saveGameData(myFakeGameName1, myUserName1, myFakeGameData1);
-            myDataManager.saveGameData(myFakeGameName1, myUserName2, myFakeGameData2);
-            myDataManager.saveGameData(myFakeGameName2, myUserName1, myFakeGameData3);
-            String loadedData1 = (String) myDataManager.loadGameData(myFakeGameName1, myUserName1);
-            String loadedData2 = (String) myDataManager.loadGameData(myFakeGameName1, myUserName2);
-            String loadedData3 = (String) myDataManager.loadGameData(myFakeGameName2, myUserName1);
+            myGameDataManager.saveGameData(myFakeGameName1, myUserName1, myFakeGameData1);
+            myGameDataManager.saveGameData(myFakeGameName1, myUserName2, myFakeGameData2);
+            myGameDataManager.saveGameData(myFakeGameName2, myUserName1, myFakeGameData3);
+            String loadedData1 = (String) myGameDataManager.loadGameData(myFakeGameName1, myUserName1);
+            String loadedData2 = (String) myGameDataManager.loadGameData(myFakeGameName1, myUserName2);
+            String loadedData3 = (String) myGameDataManager.loadGameData(myFakeGameName2, myUserName1);
             assertNotEquals(loadedData1, loadedData2);
             assertNotEquals(loadedData1, loadedData3);
             assertEquals(loadedData1, myFakeGameData1);
@@ -169,11 +175,11 @@ public class DataTest {
     @Test
     public void testUpdatePassword() {
         try {
-            myDataManager.createUser(myUserName1, myCorrectPassword);
-            assertTrue(myDataManager.validateUser(myUserName1, myCorrectPassword));
-            assertTrue(myDataManager.updatePassword(myUserName1, myIncorrectPassword));
-            assertTrue(myDataManager.validateUser(myUserName1, myIncorrectPassword));
-            assertFalse(myDataManager.validateUser(myUserName1, myCorrectPassword));
+            myUserDataManager.createUser(myUserName1, myCorrectPassword);
+            assertTrue(myUserDataManager.validateUser(myUserName1, myCorrectPassword));
+            assertTrue(myUserDataManager.updatePassword(myUserName1, myIncorrectPassword));
+            assertTrue(myUserDataManager.validateUser(myUserName1, myIncorrectPassword));
+            assertFalse(myUserDataManager.validateUser(myUserName1, myCorrectPassword));
         } catch (SQLException e) {
             e.printStackTrace(); // Just used for debugging purposes in tests
             fail();
@@ -183,15 +189,11 @@ public class DataTest {
     @Test
     public void testLoadAllGameNames() {
         try {
-            Map<String, InputStream> map = myDataManager.loadAllImages("center/");
-            for (String imageName : map.keySet()) {
-                System.out.println(imageName);
-            }
             List<String> expected = new ArrayList<>(Arrays.asList(myFakeGameName1, myFakeGameName2));
             Collections.sort(expected);
-            myDataManager.saveGameData(myFakeGameName1, myUserName1, myFakeGameData1);
-            myDataManager.saveGameData(myFakeGameName2, myUserName1, myFakeGameData2);
-            List<String> gameNames = myDataManager.loadUserGameNames(myUserName1);
+            myGameDataManager.saveGameData(myFakeGameName1, myUserName1, myFakeGameData1);
+            myGameDataManager.saveGameData(myFakeGameName2, myUserName1, myFakeGameData2);
+            List<String> gameNames = myUserDataManager.loadUserGameNames(myUserName1);
             Collections.sort(gameNames);
             assertEquals(gameNames, expected);
 
@@ -201,16 +203,11 @@ public class DataTest {
         }
     }
 
-    public void getYeet3() {
-        myDataManager.saveGameData("903", "Ryan", "Testing string");
-
-    }
-
     @Test
     public void testAddRating() {
         try {
-            myDataManager.addRating(myGameRating1);
-            assertEquals(myGameRating1, myDataManager.getAllRatings(myFakeGameName1).get(0));
+            myGameDataManager.addRating(myGameRating1);
+            assertEquals(myGameRating1, myGameDataManager.getAllRatings(myFakeGameName1).get(0));
         } catch (SQLException e) {
             e.printStackTrace(); //Just used for debugging purposes in tests
             fail();
@@ -220,9 +217,9 @@ public class DataTest {
     @Test
     void testGetAllRatings() {
         try {
-            myDataManager.addRating(myGameRating1);
-            myDataManager.addRating(myGameRating2);
-            List<GameRating> loadedRatings = myDataManager.getAllRatings(myFakeGameName1);
+            myGameDataManager.addRating(myGameRating1);
+            myGameDataManager.addRating(myGameRating2);
+            List<GameRating> loadedRatings = myGameDataManager.getAllRatings(myFakeGameName1);
             assertTrue(loadedRatings.contains(myGameRating1));
             assertTrue(loadedRatings.contains(myGameRating2));
             assertEquals(loadedRatings.size(), 2);
@@ -235,9 +232,9 @@ public class DataTest {
     @Test
     void testAverageRating() {
         try {
-            myDataManager.addRating(myGameRating1);
-            myDataManager.addRating(myGameRating2);
-            assertEquals(4.5, myDataManager.getAverageRating(myFakeGameName1), 1e-8);
+            myGameDataManager.addRating(myGameRating1);
+            myGameDataManager.addRating(myGameRating2);
+            assertEquals(4.5, myGameDataManager.getAverageRating(myFakeGameName1), 1e-8);
         } catch (SQLException e) {
             e.printStackTrace(); // just for debugging purposes in tests
             fail();
@@ -247,10 +244,10 @@ public class DataTest {
     @Test
     void testSaveAndLoadCheckpoints() {
         try {
-            myDataManager.saveCheckpoint(myUserName1, myFakeGameName1, myUserName1, myFakeGameData1);
-            myDataManager.saveCheckpoint(myUserName2, myFakeGameName1, myUserName1, myFakeGameData1);
-            assertEquals(1, myDataManager.getCheckpoints(myUserName1, myFakeGameName1, myUserName1).keySet().size());
-            assertEquals(1, myDataManager.getCheckpoints(myUserName2, myFakeGameName1, myUserName1).keySet().size());
+            myGameDataManager.saveCheckpoint(myUserName1, myFakeGameName1, myUserName1, myFakeGameData1);
+            myGameDataManager.saveCheckpoint(myUserName2, myFakeGameName1, myUserName1, myFakeGameData1);
+            assertEquals(1, myGameDataManager.getCheckpoints(myUserName1, myFakeGameName1, myUserName1).keySet().size());
+            assertEquals(1, myGameDataManager.getCheckpoints(myUserName2, myFakeGameName1, myUserName1).keySet().size());
         } catch (SQLException e) {
             // Just debugging in tests so print stack trace
             e.printStackTrace();
@@ -260,10 +257,10 @@ public class DataTest {
 
     @Test
     public void testUserBios() {
-        myDataManager.createUser(myUserName1, myCorrectPassword);
+        myUserDataManager.createUser(myUserName1, myCorrectPassword);
         try {
-            myDataManager.setBio(myUserName1, "Expected");
-            assertEquals("Expected", myDataManager.getBio(myUserName1));
+            myUserDataManager.setBio(myUserName1, "Expected");
+            assertEquals("Expected", myUserDataManager.getBio(myUserName1));
         } catch (SQLException e) {
             e.printStackTrace(); // Just for testing/debugging purposes
             fail();
@@ -274,10 +271,10 @@ public class DataTest {
     @Test
     public void testUserScores() {
         try {
-            myDataManager.saveScore(myUserName1, myFakeGameName1, myUserName1, 10.0D);
-            myDataManager.saveScore(myUserName1, myFakeGameName1, myUserName1, 12.0D);
-            myDataManager.saveScore(myUserName2, myFakeGameName1, myUserName1, 15.0D);
-            List<UserScore> userScores = myDataManager.loadScores(myFakeGameName1, myUserName1);
+            myGameDataManager.saveScore(myUserName1, myFakeGameName1, myUserName1, 10.0D);
+            myGameDataManager.saveScore(myUserName1, myFakeGameName1, myUserName1, 12.0D);
+            myGameDataManager.saveScore(myUserName2, myFakeGameName1, myUserName1, 15.0D);
+            List<UserScore> userScores = myGameDataManager.loadScores(myFakeGameName1, myUserName1);
             assertTrue(userScores.contains(new UserScore(myUserName2, 15.0D)));
             assertTrue(userScores.contains(new UserScore(myUserName1, 10.0D)));
             assertTrue(userScores.contains(new UserScore(myUserName1, 12.0D)));

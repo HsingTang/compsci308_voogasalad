@@ -8,8 +8,8 @@
 
 package frontend.popups;
 
-import data.external.DataManager;
 import data.external.GameCenterData;
+import data.external.GameDataManager;
 import frontend.Utilities;
 import frontend.ratings.RatingList;
 import frontend.statistics.StatisticDisplay;
@@ -38,6 +38,7 @@ public class GamePage extends Popup {
 
     private String myCurrentUser;
     private GameCenterData myData;
+    private GameDataManager myGameDataManager;
 
     /**
      * @purpose Constructor so that the GamePage can be displayed to the user.
@@ -45,8 +46,9 @@ public class GamePage extends Popup {
      * @param manager the DataManager that allows the page to access momre information
      * @param user the current user logged into the GameCenter
      */
-    public GamePage(GameCenterData data, DataManager manager, String user) {
+    public GamePage(GameCenterData data, GameDataManager manager, String user) {
         super(manager);
+        myGameDataManager = new GameDataManager();
         myData = data;
         myCurrentUser = user;
         initializeDisplay();
@@ -66,7 +68,7 @@ public class GamePage extends Popup {
      * @param data the GameCenterData for the game being rated
      */
     public void rateGameButton(GameCenterData data) {
-        new RatingScreen(data, myManager, myCurrentUser);
+        new RatingScreen(data, myGameDataManager, myCurrentUser);
     }
 
     @Override
@@ -93,7 +95,7 @@ public class GamePage extends Popup {
     private void addImage(BorderPane pane) {
         Pane gamePreview;
         try {
-            gamePreview = Utilities.getImagePane(myManager, myData.getImageLocation(), IMAGE_SIZE, MAX_HEIGHT);
+            gamePreview = Utilities.getImagePane(myAssetDataManager, myData.getImageLocation(), IMAGE_SIZE, MAX_HEIGHT);
             gamePreview.setPadding(new Insets(PADDING));
             pane.setTop(gamePreview);
         } catch (FileNotFoundException e) {
@@ -114,7 +116,7 @@ public class GamePage extends Popup {
         title.getStyleClass().add(SUBTITLE_SELECTOR);
         BorderPane.setAlignment(title, Pos.CENTER);
         statisticsPane.setTop(title);
-        statisticsPane.setCenter(new StatisticDisplay(myData, myManager).getDisplay());
+        statisticsPane.setCenter(new StatisticDisplay(myData, myGameDataManager).getDisplay());
         extraPane.setTop(statisticsPane);
     }
 
@@ -124,7 +126,7 @@ public class GamePage extends Popup {
         title.getStyleClass().add(SUBTITLE_SELECTOR);
         ratingPane.setTop(title);
         BorderPane.setAlignment(title, Pos.CENTER);
-        ratingPane.setCenter(new RatingList(myData, myManager).getDisplay());
+        ratingPane.setCenter(new RatingList(myData, myGameDataManager).getDisplay());
         ratingPane.getStyleClass().add(PADDING_SELECTOR);
         extraPane.setCenter(ratingPane);
     }

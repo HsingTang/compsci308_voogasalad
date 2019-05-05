@@ -18,7 +18,7 @@ public Class Runner{
 
         public Runner(String filePath){
             myGameToLoad = filePath;
-            myGameLoader = new DataManager();
+            myGameLoader = new GameDataManager();
             myGameObjects = myGameLoader.loadGame(myGameToLoad);
             setUpGame(myGameObjects);
         }

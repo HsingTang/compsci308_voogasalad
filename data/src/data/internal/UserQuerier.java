@@ -3,7 +3,6 @@ package data.internal;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
@@ -13,7 +12,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Querier class to access and query the User table to perform user authentication
@@ -151,7 +149,7 @@ public class UserQuerier extends Querier {
     }
 
     /**
-     * Removes a user from the database
+     * Removes a user from the database for testing purposes
      *
      * @param userName name of the user to delete
      * @return true if any users were deleted

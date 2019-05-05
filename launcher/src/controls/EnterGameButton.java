@@ -1,5 +1,5 @@
 package controls;
-import data.external.DataManager;
+import data.external.UserDataManager;
 import manager.SwitchToUserPage;
 import popup.ErrorPopUp;
 public class EnterGameButton extends SceneSwitchButton {
@@ -30,7 +30,7 @@ public class EnterGameButton extends SceneSwitchButton {
     private boolean validateUserCredentials(){
         String currentUserName = userNameAccessor.currentFieldValue();
         String currentPassWord = passWordAccessor.currentFieldValue();
-        DataManager dataManager = new DataManager();
+        UserDataManager dataManager = new UserDataManager();
         return dataManager.validateUser(currentUserName,currentPassWord);
     }
 

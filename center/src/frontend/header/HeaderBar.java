@@ -9,8 +9,8 @@
 
 package frontend.header;
 
-import data.external.DataManager;
 import data.external.ImageChooser;
+import data.external.UserDataManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
@@ -72,7 +72,7 @@ public class HeaderBar {
         BorderPane settingsPane = new BorderPane();
         settingsPane.setPadding(new Insets(20));
         try {
-            DataManager temporaryManager = new DataManager(); // todo: pass this in
+            UserDataManager temporaryManager = new UserDataManager(); // todo: pass this in
             ImageView settings;
             try {
                 settings = new ImageView(new Image(temporaryManager.getProfilePic(myUsername)));

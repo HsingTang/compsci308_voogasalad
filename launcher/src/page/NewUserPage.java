@@ -3,7 +3,7 @@ import controls.BackButton;
 import controls.HiddenField;
 import controls.InformativeField;
 import controls.TitleLabel;
-import data.external.DataManager;
+import data.external.UserDataManager;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import manager.SwitchToUserOptions;
@@ -27,7 +27,7 @@ public class NewUserPage extends VBox {
     private InformativeField userName = new InformativeField(USERNAME);
     private HiddenField passWord = new HiddenField(PASSWORD);
     private HiddenField reenter = new HiddenField(REENTER_PASSWORD);
-    private DataManager myDataManager  = new DataManager();
+    private UserDataManager myDataManager  = new UserDataManager();
     /**
      * This page will prompt the user to enter in a new username and password when they are creating a new account
      * It validates the account as being in line with certain policies, such as password length, and also verifies that

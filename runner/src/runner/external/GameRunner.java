@@ -1,6 +1,7 @@
 package runner.external;
 
-import data.external.DataManager;
+import data.external.AssetDataManager;
+import data.external.GameDataManager;
 import engine.external.Entity;
 import engine.external.Level;
 import engine.external.component.LivesComponent;
@@ -10,7 +11,6 @@ import javafx.stage.Stage;
 import runner.internal.LevelRunner;
 import java.io.*;
 import java.sql.SQLException;
-import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -25,7 +25,7 @@ public class GameRunner {
     private Stage myGameStage;
     private String myGameName;
     private String myAuthorName;
-    private DataManager myDataManager;
+    private GameDataManager myDataManager;
     private Level myCurrentLevel;
     private Double myScore;
     private String myUsername;
@@ -48,7 +48,7 @@ public class GameRunner {
     }
 
     private Game loadGameObject(String gameName, String authorName){
-        myDataManager = new DataManager();
+        myDataManager = new GameDataManager();
         try {
             return (Game) myDataManager.loadGameData(gameName, authorName);
         } catch (SQLException e) {
@@ -58,10 +58,11 @@ public class GameRunner {
     }
 
     private void runLevel(int currentLevelNumber){
-        DataManager dm = new DataManager();
+        GameDataManager gameDataManager = new GameDataManager();
+        AssetDataManager assetDataManager = new AssetDataManager();
         Game gameToPlay;
         try {
-            gameToPlay = (Game) dm.loadGameData(myGameName, myAuthorName);
+            gameToPlay = (Game) gameDataManager.loadGameData(myGameName, myAuthorName);
         } catch(SQLException e){
             gameToPlay = myGame;
         }
@@ -71,9 +72,11 @@ public class GameRunner {
         Consumer<Double> goToNext = (level) -> { nextLevel(level); };
         Image background;
         try {
-           background = new Image(myDataManager.loadImage(myCurrentLevel.getBackground()), myCurrentLevel.getWidth(), myCurrentLevel.getHeight(), false, false);
+           background = new Image(assetDataManager.loadImage(myCurrentLevel.getBackground()), myCurrentLevel.getWidth(),
+                   myCurrentLevel.getHeight(), false, false);
         } catch (Exception e){
-            background = new Image(myDataManager.loadImage("byteme_default_runnerBackground"), myCurrentLevel.getWidth(), myCurrentLevel.getHeight(), false, false);
+            background = new Image(assetDataManager.loadImage("byteme_default_runnerBackground"), myCurrentLevel.getWidth(),
+                    myCurrentLevel.getHeight(), false, false);
         }
         new LevelRunner(myCurrentLevel, mySceneWidth, mySceneHeight, myGameStage, goToNext, gameToPlay.getLevels().size(), background, myScore, myLives, myAuthorName, myGameName, myUsername, myGame);
     }

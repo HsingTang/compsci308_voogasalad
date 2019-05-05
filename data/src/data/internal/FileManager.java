@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * Class used to handle XML reading and writing for the DataManager
  */
-public class XMLHandler {
+public class FileManager {
 
     private static final String COULD_NOT_CLOSE_FILES = "Could not close files";
     private static final String CANNOT_READ_XML_FILE = "Cannot read XML file";
@@ -19,13 +19,13 @@ public class XMLHandler {
     /**
      * Writes a file of xml to the specified path
      * @param path path of where to write
-     * @param rawXML xml to write to the file
+     * @param contents contents to write to the file
      */
-    public void writeToXML(String path, String rawXML) {
+    public void writeToFile(String path, String contents) {
         FileWriter fileWriter = null;
         try {
             fileWriter = new FileWriter(new File(path));
-            fileWriter.write(rawXML);
+            fileWriter.write(contents);
         } catch (IOException exception) {
             System.out.println(WRITE_FAILED); //Debugging information, method only used internally
         } finally {
@@ -40,12 +40,12 @@ public class XMLHandler {
     }
 
     /**
-     * Reads xml from a file at a specified path
+     * Reads file contents from a file at a specified path
      * @param path location of the file
-     * @return string of raw xml
+     * @return string of file contents
      * @throws FileNotFoundException if file is not found
      */
-    public String readFromXML(String path) throws FileNotFoundException {
+    public String readFromFile(String path) throws FileNotFoundException {
         BufferedReader bufferedReader = null;
         FileReader fileReader = null;
         StringBuilder rawXML = new StringBuilder();

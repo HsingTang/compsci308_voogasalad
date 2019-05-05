@@ -1,6 +1,6 @@
 package engine.internal.systems;
 
-import data.external.DataManager;
+import data.external.AssetDataManager;
 import engine.external.Engine;
 import engine.external.Entity;
 import engine.external.component.AudioComponent;
@@ -24,7 +24,7 @@ public class AudioSystem extends VoogaSystem {
 
     private static final Integer REAE_BYTE_NUM = 1024;
 
-    DataManager myDataManager;
+    AssetDataManager myDataManager;
     HashMap<Entity, String> myEntityPastSound;
     HashMap<String, Media> myMedia;
 
@@ -37,7 +37,7 @@ public class AudioSystem extends VoogaSystem {
      */
     public AudioSystem(Collection<Class<? extends Component>> requiredComponents, Engine engine) {
         super(requiredComponents, engine);
-        myDataManager = new DataManager();
+        myDataManager = new AssetDataManager();
         myEntityPastSound = new HashMap<>();
         myMedia = new HashMap<>();
     }

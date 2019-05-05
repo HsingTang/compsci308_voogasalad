@@ -10,6 +10,7 @@
 package frontend.games;
 
 import data.external.DataManager;
+import data.external.GameDataManager;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
@@ -27,7 +28,7 @@ public class GameList {
     private static final String SCROLLER_SELECTOR = "scroller";
     private static final int SCROLL_OFFSET = 140;
     private List<GameCenterData> myGames;
-    private DataManager myManager;
+    private GameDataManager myManager;
     private String myCurrentUser;
     private double myHeight;
 
@@ -35,8 +36,8 @@ public class GameList {
      * @purpose constructor, reads in the list of original GameData objects and saves it, then sets up the display of cards.
      */
     public GameList(String user, double height) {
-        myManager = new DataManager();
-        myGames = myManager.loadAllGameInfoObjects();
+        myManager = new GameDataManager();
+        myGames = myManager.loadAllGameCenterDataObjects();
         myCurrentUser = user;
         myHeight = height;
         initializeDisplay();
@@ -49,8 +50,8 @@ public class GameList {
      * @param height the height of the GameList
      */
     public GameList(String user, String desiredAuthor, double height) {
-        myManager = new DataManager();
-        myGames = myManager.loadAllGameInfoObjects(desiredAuthor);
+        myManager = new GameDataManager();
+        myGames = myManager.loadAllGameCenterDataObjects(desiredAuthor);
         myCurrentUser = user;
         myHeight = height;
         initializeDisplay();

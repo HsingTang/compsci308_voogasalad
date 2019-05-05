@@ -9,6 +9,7 @@
 
 package frontend;
 
+import data.external.AssetDataManager;
 import data.external.DataManager;
 import data.external.GameCenterData;
 import javafx.geometry.Pos;
@@ -57,7 +58,7 @@ public class Utilities {
      * @return the pane that holds the ImageView
      * @throws FileNotFoundException if neither the searched for image nor the "no image found" image cannot be found
      */
-    public static Pane getImagePane(DataManager manager, String imageLocation, double gameSize, double maxHeight) throws FileNotFoundException {
+    public static Pane getImagePane(AssetDataManager manager, String imageLocation, double gameSize, double maxHeight) throws FileNotFoundException {
         ImageView gameImage;
         try {
             gameImage = new ImageView(new Image(manager.loadImage(imageLocation)));

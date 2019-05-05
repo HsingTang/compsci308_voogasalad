@@ -1,6 +1,6 @@
 package runner.external;
 
-import data.external.DataManager;
+import data.external.GameDataManager;
 
 /**
  * Class used to make sure modules dependencies
@@ -9,6 +9,6 @@ import data.external.DataManager;
  */
 public class ModuleTester {
     public static void main(String[] args) {
-        DataManager dm = new DataManager();
+        GameDataManager dm = new GameDataManager();
     }
 }

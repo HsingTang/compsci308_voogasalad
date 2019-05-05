@@ -8,13 +8,12 @@
 
 package frontend.statistics;
 
-import data.external.DataManager;
 import data.external.GameCenterData;
+import data.external.GameDataManager;
 import data.external.UserScore;
 import frontend.Utilities;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -44,7 +43,7 @@ public class StatisticDisplay {
      * @param data the GameCenterData for which we are looking at ratings
      * @param manager the DataManager used to read in ratings
      */
-    public StatisticDisplay(GameCenterData data, DataManager manager) {
+    public StatisticDisplay(GameCenterData data, GameDataManager manager) {
         myLanguageBundle = ResourceBundle.getBundle(DEFAULT_LANGUAGE);
         try {
             myScores = manager.loadScores(data.getTitle(), data.getAuthorName());

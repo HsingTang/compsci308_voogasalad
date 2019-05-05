@@ -8,7 +8,10 @@
 
 package frontend.games;
 
+import data.external.AssetDataManager;
 import data.external.DataManager;
+import data.external.GameDataManager;
+import data.external.UserDataManager;
 import frontend.popups.GamePage;
 import frontend.popups.UserProfileDisplay;
 import javafx.geometry.Pos;
@@ -43,7 +46,7 @@ public class GameCard {
     private ResourceBundle myLanguageBundle;
     private GameCenterData myGame;
     private Pane myDisplay;
-    private DataManager myManager;
+    private GameDataManager myManager;
     private String myCurrentUser;
 
     /**
@@ -55,7 +58,7 @@ public class GameCard {
         myGame = game;
         myIndex = index % 2 + 1;
         myLanguageBundle = ResourceBundle.getBundle(DEFAULT_LANGUAGE_LOCATION);
-        myManager = manager;
+        myManager = new GameDataManager();
         myCurrentUser = user;
         initializeDisplay();
     }
@@ -157,7 +160,8 @@ public class GameCard {
 
     private void addImage(BorderPane contentPane) {
         try {
-            contentPane.setTop(Utilities.getImagePane(myManager, myGame.getImageLocation(), GAME_IMAGE_SIZE, MAX_HEIGHT));
+            contentPane.setTop(Utilities.getImagePane(new AssetDataManager(), myGame.getImageLocation(), GAME_IMAGE_SIZE,
+                    MAX_HEIGHT));
         } catch (FileNotFoundException e) {
             // do nothing, in this case there just won't be an image which is fine
         }
@@ -179,7 +183,7 @@ public class GameCard {
     }
 
     private void openUserPage(String author) {
-        new UserProfileDisplay(myGame, myManager, myCurrentUser, author);
+        new UserProfileDisplay(myGame, new UserDataManager(), myCurrentUser, author);
     }
 
 }

@@ -19,14 +19,14 @@ public class ImageChooser {
     private static final String WILDCARD = "*.";
 
     private String myUserName;
-    private DataManager myDataManager;
+    private UserDataManager myDataManager;
 
     /**
      * Image chooser constructor
      * @param userName name of the user, so image gets saved to the correct user
      */
     public ImageChooser(String userName){
-        myDataManager = new DataManager();
+        myDataManager = new UserDataManager();
         myUserName = userName;
     }
 

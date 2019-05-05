@@ -1,6 +1,6 @@
 package engine.internal.systems;
 
-import data.external.DataManager;
+import data.external.AssetDataManager;
 import engine.external.Entity;
 import engine.external.component.Component;
 import engine.external.component.ImageViewComponent;
@@ -21,7 +21,7 @@ import java.util.HashMap;
  */
 public class ImageViewSystem extends VoogaSystem {
 
-    DataManager myDataManager;
+    AssetDataManager myDataManager;
     HashMap<Entity, String> myEntityPastSprite;
     HashMap<String, Image> myImages;
 
@@ -34,7 +34,7 @@ public class ImageViewSystem extends VoogaSystem {
      */
     public ImageViewSystem(Collection<Class<? extends Component>> requiredComponents, Engine engine) {
         super(requiredComponents, engine);
-        myDataManager = new DataManager();
+        myDataManager = new AssetDataManager();
         myEntityPastSprite = new HashMap<>();
         myImages = new HashMap<>();
     }

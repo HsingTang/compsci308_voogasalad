@@ -18,6 +18,7 @@ import java.util.Map;
 public class EntityMenu extends TitledPane {
     private VBox myVBox;
     private Map<String, ListView> myMap;
+    private static final String STYLE_SHEET = "entity-menu";
 
     /**
      * creates a new EntityMenu
@@ -29,7 +30,7 @@ public class EntityMenu extends TitledPane {
         myVBox = new VBox();
         myMap = new HashMap<>();
         this.setContent(myVBox);
-        this.getStyleClass().add("entity-menu");
+        this.getStyleClass().add(STYLE_SHEET);
     }
 
     /**

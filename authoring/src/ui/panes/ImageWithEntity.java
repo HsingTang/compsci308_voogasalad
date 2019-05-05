@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 public class ImageWithEntity extends ImageView {
     private AuthoringEntity myAuthoringEntity;
     private static final ResourceBundle myResources = ResourceBundle.getBundle("image_with_entity");
-    private static final ResourceBundle myGeneralResources = ResourceBundle.getBundle("authoring_general");
+    private static final double NOT_VISIBLE_OPACITY = .5;
 
     /**
      * Creates an instance of ImageWithEntity with the FileInputStream and the AuthoringEntity provided
@@ -32,8 +32,7 @@ public class ImageWithEntity extends ImageView {
         updateX(authoringEntity.getPropertyMap().get(EntityField.X));
         updateY(authoringEntity.getPropertyMap().get(EntityField.Y));
         updateVisibility(authoringEntity.getPropertyMap().get(EntityField.VISIBLE));
-        myAuthoringEntity.getPropertyMap().addListener((MapChangeListener<Enum, String>) change -> {handleChange(change);
-        });
+        myAuthoringEntity.getPropertyMap().addListener((MapChangeListener<Enum, String>) change -> handleChange(change));
         Utility.closeInputStream(s);
     }
 
@@ -62,11 +61,11 @@ public class ImageWithEntity extends ImageView {
     }
 
     private void updateImage(String imageName){
-        FileInputStream inputStream = Utility.makeImageAssetInputStream(imageName); //closed 2
+        FileInputStream inputStream = Utility.makeImageAssetInputStream(imageName);
         Double width = Double.parseDouble(myAuthoringEntity.getPropertyMap().get(EntityField.XSCALE));
         Double height = Double.parseDouble(myAuthoringEntity.getPropertyMap().get(EntityField.YSCALE));
         Image image = new Image(inputStream, width, height, false, false);
-        Utility.closeInputStream(inputStream);  //closed 2
+        Utility.closeInputStream(inputStream);
         this.setImage(image);
         this.setFitHeight(height);
         this.setFitWidth(width);
@@ -87,7 +86,7 @@ public class ImageWithEntity extends ImageView {
             this.opacityProperty().setValue(1);
         }
         else{
-            this.opacityProperty().setValue(.5);
+            this.opacityProperty().setValue(NOT_VISIBLE_OPACITY);
         }
     }
 

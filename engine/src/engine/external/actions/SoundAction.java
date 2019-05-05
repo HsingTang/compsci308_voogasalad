@@ -8,6 +8,12 @@ import engine.external.component.SoundComponent;
 import java.io.Serializable;
 import java.util.function.Consumer;
 
+/**
+ * @author Dima
+ * @author Feroze
+ *
+ * Changes the String value of the Sound Component which eventually changes the sound played by an entity
+ */
 public class SoundAction extends StringAction {
     public SoundAction(String pathname) {
         super.setMyNewValue(pathname);

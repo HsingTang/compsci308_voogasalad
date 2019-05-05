@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
+ * Class for displaying, adding, removing, and modifying Group types
  * @author Harry Ross
  */
 public class GroupEditor extends Stage {
@@ -27,6 +28,10 @@ public class GroupEditor extends Stage {
     private ObjectManager myObjectManager;
     private ListView<String> myListView;
 
+    /**
+     * Creates new GroupEditor from given ObjectManager
+     * @param objectManager ObjectManager to populate Group names from
+     */
     public GroupEditor(ObjectManager objectManager) {
         this.setResizable(false);
         this.setTitle("Group Manager");

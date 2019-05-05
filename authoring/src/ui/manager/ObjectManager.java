@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Class that keeps track of every single instance of an Entity, across Levels, for the purposes of authoring environment
  * @author Harry Ross
  */
 public class ObjectManager {
@@ -33,8 +34,8 @@ public class ObjectManager {
     private GameCenterData myGameCenterData;
 
     /**
-     * Class that keeps track of every single instance of an Entity, across Levels, for the purposes of authoring environment
-     * @author Harry Ross
+     * Creates new ObjectManager with given LevelProperty to update if level is changed
+     * @param levelProperty Common CurrentLevel value from another part of Authoring Environment
      */
     public ObjectManager(ObjectProperty<Propertable> levelProperty) {
         myEntities = new HashSet<>();
@@ -70,6 +71,9 @@ public class ObjectManager {
         }
     }
 
+    /**
+     * Removes all stored levels from ObjectManager
+     */
     public void removeAllLevels() {
         myLevels = FXCollections.observableArrayList(new ArrayList<>());
         for (int i = 0; i < myLabelManager.getLabels(LevelField.LABEL).size(); i++) {
@@ -122,6 +126,12 @@ public class ObjectManager {
         ((AuthoringLevel) myCurrentLevel.getValue()).getEntities().remove(entity);
     }
 
+    /**
+     * Propagates a change in an AuthoringEntity to other instances that share the same label
+     * @param objectLabel Label to match in search
+     * @param property Enum property field that changed value
+     * @param newValue New value of field to propagate
+     */
     public void propagate(String objectLabel, Enum property, String newValue) {
         for (AuthoringEntity entity : myEntities) {
             if (entity.getPropertyMap().get(EntityField.LABEL).equals(objectLabel)) { // Match found
@@ -137,6 +147,10 @@ public class ObjectManager {
         }
     }
 
+    /**
+     * Removes focus assignment from given AuthoringEntity
+     * @param propagator AuthoringEntity to remove focus assignment from
+     */
     public void flushFocusAssignment(Propertable propagator) {
         for(AuthoringEntity entity : ((AuthoringLevel) myCurrentLevel.getValue()).getEntities()) {
             if (!entity.equals(propagator))
@@ -160,31 +174,61 @@ public class ObjectManager {
         }
     }
 
+    /**
+     * Updates level label in LabelManager to a new value
+     * @param oldValue Label String value to replace
+     * @param newValue New label value String
+     */
     public void updateLevelLabel(String oldValue, String newValue) {
         myLabelManager.getLabels(LevelField.LABEL).add(myLabelManager.getLabels(LevelField.LABEL).indexOf(oldValue), newValue);
         myLabelManager.getLabels(LevelField.LABEL).remove(oldValue);
     }
 
+    /**
+     * Sets associated GameCenterData
+     * @param data GameCenterData to associate with ObjectManager
+     */
     public void setGameCenterData(GameCenterData data) {
         myGameCenterData = data;
     }
 
+    /**
+     * Returns associated GameCenterData
+     * @return GameCenterData associated with ObjectManager
+     */
     public GameCenterData getGameCenterData() {
         return myGameCenterData;
     }
 
+    /**
+     * Returns associated LabelManager
+     * @return LabelManager associated with ObjectManager
+     */
     public LabelManager getLabelManager() {
         return myLabelManager;
     }
 
+    /**
+     * Returns List of Events assigned to given Entity Type
+     * @param objectType String Entity type
+     * @return List of Events corresponding to given typ
+     */
     public ObservableList<Event> getEvents(String objectType) {
         return myEventMap.get(objectType);
     }
 
+    /**
+     * Gets list of all created AuthoringLevels
+     * @return List of all created AuthoringLevels
+     */
     public ObservableList<AuthoringLevel> getLevels() {
         return myLevels;
     }
 
+    /**
+     * Returns type map for backing Entities in UserCreatedTypesPane
+     * @return Type Map for backing Entities
+     */
     public ObservableMap<AuthoringEntity, String> getTypeMap() {
         return myEntityTypeMap;
     }

@@ -2,8 +2,9 @@ package engine.external.actions;
 
 import engine.external.component.DestroyComponent;
 
-public class DestroyAction extends BooleanAction {
+public class DestroyAction extends AddComponentAction {
     public DestroyAction(Boolean destroy) {
-        setAction(destroy, DestroyComponent.class);
+        setAbsoluteAction(new DestroyComponent(destroy));
+        myComponentClass = DestroyComponent.class;
     }
 }

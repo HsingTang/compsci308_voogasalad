@@ -42,6 +42,12 @@ public class GameList {
         initializeDisplay();
     }
 
+    /**
+     * @purpose additional constructor with desired author as an input that can be used in UserProfileDisplay
+     * @param user the current user logged in.
+     * @param desiredAuthor the name of the author of the games
+     * @param height the height of the GameList
+     */
     public GameList(String user, String desiredAuthor, double height) {
         myManager = new DataManager();
         myGames = myManager.loadAllGameInfoObjects(desiredAuthor);

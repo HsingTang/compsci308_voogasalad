@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
+ * Main class for ByteMe Authoring Environment, loads GUI and respective backend for a loaded Game
  * @author Harry Ross
  * @author Carrie Hunner
  */
@@ -75,6 +76,10 @@ public class MainGUI {
     private static final ResourceBundle GENERAL_RESOURCES = ResourceBundle.getBundle("authoring_general");
     private static final ResourceBundle SAVING_ASSETS_RESOURCES = ResourceBundle.getBundle("mainGUI_assets");
 
+    /**
+     * Creates new MainGUI for a game being started from scratch with given metadata
+     * @param data Metadata for new game
+     */
     public MainGUI(GameCenterData data) { // Default constructor for creating a new game from scratch
         myLoadedGame = new Game();
         myGameData = data;
@@ -97,6 +102,11 @@ public class MainGUI {
         myObjectManager.setGameCenterData(myGameData);
     }
 
+    /**
+     * Creates new MainGUI for an already existing Game
+     * @param game Game to load
+     * @param gameData Corresponding metadata for loaded Game
+     */
     public MainGUI(Game game, GameCenterData gameData) {
         this(gameData);
         myLoadedGame = game;

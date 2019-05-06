@@ -8,9 +8,9 @@ import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import ui.AuthoringEntity;
+import ui.DefaultTypeXMLReaderFactory;
 import ui.EntityField;
 import ui.Utility;
-import ui.XMLParser;
 import ui.manager.ObjectManager;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class UserCreatedTypesPane extends VBox {
     private static final ResourceBundle DEFAULT_RESOURCES = ResourceBundle.getBundle("default_entity_type");
     private static final ResourceBundle RESOURCES = ResourceBundle.getBundle("user_created_types");
     private ObjectManager myObjectManager;
-    private XMLParser myDefaultTypesFactory;
+    private DefaultTypeXMLReaderFactory myDefaultTypesFactory;
     private AuthoringEntity myDraggedAuthoringEntity;
     private Map<String, List<Pane>> myCategoryToList;
 
@@ -43,7 +43,7 @@ public class UserCreatedTypesPane extends VBox {
         myObjectManager = objectManager;
         String title = DEFAULT_RESOURCES.getString("UserCreatedTitle");
         myEntityMenu = new EntityMenu(title);
-        myDefaultTypesFactory = new XMLParser();
+        myDefaultTypesFactory = new DefaultTypeXMLReaderFactory();
         myCategoryToList = new HashMap<>();
         populateCategories();
         this.getChildren().add(myEntityMenu);

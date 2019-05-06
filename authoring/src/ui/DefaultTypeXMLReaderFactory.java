@@ -33,7 +33,7 @@ import java.util.Set;
  * This requires each file to define a category and a name and will not create any that are missing
  * either of these components
  */
-public class XMLParser {
+public class DefaultTypeXMLReaderFactory {
     private static final ResourceBundle PATH_RESOURCES = ResourceBundle.getBundle("authoring_general");
     private static final ResourceBundle RESOURCES = ResourceBundle.getBundle("default_types_factory");
     private static final String FOLDER_PATH = PATH_RESOURCES.getString("xml_folder_filepath");
@@ -45,7 +45,7 @@ public class XMLParser {
     /**
      * Creates an instance of DefaultTypeXMLReaderFactory
      */
-    public XMLParser(){
+    public DefaultTypeXMLReaderFactory(){
         myNameToCategory = new HashMap<>();
         myNameToComponents= new HashMap<>();
         myRootsList = new ArrayList<>();

@@ -87,9 +87,7 @@ abstract public class AssetManager extends Stage {
         initializeVariables();
         initializeSubClassVariables();
         initializeStage();
-        this.setOnShown(windowEvent -> {
-            handleOnShown();
-        });
+        this.setOnShown(windowEvent -> handleOnShown());
     }
 
     private void handleOnShown() {
@@ -112,13 +110,7 @@ abstract public class AssetManager extends Stage {
 
 
     private void createButtonPane() {
-        String buttonString;
-        if(myObjectManager == null){
-            buttonString = RESOURCES.getString(SELECT_BUTTONS);
-        }
-        else{
-            buttonString = RESOURCES.getString(UPLOAD_BUTTONS);
-        }
+        String buttonString= determineButtonString();
         String[] buttonInfo = buttonString.split(",");
         formatButtonHBox();
         for(String s : buttonInfo){
@@ -127,6 +119,17 @@ abstract public class AssetManager extends Stage {
             myButtonHBox.getChildren().add(button);
         }
 
+    }
+
+    private String determineButtonString() {
+        String buttonString;
+        if(myObjectManager == null){
+            buttonString = RESOURCES.getString(SELECT_BUTTONS);
+        }
+        else{
+            buttonString = RESOURCES.getString(UPLOAD_BUTTONS);
+        }
+        return buttonString;
     }
 
     private void formatButtonHBox() {
@@ -139,38 +142,19 @@ abstract public class AssetManager extends Stage {
         myTabPane.getTabs().clear();
         File assetFolder = new File(myAssetFolderPath);     //going to images directory
         List<File> fileList = Utility.getFilesFromFolder(assetFolder);
+        createTreeAndFillTabs(fileList);
+    }
 
-        Tab defaultTab = new Tab();
-        defaultTab.setText("Default");
-        defaultTab.setClosable(false);
-        VBox vBox = new VBox();
-        myTabPane.getTabs().add(defaultTab);
-        ScrollPane defaultScrollPane = new ScrollPane();
-        defaultScrollPane.setFitToWidth(true);
-        defaultScrollPane.setContent(vBox);
-        defaultTab.setContent(defaultScrollPane);
-        TreeNode root = new TreeNode("root");
-
-        Tab userUploaded = new Tab();
-        userUploaded.setText("Uploaded");
-        userUploaded.setClosable(false);
-        VBox userVBox = new VBox();
-        ScrollPane userScrollPane = new ScrollPane();
-        userScrollPane.setFitToWidth(true);
-        userScrollPane.setContent(userVBox);
-        userUploaded.setContent(userScrollPane);
-        myTabPane.getTabs().add(userUploaded);
-
-
+    private void createTreeAndFillTabs(List<File> fileList) {
+        VBox vBox = initializeTabAndGetVBox(RESOURCES.getString("defaultTabName"));
+        VBox userVBox = initializeTabAndGetVBox(RESOURCES.getString("userTabName"));
+        TreeNode root = new TreeNode(RESOURCES.getString("rootName"));
 
         for(File file : fileList){
-            //TODO check extensions here
-            //assuming correct extensions from here on out
-            String[] infoArray = file.getName().split("#");  //TODO make this character special somewhere
+            String[] infoArray = file.getName().split(SEPARATOR_RESOURCES.getString("defaults"));
             if(infoArray.length <= 1){
                 //add to default tab
                 addAsset(file, userVBox);
-
             }
             else{
                 TreeNode traverseNode = root;
@@ -182,28 +166,44 @@ abstract public class AssetManager extends Stage {
 
         TreeNode traverseNode = root;
         fillVBox(traverseNode, vBox);
+    }
 
+    private VBox initializeTabAndGetVBox(String tabName) {
+        Tab defaultTab = new Tab();
+        defaultTab.setText(tabName);
+        defaultTab.setClosable(false);
+        VBox vBox = new VBox();
+        myTabPane.getTabs().add(defaultTab);
+        ScrollPane defaultScrollPane = new ScrollPane();
+        defaultScrollPane.setFitToWidth(true);
+        defaultScrollPane.setContent(vBox);
+        defaultTab.setContent(defaultScrollPane);
+        return vBox;
     }
 
     private void fillVBox(TreeNode root, VBox vBox) {
         for(TreeNode treeNode : root.getNodeChildren()){
             List<TreeNode> toBePanes = treeNode.getNodeChildren();
             for(TreeNode treeNode1 : toBePanes) {
-                TitledPane titledPane = new TitledPane();
-                titledPane.setText(treeNode1.getName());
-                titledPane.setAlignment(Pos.TOP_LEFT);
-                vBox.getChildren().add(titledPane);
-                VBox vBox1 = new VBox();
-                ScrollPane scrollPane = new ScrollPane();
-                scrollPane.setContent(vBox1);
-                scrollPane.setFitToWidth(true);
-                titledPane.setContent(scrollPane);
-                fillVBox(treeNode1, vBox1);
+                makeAndFillTitledPane(vBox, treeNode1);
             }
         }
         for(File file : root.getFileChildren()){
             addAsset(file, vBox);
         }
+    }
+
+    private void makeAndFillTitledPane(VBox vBox, TreeNode treeNode1) {
+        TitledPane titledPane = new TitledPane();
+        titledPane.setText(treeNode1.getName());
+        titledPane.setAlignment(Pos.TOP_LEFT);
+        vBox.getChildren().add(titledPane);
+        VBox vBox1 = new VBox();
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(vBox1);
+        scrollPane.setFitToWidth(true);
+        titledPane.setContent(scrollPane);
+        fillVBox(treeNode1, vBox1);
     }
 
     private void addToTree(List<String> info, TreeNode root, File file){
@@ -293,14 +293,6 @@ abstract public class AssetManager extends Stage {
             FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(s,EXTENSION_PREFIX + s);
             chooser.getExtensionFilters().add(extFilter);
         }
-    }
-
-    protected void createAndDisplayAlert(String contentText) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(RESOURCES.getString(ERROR_HEADER));
-        alert.setHeaderText(contentText);
-        alert.setContentText(null);
-        alert.show();
     }
 
     /**

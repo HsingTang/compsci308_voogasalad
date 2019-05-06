@@ -4,7 +4,7 @@ import engine.external.Entity;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import ui.DefaultTypeXMLReaderFactory;
+import ui.XMLParser;
 import ui.manager.ObjectManager;
 import ui.windows.CreateNewTypeWindow;
 
@@ -21,7 +21,7 @@ public class DefaultTypesPane extends VBox{
     private EntityMenu myEntityMenu;
     private ResourceBundle myResources;
     private UserCreatedTypesPane myUserCreatedTypesPane;
-    private DefaultTypeXMLReaderFactory myDefaultTypesFactory;
+    private XMLParser myDefaultTypesFactory;
     private ObjectManager myObjectManager;
 
     private static final String RESOURCE = "default_entity_type";
@@ -39,7 +39,7 @@ public class DefaultTypesPane extends VBox{
         myResources = ResourceBundle.getBundle(RESOURCE);
         myEntityMenu = new EntityMenu(myResources.getString(TITLE_KEY));
         myUserCreatedTypesPane = userCreatedTypesPane;
-        myDefaultTypesFactory = new DefaultTypeXMLReaderFactory();
+        myDefaultTypesFactory = new XMLParser();
         myObjectManager = objectManager;
         populateEntityMenu();
         this.getChildren().add(myEntityMenu);

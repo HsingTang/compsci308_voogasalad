@@ -19,10 +19,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ui.AuthoringEntity;
-import ui.DefaultTypeXMLReaderFactory;
 import ui.EntityField;
 import ui.ErrorBox;
 import ui.Utility;
+import ui.XMLParser;
 import ui.manager.ObjectManager;
 
 import java.io.FileInputStream;
@@ -52,7 +52,7 @@ public class CreateNewTypeWindow extends Stage {
     private TextField myTextField;
     private Node myButtonNode;
     private Pane mySelectedImagePane;
-    private DefaultTypeXMLReaderFactory myDefaultTypesFactory;
+    private XMLParser myDefaultTypesFactory;
     private String mySelectedImageName;
     private Entity myUserCreatedEntity;
 
@@ -94,7 +94,7 @@ public class CreateNewTypeWindow extends Stage {
         myTextField = new TextField();
         myButtonNode = new HBox();
         mySelectedImagePane = new Pane();
-        myDefaultTypesFactory = new DefaultTypeXMLReaderFactory();
+        myDefaultTypesFactory = new XMLParser();
         mySelectedImageName = "";
         myUserCreatedEntity = null;
     }

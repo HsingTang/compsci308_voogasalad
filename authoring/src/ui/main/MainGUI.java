@@ -270,7 +270,7 @@ public class MainGUI {
         try {
             Game exportableGame = translator.saveGame();
             myGameDataManager.saveGameData(myGameData.getTitle(), myGameData.getAuthorName(), exportableGame);
-            myGameDataManager.saveGameInfo(myGameData.getTitle(), myGameData.getAuthorName(), myGameData);
+            myGameDataManager.saveGameCenterData(myGameData.getTitle(), myGameData.getAuthorName(), myGameData);
 
             saveFolderToDataBase(GENERAL_RESOURCES.getString("images_filepath"));
             saveFolderToDataBase(GENERAL_RESOURCES.getString("audio_filepath"));

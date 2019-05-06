@@ -6,16 +6,15 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 
-public class UserDataManager extends DataManager implements ExternalUserData {
+public class UserDataManager extends DataManager implements UserDataExternal {
 
     private static final String COULD_NOT_CREATE_USER = "Could not create user";
-    private DatabaseEngine myDatabaseEngine;
 
     /**
      * DataManager constructor creates a new serializer and connects to the the Database
      */
     public UserDataManager() {
-        myDatabaseEngine = DatabaseEngine.getInstance();
+        super();
     }
 
     /**
@@ -46,17 +45,6 @@ public class UserDataManager extends DataManager implements ExternalUserData {
     @Override
     public boolean validateUser(String userName, String password) {
         return myDatabaseEngine.authenticateUser(userName, password);
-    }
-
-    /**
-     * Removes a user account
-     *
-     * @param userName user name of the user to remove
-     * @throws SQLException if operation fails
-     */
-    @Override
-    public void removeUser(String userName) throws SQLException {
-        myDatabaseEngine.removeUser(userName);
     }
 
     /**

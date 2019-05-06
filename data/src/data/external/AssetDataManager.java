@@ -5,15 +5,13 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Map;
 
-public class AssetDataManager extends DataManager implements ExternalAssetData {
-
-    private DatabaseEngine myDatabaseEngine;
+public class AssetDataManager extends DataManager implements AssetDataExternal {
 
     /**
      * DataManager constructor creates a new serializer and connects to the the Database
      */
     public AssetDataManager() {
-        myDatabaseEngine = DatabaseEngine.getInstance();
+        super();
     }
 
     /**
@@ -58,30 +56,6 @@ public class AssetDataManager extends DataManager implements ExternalAssetData {
     @Override
     public InputStream loadImage(String imageName) {
         return myDatabaseEngine.loadImage(imageName);
-    }
-
-    /**
-     * Removes an image from the database
-     *
-     * @param imageName name of the image to remove
-     * @return true if the image was successfully removed
-     * @throws SQLException if operation fails
-     */
-    @Override
-    public boolean removeImage(String imageName) throws SQLException {
-        return myDatabaseEngine.removeImage(imageName);
-    }
-
-    /**
-     * Removes a sound from the database
-     *
-     * @param soundName name of the sound to remove
-     * @return true if the sound was successfully removed
-     * @throws SQLException if operation fails
-     */
-    @Override
-    public boolean removeSound(String soundName) throws SQLException {
-        return myDatabaseEngine.removeSound(soundName);
     }
 
     /**

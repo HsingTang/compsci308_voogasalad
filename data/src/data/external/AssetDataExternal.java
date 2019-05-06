@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Map;
 
-public interface ExternalAssetData {
+public interface AssetDataExternal {
     /**
      * Saves an image to the database
      *
@@ -37,24 +37,6 @@ public interface ExternalAssetData {
      * @return an input stream of image data to be converted to an image object
      */
     InputStream loadImage(String imageName);
-
-    /**
-     * Removes an image from the database
-     *
-     * @param imageName name of the image to remove
-     * @return true if the image was successfully removed
-     * @throws SQLException if operation fails
-     */
-    boolean removeImage(String imageName) throws SQLException;
-
-    /**
-     * Removes a sound from the database
-     *
-     * @param soundName name of the sound to remove
-     * @return true if the sound was successfully removed
-     * @throws SQLException if operation fails
-     */
-    boolean removeSound(String soundName) throws SQLException;
 
     /**
      * Loads all the images involved in a game specified by prefix

@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface ExternalUserData {
+public interface UserDataExternal {
     /**
      * Creates a user in the data base
      *
@@ -23,14 +23,6 @@ public interface ExternalUserData {
      * @return true if valid user name and password combination
      */
     boolean validateUser(String userName, String password);
-
-    /**
-     * Removes a user account
-     *
-     * @param userName user name of the user to remove
-     * @throws SQLException if operation fails
-     */
-    void removeUser(String userName) throws SQLException;
 
     /**
      * Loads all the names of the games that a user has created

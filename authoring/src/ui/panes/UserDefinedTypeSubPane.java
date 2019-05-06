@@ -42,13 +42,12 @@ public class UserDefinedTypeSubPane extends GridPane {
     }
 
     private void setUpChangeListening(Label label) {
-        myAuthoringEntity.getPropertyMap().addListener(new MapChangeListener<Enum, String>() {
-            @Override
-            public void onChanged(Change<? extends Enum, ? extends String> change) {
-                if(change.getKey().equals(EntityField.LABEL)){
-                    label.setText(change.getValueAdded());
-                }
-            }
-        });
+        myAuthoringEntity.getPropertyMap().addListener((MapChangeListener<Enum, String>) change -> updateLabel(label, change));
+    }
+
+    private void updateLabel(Label label, MapChangeListener.Change<? extends Enum, ? extends String> change) {
+        if(change.getKey().equals(EntityField.LABEL)){
+            label.setText(change.getValueAdded());
+        }
     }
 }

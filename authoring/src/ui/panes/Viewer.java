@@ -3,14 +3,13 @@ package ui.panes;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.MapChangeListener;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -27,13 +26,10 @@ import ui.Propertable;
 import ui.Utility;
 import ui.manager.ObjectManager;
 
-import java.awt.*;
 import java.io.FileInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 
@@ -46,6 +42,7 @@ import java.util.ResourceBundle;
 public class Viewer extends ScrollPane {
     private StackPane myStackPane;
     private static final int CELL_SIZE = 50;
+    private static final double HALF = .5;
     private Double myRoomHeight;
     private Double myRoomWidth;
     private boolean isDragOnView;
@@ -54,7 +51,6 @@ public class Viewer extends ScrollPane {
     private AuthoringEntity myDraggedAuthoringEntity;
     private ObjectProperty<Propertable> mySelectedEntityProperty;
     private UserCreatedTypesPane myUserCreatedPane;
-    private static final ResourceBundle GENERAL_RESOURCES = ResourceBundle.getBundle("authoring_general");
     private Pane myLinesPane;
     private String myBackgroundFileName;
     private static final ResourceBundle RESOURCES = ResourceBundle.getBundle("viewer");
@@ -79,31 +75,11 @@ public class Viewer extends ScrollPane {
         myAuthoringLevel = authoringLevel;
         initializeAndFormatVariables();
         addAllExistingEntities(authoringLevel);
+        initializeBackground(authoringLevel);
         myAuthoringLevel.getPropertyMap().addListener((MapChangeListener<? super Enum, ? super String>) change ->
                 handleChange(change));
-        setupAcceptDragEvents();
-        setupDragDropped();
-        setRoomSize();
-        updateGridLines();
-        if (authoringLevel.getPropertyMap().get(LevelField.BACKGROUND) != null)
-            updateBackground(authoringLevel.getPropertyMap().get(LevelField.BACKGROUND));
-    }
+        setupViewerEnvironment();
 
-    private void addAllExistingEntities(AuthoringLevel authoringLevel) {
-        List<AuthoringEntity> authoringEntityList = authoringLevel.getEntities();
-        authoringEntityList.sort((o1, o2) -> {
-            int firstZ = (int) Double.parseDouble(o1.getPropertyMap().get(EntityField.Z));
-            int secondZ = (int) Double.parseDouble(o2.getPropertyMap().get(EntityField.Z));
-            return firstZ - secondZ;
-        });
-
-        for(AuthoringEntity authoringEntity : authoringEntityList){
-            String imagePath = authoringEntity.getPropertyMap().get(EntityField.IMAGE);
-            FileInputStream fileInputStream = Utility.makeImageAssetInputStream(imagePath); //closed
-            ImageWithEntity imageWithEntity = new ImageWithEntity(fileInputStream, authoringEntity); //closed
-            Utility.closeInputStream(fileInputStream); //closed
-            addImage(imageWithEntity);
-        }
     }
 
     private void initializeAndFormatVariables() {
@@ -116,6 +92,44 @@ public class Viewer extends ScrollPane {
         this.setContent(myStackPane);
         this.getStyleClass().add(SHEET);
     }
+
+    private void setupViewerEnvironment() {
+        setupAcceptDragEvents();
+        setRoomSize();
+        updateGridLines();
+        myStackPane.setOnDragDropped(dragEvent -> handleDragDropped(dragEvent));
+    }
+
+    private void initializeBackground(AuthoringLevel authoringLevel) {
+        if (authoringLevel.getPropertyMap().get(LevelField.BACKGROUND) != null) {
+            updateBackground(authoringLevel.getPropertyMap().get(LevelField.BACKGROUND));
+        }
+    }
+
+    private void addAllExistingEntities(AuthoringLevel authoringLevel) {
+        List<AuthoringEntity> authoringEntityList = authoringLevel.getEntities();
+        sortEntityListByZ(authoringEntityList);
+        for(AuthoringEntity authoringEntity : authoringEntityList){
+            addEntity(authoringEntity);
+        }
+    }
+
+    private void sortEntityListByZ(List<AuthoringEntity> authoringEntityList) {
+        authoringEntityList.sort((o1, o2) -> {
+            int firstZ = (int) Double.parseDouble(o1.getPropertyMap().get(EntityField.Z));
+            int secondZ = (int) Double.parseDouble(o2.getPropertyMap().get(EntityField.Z));
+            return firstZ - secondZ;
+        });
+    }
+
+    private void addEntity(AuthoringEntity authoringEntity) {
+        String imagePath = authoringEntity.getPropertyMap().get(EntityField.IMAGE);
+        FileInputStream fileInputStream = Utility.makeImageAssetInputStream(imagePath);
+        ImageWithEntity imageWithEntity = new ImageWithEntity(fileInputStream, authoringEntity);
+        Utility.closeInputStream(fileInputStream);
+        addImage(imageWithEntity);
+    }
+
 
     private void updateZField() {
         int objectCount = 0;
@@ -135,6 +149,7 @@ public class Viewer extends ScrollPane {
         }
     }
 
+    @SuppressWarnings("unused")
     private void updateWidth(String width){
         myRoomWidth = Double.parseDouble(width);
         updateGridLines();
@@ -143,6 +158,7 @@ public class Viewer extends ScrollPane {
         myStackPane.setMaxWidth(myRoomWidth);
     }
 
+    @SuppressWarnings("unused")
     private void updateHeight(String height){
         myRoomHeight = Double.parseDouble(height);
         updateGridLines();
@@ -153,12 +169,12 @@ public class Viewer extends ScrollPane {
 
     private void updateBackground(String filename){
         if(filename != null){
-            FileInputStream fileInputStream = Utility.makeImageAssetInputStream(filename);  //closed
-            Image image = new Image(fileInputStream, myRoomWidth, myRoomHeight, false, false); //closed
+            FileInputStream fileInputStream = Utility.makeImageAssetInputStream(filename);
+            Image image = new Image(fileInputStream, myRoomWidth, myRoomHeight, false, false);
             BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, null, null);
             myStackPane.setBackground(new Background(backgroundImage));
             myBackgroundFileName = filename;
-            Utility.closeInputStream(fileInputStream); //closed
+            Utility.closeInputStream(fileInputStream);
         }
     }
 
@@ -166,35 +182,44 @@ public class Viewer extends ScrollPane {
         myStackPane.setOnDragOver(dragEvent -> dragEvent.acceptTransferModes(TransferMode.ANY));
     }
 
-    private void setupDragDropped() {
-        myStackPane.setOnDragDropped(dragEvent -> {
-            AuthoringEntity authoringEntity;
-            ImageWithEntity imageWithEntity;
-            if(isDragOnView){
-                authoringEntity = myDraggedAuthoringEntity;
-                imageWithEntity = Utility.createImageWithEntity(authoringEntity);
-                isDragOnView = false;
-            }
-            else{
-                authoringEntity = myUserCreatedPane.getDraggedAuthoringEntity();
-                String imageName = authoringEntity.getPropertyMap().get(EntityField.IMAGE);
-                authoringEntity = new AuthoringEntity(authoringEntity);
-                myObjectManager.addEntityInstance(authoringEntity);
-                authoringEntity.getPropertyMap().put(EntityField.IMAGE, imageName);
-                imageWithEntity = Utility.createImageWithEntity(authoringEntity);
-                addImage(imageWithEntity);
-            }
-            Image image = imageWithEntity.getImage();
-            authoringEntity.getPropertyMap().put(EntityField.X, "" + snapToGrid(dragEvent.getX() - image.getWidth()/2));
-            authoringEntity.getPropertyMap().put(EntityField.Y, "" + snapToGrid(dragEvent.getY() - image.getHeight()/2));
-            mySelectedEntityProperty.setValue(authoringEntity);
-        });
+    private void handleDragDropped(DragEvent dragEvent) {
+        ImageWithEntity imageWithEntity;
+        if(isDragOnView){
+            imageWithEntity = getImageDraggedWithinViewer();
+        }
+        else{
+            imageWithEntity = getImageDraggedFromTypesPane();
+        }
+        Image image = imageWithEntity.getImage();
+        imageWithEntity.getAuthoringEntity().getPropertyMap().put(EntityField.X, Double.toString(snapToGrid(dragEvent.getX() - image.getWidth()/2)));
+        imageWithEntity.getAuthoringEntity().getPropertyMap().put(EntityField.Y, Double.toString(snapToGrid(dragEvent.getY() - image.getHeight()/2)));
+        mySelectedEntityProperty.setValue(imageWithEntity.getAuthoringEntity());
+    }
+
+    private ImageWithEntity getImageDraggedFromTypesPane() {
+        ImageWithEntity imageWithEntity;
+        AuthoringEntity authoringEntity = myUserCreatedPane.getDraggedAuthoringEntity();
+        String imageName = authoringEntity.getPropertyMap().get(EntityField.IMAGE);
+        authoringEntity = new AuthoringEntity(authoringEntity);
+        myObjectManager.addEntityInstance(authoringEntity);
+        authoringEntity.getPropertyMap().put(EntityField.IMAGE, imageName);
+        imageWithEntity = Utility.createImageWithEntity(authoringEntity);
+        addImage(imageWithEntity);
+        return imageWithEntity;
+    }
+
+    private ImageWithEntity getImageDraggedWithinViewer() {
+        ImageWithEntity imageWithEntity;
+        AuthoringEntity authoringEntity = myDraggedAuthoringEntity;
+        imageWithEntity = Utility.createImageWithEntity(authoringEntity);
+        isDragOnView = false;
+        return imageWithEntity;
     }
 
     private double snapToGrid(double value){
         double valueRemainder = value % CELL_SIZE;
         double result;
-        if(valueRemainder >= CELL_SIZE/2){
+        if(valueRemainder >= CELL_SIZE*HALF){
             result = value + CELL_SIZE - valueRemainder;
         }
         else{
@@ -209,69 +234,75 @@ public class Viewer extends ScrollPane {
         applyDragHandler(imageView);
         applyRightClickHandler(imageView);
         myStackPane.getChildren().add(imageView);
-        myObjectManager.getTypeMap().addListener(new MapChangeListener<AuthoringEntity, String>() {
-            @Override
-            public void onChanged(Change<? extends AuthoringEntity, ? extends String> change) {
-                if(change.wasRemoved()){
-                    if(imageView.getAuthoringEntity().getPropertyMap().get(EntityField.LABEL).equals(change.getKey().getPropertyMap().get(EntityField.LABEL))){
-                        myStackPane.getChildren().remove(imageView);
-                    }
+        myObjectManager.getTypeMap().addListener((MapChangeListener<AuthoringEntity, String>) change -> handleLabelChange(imageView, change));
+    }
 
-                }
-            }
-        });
+    private void handleLabelChange(ImageWithEntity imageView, MapChangeListener.Change<? extends AuthoringEntity, ? extends String> change) {
+        String originalLabel = imageView.getAuthoringEntity().getPropertyMap().get(EntityField.LABEL);
+        String newLabel = change.getKey().getPropertyMap().get(EntityField.LABEL);
+        if(change.wasRemoved() && originalLabel.equals(newLabel)){
+            myStackPane.getChildren().remove(imageView);
+        }
     }
 
     private void applyRightClickHandler(ImageWithEntity imageView) {
         ContextMenu contextMenu = new ContextMenu();
         String[] reflectionInfo = RESOURCES.getString("ContextMenu").split(";");
         for(String itemInfo : reflectionInfo){
-            String text = itemInfo.split(",")[0];
-            String methodName = itemInfo.split(",")[1];
-            MenuItem menuItem = new MenuItem();
-            menuItem.setText(text);
-            //TODO: replace with Duvall's Utility reflection
-            try {
-                Method method = this.getClass().getDeclaredMethod(methodName, ImageWithEntity.class);
-                menuItem.setOnAction(actionEvent -> {
-                    try {
-                        method.invoke(this, imageView);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        ErrorBox error = new ErrorBox("Viewer Error", "Error applying right click handler");
-                        error.display();
-                    }
-                });
-            } catch (NoSuchMethodException e) {
-                //TODO
-            }
+            MenuItem menuItem = makeAndInitializeMenuItem(imageView, itemInfo);
             contextMenu.getItems().add(menuItem);
         }
         imageView.setOnContextMenuRequested(contextMenuEvent -> contextMenu.show(imageView, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY()));
 
     }
 
+    private MenuItem makeAndInitializeMenuItem(ImageWithEntity imageView, String itemInfo) {
+        String text = itemInfo.split(",")[0];
+        String methodName = itemInfo.split(",")[1];
+        MenuItem menuItem = new MenuItem();
+        menuItem.setText(text);
+        try {
+            Method method = this.getClass().getDeclaredMethod(methodName, ImageWithEntity.class);
+            menuItem.setOnAction(actionEvent ->
+                    handleItemSelected(imageView, method));
+        } catch (NoSuchMethodException e) {
+            ErrorBox error = new ErrorBox(RESOURCES.getString("ErrorHeader"), RESOURCES.getString("ErrorContent"));
+            error.display();
+        }
+        return menuItem;
+    }
+
+    private void handleItemSelected(ImageWithEntity imageView, Method method) {
+        try {
+            method.invoke(this, imageView);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            ErrorBox error = new ErrorBox(RESOURCES.getString("ErrorHeader"), RESOURCES.getString("ErrorContent"));
+            error.display();
+        }
+    }
+
+    @SuppressWarnings("unused")
     private void handleToFront(ImageWithEntity imageWithEntity){
         imageWithEntity.toFront();
     }
 
+    @SuppressWarnings("unused")
     private void handleToBack(ImageWithEntity imageWithEntity){
         imageWithEntity.toBack();
         updateGridLines();
     }
 
+    @SuppressWarnings("unused")
     private void handleDelete(ImageWithEntity imageWithEntity){
         myStackPane.getChildren().remove(imageWithEntity);
         myObjectManager.removeEntityInstance(imageWithEntity.getAuthoringEntity());
     }
 
     private void applyDragHandler(ImageWithEntity imageWithEntity) {
-        imageWithEntity.setOnDragDetected(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                Utility.setupDragAndDropImage(imageWithEntity);
-                isDragOnView = true;
-                myDraggedAuthoringEntity = imageWithEntity.getAuthoringEntity();
-            }
+        imageWithEntity.setOnDragDetected(mouseEvent -> {
+            Utility.setupDragAndDropImage(imageWithEntity);
+            isDragOnView = true;
+            myDraggedAuthoringEntity = imageWithEntity.getAuthoringEntity();
         });
     }
 
@@ -293,27 +324,22 @@ public class Viewer extends ScrollPane {
         myLinesPane.getChildren().clear();
         myLinesPane.setMaxSize(myRoomWidth, myRoomHeight);
         myLinesPane.setMinSize(myRoomWidth, myRoomHeight);
-        addHorizontalLines();
-        addVerticalLines();
+        addGridLines();
         myStackPane.getChildren().add(myLinesPane);
         myLinesPane.toBack();
     }
 
-    private void addHorizontalLines() {
-        int x1 = 0;
-        for(int k = 0; k < myRoomHeight/CELL_SIZE; k++){
-            int y = k * CELL_SIZE;
-            Line tempLine = new Line(x1, y, myRoomWidth, y);
-            myLinesPane.getChildren().add(tempLine);
-        }
-    }
-
-    private void addVerticalLines(){
-        int y1 = 0;
-        for(int k = 0; k < myRoomWidth/CELL_SIZE; k++){
-            int x = k * CELL_SIZE;
-            Line tempLine = new Line(x, y1, x, myRoomHeight);
-            myLinesPane.getChildren().add(tempLine);
+    private void addGridLines() {
+        for(int k = 0; (k < myRoomHeight/CELL_SIZE || k < myRoomWidth/CELL_SIZE); k++) {
+            int end = k * CELL_SIZE;
+            if (k < myRoomHeight / CELL_SIZE) {
+                Line xLine = new Line(0, end, myRoomWidth, end);
+                myLinesPane.getChildren().add(xLine);
+            }
+            if (k < myRoomWidth / CELL_SIZE) {
+                Line yLine = new Line(end, 0, end, myRoomHeight);
+                myLinesPane.getChildren().add(yLine);
+            }
         }
     }
 

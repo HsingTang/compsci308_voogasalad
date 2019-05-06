@@ -3,6 +3,7 @@ package ui.windows;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
@@ -27,6 +28,7 @@ public class AudioManager extends AssetManager {
     private static final String TITLE_KEY = "AudioTitle";
     private static final String ASSET_AUDIO_FOLDER_PATH = GENERAL_RESOURCES.getString("audio_filepath");
     private Map<Pane, ListView> myMap;
+    private static final int NUMBER_OF_MOUSE_CLICKS_TO_PLAY = 2;
 
     /**
      * This is a default constructor that can be used whenever there is no level to bind to and
@@ -70,16 +72,7 @@ public class AudioManager extends AssetManager {
         Label text = new Label(extractDisplayName(file.getName()));
         VBox vBox = new VBox(text);
         vBox.setFillWidth(true);
-        vBox.setOnMouseClicked(mouseEvent -> {
-            if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-                mySelectedAssetName = file.getName();
-                if(mouseEvent.getClickCount() == 2){
-                    Media sound = new Media(file.toURI().toString());
-                    MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                    mediaPlayer.play();
-                }
-            }
-        });
+        vBox.setOnMouseClicked(mouseEvent -> handleDoubleMouseClick(file, mouseEvent));
         if(listView.getItems().contains(vBox)){
             listView.getItems().remove(vBox);
         }
@@ -88,6 +81,15 @@ public class AudioManager extends AssetManager {
             pane.getChildren().remove(listView);
         }
         pane.getChildren().add(listView);
+    }
+
+    private void handleDoubleMouseClick(File file, MouseEvent mouseEvent) {
+        if(mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.getClickCount() == NUMBER_OF_MOUSE_CLICKS_TO_PLAY){
+            mySelectedAssetName = file.getName();
+            Media sound = new Media(file.toURI().toString());
+            MediaPlayer mediaPlayer = new MediaPlayer(sound);
+            mediaPlayer.play();
+        }
     }
 
     /**

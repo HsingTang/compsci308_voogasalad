@@ -88,16 +88,6 @@ public class CreateNewTypeWindow extends Stage {
         return  myUserCreatedEntity;
     }
 
-    /**
-     * Using this name, the category and a new entity can be created from the DefaultXMLReaderFactory
-     * @return String of the name of the default type it is based on
-     */
-    public String getDefaultTypeName(){
-        String defaultTypeName = myDefaultTypeNameComboBox.getValue().toString();
-        return defaultTypeName;
-    }
-
-
     private void initializeVariables() {
         myDefaultTypeNameComboBox = new ComboBox();
         myCategoryComboBox = new ComboBox();
@@ -139,7 +129,7 @@ public class CreateNewTypeWindow extends Stage {
             // Do nothing
         }
         ImageView imageView = new ImageView(new Image(fileInputStream, PICTURE_SIZE, PICTURE_SIZE, false, false));  //closed
-        Utility.closeInputStream(fileInputStream);  //closed
+        Utility.closeInputStream(fileInputStream);
         mySelectedImagePane.getChildren().add(imageView);
         myGridPane.add(mySelectedImagePane, 1, myGridPane.getRowCount()-1);
 

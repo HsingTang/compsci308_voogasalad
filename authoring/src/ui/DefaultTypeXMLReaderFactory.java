@@ -2,6 +2,7 @@ package ui;
 
 import engine.external.Entity;
 import engine.external.component.Component;
+import engine.external.component.NameComponent;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -120,11 +121,7 @@ public class DefaultTypeXMLReaderFactory {
             }
             //Tries assuming the component parameter can use Class.parseClass(String s) eg. Double.parseDouble(String s)
             catch (IllegalArgumentException e) {
-                String[] brokenUpClass = constructorParamClassType.toString().split("\\.");
-                String className = brokenUpClass[brokenUpClass.length-1];
-                Class parseClass = Class.forName(constructorParamClassType.toString().split(" ")[1]);
-                Method method = parseClass.getMethod((RESOURCES.getString("methodSuffix") + className), String.class);
-                component = (Component) constructor.newInstance(method.invoke(this, entry.getValue()));
+                component = tryParseParameterType(entry, constructorParamClassType, constructor);
             }
             resultEntity.addComponent(component);
         } catch (Exception e) {
@@ -133,20 +130,35 @@ public class DefaultTypeXMLReaderFactory {
         }
     }
 
+    private Component tryParseParameterType(Map.Entry<String, String> entry, Class constructorParamClassType, Constructor constructor) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
+        Component component;
+        String[] brokenUpClass = constructorParamClassType.toString().split("\\.");
+        String className = brokenUpClass[brokenUpClass.length-1];
+        Class parseClass = Class.forName(constructorParamClassType.toString().split(" ")[1]);
+        Method method = parseClass.getMethod((RESOURCES.getString("methodSuffix") + className), String.class);
+        component = (Component) constructor.newInstance(method.invoke(this, entry.getValue()));
+        return component;
+    }
+
 
     private void fillMaps() {
         for (int k = 0; k < myRootsList.size(); k++) {
             Element currentElement = (Element) myRootsList.get(k);
             Map<String, String> componentsMap = fillComponentsMap(currentElement);
             if (hasRequiredInformation(componentsMap, currentElement)) {
-                String name = componentsMap.get("NameComponent");
-                myNameToComponents.put(name, componentsMap);
-                NodeList categoryList = currentElement.getElementsByTagName("Category");
-                String category = categoryList.item(categoryList.getLength() - 1).getTextContent();
-                myNameToCategory.put(name, category);
+                addComponent(currentElement, componentsMap);
             }
         }
     }
+
+    private void addComponent(Element currentElement, Map<String, String> componentsMap) {
+        String name = componentsMap.get(NameComponent.class.getSimpleName());
+        myNameToComponents.put(name, componentsMap);
+        NodeList categoryList = currentElement.getElementsByTagName(RESOURCES.getString("categoryTag"));
+        String category = categoryList.item(categoryList.getLength() - 1).getTextContent();
+        myNameToCategory.put(name, category);
+    }
+
     private void fillRootsList(){
         File assetFolder = new File(FOLDER_PATH);
         File[] files = assetFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(EXTENSIONS));
@@ -166,11 +178,11 @@ public class DefaultTypeXMLReaderFactory {
     }
 
     private boolean hasRequiredInformation(Map<String, String> componentsMap, Element root) {
-        if(!componentsMap.containsKey("NameComponent")){
+        if(!componentsMap.containsKey(NameComponent.class.getSimpleName())){
             makeAndDisplayError("NoName");
             return false;
         }
-        else if(root.getElementsByTagName("Category").getLength() == 0){
+        else if(root.getElementsByTagName(RESOURCES.getString("categoryTag")).getLength() == 0){
             makeAndDisplayError("NoCategory");
             return false;
         }
@@ -178,21 +190,25 @@ public class DefaultTypeXMLReaderFactory {
     }
 
     private Map<String, String> fillComponentsMap(Element root) {
-        NodeList components = root.getElementsByTagName("Components");
+        NodeList components = root.getElementsByTagName(RESOURCES.getString("Components"));
         Map<String, String> componentsMap = new HashMap<>();
         for(int k = 0; k < components.getLength(); k++) {
             Node currentComponentList = components.item(k);
             NodeList subComponentsList = currentComponentList.getChildNodes();
-            for (int i = 0; i < subComponentsList.getLength(); i++) {
-                Node node = subComponentsList.item(i);
-                if(node.getNodeType() == Node.ELEMENT_NODE){
-                    String componentName = node.getNodeName();
-                    String componentValue = node.getTextContent();
-                    componentsMap.put(componentName, componentValue);
-                }
-            }
+            addSubComponents(componentsMap, subComponentsList);
         }
         return componentsMap;
+    }
+
+    private void addSubComponents(Map<String, String> componentsMap, NodeList subComponentsList) {
+        for (int i = 0; i < subComponentsList.getLength(); i++) {
+            Node node = subComponentsList.item(i);
+            if(node.getNodeType() == Node.ELEMENT_NODE){
+                String componentName = node.getNodeName();
+                String componentValue = node.getTextContent();
+                componentsMap.put(componentName, componentValue);
+            }
+        }
     }
 
     private void makeAndDisplayError(String resourceKey){

@@ -1,6 +1,5 @@
 package ui.windows;
 
-import data.external.GameCenterData;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
@@ -172,10 +171,10 @@ public class ImageManager extends AssetManager {
     private ImageView createImageView(File temp) {
         ImageView imageView = new ImageView();
         try {
-            FileInputStream fileInputStream = new FileInputStream(temp.getPath());  //closed
-            Image image = new Image( fileInputStream);  //closed
+            FileInputStream fileInputStream = new FileInputStream(temp.getPath());
+            Image image = new Image( fileInputStream);
             imageView.setImage(image);
-            Utility.closeInputStream(fileInputStream);  //closed
+            Utility.closeInputStream(fileInputStream);
         } catch (FileNotFoundException e) {
             //The program is iterating through files found in the Assets folder
             //If a file is not found, it shouldn't be included so returning a blank ImageView is ok

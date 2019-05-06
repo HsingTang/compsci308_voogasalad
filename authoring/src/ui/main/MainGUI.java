@@ -352,7 +352,8 @@ public class MainGUI {
             loadAssets(GENERAL_RESOURCES.getString("audio_filepath"), defaultAudio);
             loadAssets((GENERAL_RESOURCES.getString("audio_filepath")), userUploadedAudio);
         } catch (SQLException e) {
-            //TODO deal with this
+            ErrorBox errorBox = new ErrorBox(SAVING_ASSETS_RESOURCES.getString("SQLErrorHeader"),SAVING_ASSETS_RESOURCES.getString("SQLErrorContent"));
+            errorBox.display();
         }
     }
 
@@ -365,21 +366,9 @@ public class MainGUI {
                 inputStream.close();
             }
         } catch (IOException e) {
-            //TODO: handle error
+            ErrorBox errorBox = new ErrorBox(SAVING_ASSETS_RESOURCES.getString("IOErrorHeader"), SAVING_ASSETS_RESOURCES.getString("IOErrorContent"));
+            errorBox.display();
         }
     }
 
-    /**
-     * This method takes in the path to the directory wished to be cleared and then
-     * iterates through each file and deletes it
-     * @param outerDirectoryPath
-     */
-    public void clearFolder(String outerDirectoryPath){
-        DatabaseEngine.getInstance().close();
-        File outerDirectory = new File(outerDirectoryPath);
-        for(File file : outerDirectory.listFiles()){
-            file.delete();
-        }
-        DatabaseEngine.getInstance().open();
-    }
 }

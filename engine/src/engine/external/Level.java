@@ -109,8 +109,8 @@ public class Level implements Serializable {
     }
 
     /**
-     * Sets music file path to play during gameplay
-     * @param musicResource String music file path
+     * Sets the background music for the Game Level
+     * @param musicResource String argument used to retrieve the music file from database
      */
     public void setMusic(String musicResource) {
         myMusic = musicResource;
@@ -133,8 +133,7 @@ public class Level implements Serializable {
     }
 
     /**
-     * Returns background music file path for Level
-     * @return String music file path
+     * @return String argument with which the background music could be retrieved from database
      */
     public String getMusic() {
         return myMusic;

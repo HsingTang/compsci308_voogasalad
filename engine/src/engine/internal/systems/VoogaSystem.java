@@ -18,6 +18,7 @@ import java.util.Collections;
  * such that its relevant Component values could be managed by the System
  */
 public abstract class VoogaSystem {
+    // Define the Component classes as static fields in this super class to make it more convenient for sub-classes to access the Component values
     static final Class<? extends Component> X_POSITION_COMPONENT_CLASS = XPositionComponent.class;
     static final Class<? extends Component> Y_POSITION_COMPONENT_CLASS = YPositionComponent.class;
     static final Class<? extends Component> X_VELOCITY_COMPONENT_CLASS = XVelocityComponent.class;
@@ -118,10 +119,24 @@ public abstract class VoogaSystem {
         return Collections.unmodifiableCollection(myInputs);
     }
 
+    /**
+     * Wrapper method for retrieving the value stored in a Component's myValue field using the default getValue method
+     * @param componentClazz class type of the target Component
+     * @param entity the target Entity whose Component value we want to retrieve
+     * @return the value stored at myValue field of the Component
+     */
     protected Object getComponentValue(Class<? extends Component> componentClazz,Entity entity){
         return entity.getComponent(componentClazz).getValue();
     }
 
+    /**
+     * Wrapper method for retrieving the value stored in a Component by calling the specified method
+     * @param componentClazz class type of the target Component
+     * @param entity the target Entity whose Component value we want to retrieve
+     * @param method name of the method that should be called to retrieve the Component value
+     *               e.g. "getOldValue" on XPositionComponent for retrieving the previous XPosition value
+     * @return the value stored at a desired field of the Component accessible via the method specified by the String argument
+     */
     protected Object getComponentValue(Class<? extends Component> componentClazz,Entity entity, String method){
         return Reflection.callMethod(entity.getComponent(componentClazz),method);
     }

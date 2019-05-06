@@ -116,15 +116,21 @@ public class Engine {
         return myLevelWidth;
     }
 
+    // Loop over the System class names in the properties file, instantiate the concrete Systems, and store the Systems
+    // mapped by their corresponding updating order on each game loop
     private void initSystemMap() {
         mySystems = new HashMap<>();
-        Enumeration<String> enumSystems= SYSTEM_ORDER_RESOURCES.getKeys();
+        Enumeration<String> enumSystems= SYSTEM_ORDER_RESOURCES.getKeys(); //
         while (enumSystems.hasMoreElements()){
             Integer order = Integer.valueOf(enumSystems.nextElement());
             initSystem(order,SYSTEM_ORDER_RESOURCES.getString(String.valueOf(order)));
         }
     }
 
+    // Use the reflection utility module's wrapper methods to instantiate the concrete System classes with the
+    // corresponding set of required Components. EventHandlerSystem has a different constructor from the other Systems
+    // and thus is instantiated differently, while SaveGameSystem and CollisionSystem have special methods (aside from
+    // the generic update() call) in order to serve special purposes, so they need to be stored as instance fields
     private void initSystem(Integer order, String systemName) throws ReflectionException{
         try {
             Collection<Class<? extends Component>> systemComponents = retrieveComponentClazz(SYSTEM_COMPONENTS_RESOURCES,systemName);
@@ -146,6 +152,8 @@ public class Engine {
         }
     }
 
+    // Read the class names of required Components for a System from the Resource Bundle, and uses reflection to
+    // instantiate the collection of Component classes that would be passed into the System's constructor.
     private Collection<Class<? extends Component>> retrieveComponentClazz(ResourceBundle resource, String systemName) throws ReflectionException {
         String[] componentArr = resource.getString(systemName).split(",");
         ArrayList<Class<? extends Component>> componentList = new ArrayList<>();

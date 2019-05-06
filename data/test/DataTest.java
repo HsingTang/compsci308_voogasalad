@@ -1,4 +1,5 @@
 import data.external.AssetDataManager;
+import data.external.DatabaseCleaner;
 import data.external.DatabaseEngine;
 import data.external.GameDataManager;
 import data.external.GameRating;
@@ -68,17 +69,18 @@ public class DataTest {
 
     private void clearDatabase() {
         try {
-            myGameDataManager.removeGame(myFakeGameName1, myUserName1);
-            myGameDataManager.removeGame(myFakeGameName1, myUserName2);
-            myGameDataManager.removeGame(myFakeGameName2, myUserName1);
-            myGameDataManager.removeGame(myFakeGameName2, myUserName2);
-            myUserDataManager.removeUser(myUserName1);
-            myUserDataManager.removeUser(myUserName2);
-            myGameDataManager.removeRating(myFakeGameName1, myUserName1);
-            myGameDataManager.deleteCheckpoints(myUserName1, myFakeGameName1, myUserName1);
-            myGameDataManager.deleteCheckpoints(myUserName2, myFakeGameName1, myUserName1);
-            myGameDataManager.removeScores(myUserName1, myFakeGameName1, myUserName1);
-            myGameDataManager.removeScores(myUserName2, myFakeGameName1, myUserName1);
+            DatabaseCleaner databaseCleaner = new DatabaseCleaner();
+            databaseCleaner.removeGame(myFakeGameName1, myUserName1);
+            databaseCleaner.removeGame(myFakeGameName1, myUserName2);
+            databaseCleaner.removeGame(myFakeGameName2, myUserName1);
+            databaseCleaner.removeGame(myFakeGameName2, myUserName2);
+            databaseCleaner.removeUser(myUserName1);
+            databaseCleaner.removeUser(myUserName2);
+            databaseCleaner.removeRating(myFakeGameName1, myUserName1);
+            databaseCleaner.deleteCheckpoints(myUserName1, myFakeGameName1, myUserName1);
+            databaseCleaner.deleteCheckpoints(myUserName2, myFakeGameName1, myUserName1);
+            databaseCleaner.removeScores(myUserName1, myFakeGameName1, myUserName1);
+            databaseCleaner.removeScores(myUserName2, myFakeGameName1, myUserName1);
         } catch (SQLException exception) {
             // just debugging the test cases, does not get included
             exception.printStackTrace();
@@ -133,7 +135,8 @@ public class DataTest {
     public void testInvalidConnection() {
         // If the connection is closed, SQLExceptions will be thrown
         DatabaseEngine.getInstance().close();
-        assertThrows(SQLException.class, () -> myUserDataManager.removeUser(myUserName1));
+        DatabaseCleaner databaseCleaner = new DatabaseCleaner();
+        assertThrows(SQLException.class, () -> databaseCleaner.removeUser(myUserName1));
         DatabaseEngine.getInstance().open();
     }
 

@@ -18,6 +18,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import data.external.GameCenterData;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameList {
@@ -37,7 +39,12 @@ public class GameList {
      */
     public GameList(String user, double height) {
         myManager = new GameDataManager();
-        myGames = myManager.loadAllGameCenterDataObjects();
+        try {
+            myGames = myManager.loadAllGameCenterDataObjects();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            myGames = new ArrayList<>();
+        }
         myCurrentUser = user;
         myHeight = height;
         initializeDisplay();
@@ -51,7 +58,12 @@ public class GameList {
      */
     public GameList(String user, String desiredAuthor, double height) {
         myManager = new GameDataManager();
-        myGames = myManager.loadAllGameCenterDataObjects(desiredAuthor);
+        try {
+            myGames = myManager.loadAllGameCenterDataObjects(desiredAuthor);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            myGames = new ArrayList<>();
+        }
         myCurrentUser = user;
         myHeight = height;
         initializeDisplay();

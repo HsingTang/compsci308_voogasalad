@@ -162,7 +162,7 @@ public class CreateGameDisplay extends AnchorPane {
         try {
             String gameName = gameNames.getAccessibleText();
             Game gameObject = (Game)dataManager.loadGameData(gameName, myUserName);
-            GameCenterData myData = dataManager.loadGameInfo(gameName,myUserName);
+            GameCenterData myData = dataManager.loadGameCenterData(gameName,myUserName);
             openOldGame.switchScene(gameObject, myData);
         }
         catch (Exception e){

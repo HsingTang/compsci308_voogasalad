@@ -3,9 +3,6 @@ package data.external;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 import data.Serializers.Serializer;
 import data.Serializers.XStreamSerializer;
-import data.internal.FileManager;
-
-import java.io.*;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -14,9 +11,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * DataManager is the wrapper class that allows other modules to interact with the database, saving and loading
- * games, images, and user information.  Whenever another module wants to access the database, it should use a
- * DataManager object and call the appropriate method
+ * GameDataManager is part of what used to be the DataManager class (before refactoring). The GameDataManager
+ * encapsulates the implementation decision of how game data gets serialized and stored away from the rest of the
+ * program. The DataManager class used to have too many responsibilities and as part of my code masterpiece I have
+ * refactored it into four different classes, the most substantial of which being the GameDataManager. The
+ * GameDataManager accesses the database, and delegates a lot of its responsibility to the database because that is
+ * our primary method of storing information, but if we wanted to switch how we stored our data, or any part of our
+ * data, the GameDataManager would make that very easy and would hide that decision from the rest of the program.
+ * Additionally, if we wanted to change how we serialized our games (using json instead of xml for example) the
+ * GameDataManager would be unaffected besides changing one line in the constructor to initialize mySerializer to a
+ * different object that implements the Serializer interface. Another part of the refactoring was to remove the xml
+ * specifics from this class to make the serialization process more flexible and easily changed.
  */
 public class GameDataManager extends DataManager implements GameDataExternal {
 
@@ -38,8 +43,8 @@ public class GameDataManager extends DataManager implements GameDataExternal {
      */
     @Override
     public void saveGameData(String gameName, String authorName, Object gameObject) throws SQLException {
-        String myRawXML = mySerializer.serialize(gameObject);
-        myDatabaseEngine.updateGameEntryData(gameName, authorName, myRawXML);
+        String serializedGameData = mySerializer.serialize(gameObject);
+        myDatabaseEngine.updateGameEntryData(gameName, authorName, serializedGameData);
     }
 
     /**
@@ -48,14 +53,15 @@ public class GameDataManager extends DataManager implements GameDataExternal {
      */
     @Override
     public List<GameCenterData> loadAllGameCenterDataObjects() throws SQLException {
-        List<String> gameInfoObjectXMLs = new ArrayList<>();
-        gameInfoObjectXMLs = myDatabaseEngine.loadAllGameInformationXMLs();
-        return deserializeGameInfoObjects(gameInfoObjectXMLs);
+        List<String> serializedGameCenterDataObjects = myDatabaseEngine.loadSerializedGameCenterDataObjects();
+        return deserializeGameCenterDataObjects(serializedGameCenterDataObjects);
     }
 
-    private List<GameCenterData> deserializeGameInfoObjects(List<String> serializedGameInfoObjects) {
+    // Takes in a list of serialized GameCenterData objects and returns a list of successfully deserialized
+    // GameCenterData objects
+    private List<GameCenterData> deserializeGameCenterDataObjects(List<String> serializedGameCenterDataObjects) {
         List<GameCenterData> gameInfoObjects = new ArrayList<>();
-        for (String serializedObject : serializedGameInfoObjects) {
+        for (String serializedObject : serializedGameCenterDataObjects) {
             try {
                 GameCenterData gameCenterDataToAdd = (GameCenterData) mySerializer.deserialize(serializedObject);
                 gameInfoObjects.add(gameCenterDataToAdd);
@@ -74,8 +80,8 @@ public class GameDataManager extends DataManager implements GameDataExternal {
      */
     @Override
     public void saveGameCenterData(String gameName, String authorName, GameCenterData gameInfoObject) throws SQLException {
-        String myRawXML = mySerializer.serialize(gameInfoObject);
-        myDatabaseEngine.updateGameEntryInfo(gameName, authorName, myRawXML);
+        String serializedGameCenterData = mySerializer.serialize(gameInfoObject);
+        myDatabaseEngine.updateGameEntryInfo(gameName, authorName, serializedGameCenterData);
     }
 
     /**
@@ -141,9 +147,8 @@ public class GameDataManager extends DataManager implements GameDataExternal {
      */
     @Override
     public List<GameCenterData> loadAllGameCenterDataObjects(String userName) throws SQLException {
-        List<String> gameInfoObjectXMLs = new ArrayList<>();
-        gameInfoObjectXMLs = myDatabaseEngine.loadAllGameInformationXMLs(userName);
-        return deserializeGameInfoObjects(gameInfoObjectXMLs);
+        List<String> serializedGameCenterDataObjects = myDatabaseEngine.loadSerializedGameCenterDataObjects(userName);
+        return deserializeGameCenterDataObjects(serializedGameCenterDataObjects);
     }
 
     /**

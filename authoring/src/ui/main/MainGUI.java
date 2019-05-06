@@ -276,7 +276,7 @@ public class MainGUI {
             saveFolderToDataBase(GENERAL_RESOURCES.getString("audio_filepath"));
 
             DatabaseEngine.getInstance().open();
-        } catch (UIException e) {
+        } catch (Exception e) {
             ErrorBox errorBox = new ErrorBox("Save Error", e.getMessage());
             errorBox.showAndWait();
         }

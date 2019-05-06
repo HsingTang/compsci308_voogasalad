@@ -105,7 +105,7 @@ public class DatabaseEngine {
     }
 
     List<String> loadAllGameInformationXMLs() throws SQLException {
-        return myGameInformationQuerier.loadAllGameInformationXMLs();
+        return myGameInformationQuerier.loadAllSerializedGameInformationObjects();
     }
 
     void updateGameEntryInfo(String gameName, String authorName, String myRawXML) throws SQLException {
@@ -189,7 +189,7 @@ public class DatabaseEngine {
     }
 
     List<String> loadAllGameInformationXMLs(String userName) throws SQLException {
-        return myGameInformationQuerier.loadAllGameInformationXMLs(userName);
+        return myGameInformationQuerier.loadAllSerializedGameInformationObjects(userName);
     }
 
     void removeRating(String gameName, String authorName) throws SQLException{

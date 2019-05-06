@@ -1,5 +1,8 @@
 package data.internal;
 
+/**
+ * Packages a primary key for a game as the game name and the author name
+ */
 public class GamePrimaryKey {
 
     private String myGameName;
@@ -10,7 +13,7 @@ public class GamePrimaryKey {
      * @param gameName name of the game
      * @param authorName name of the author
      */
-    public GamePrimaryKey (String gameName, String authorName){
+    GamePrimaryKey(String gameName, String authorName){
         myGameName = gameName;
         myAuthorName = authorName;
     }
@@ -33,7 +36,7 @@ public class GamePrimaryKey {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof GamePrimaryKey &&
+        return obj.getClass() == this.getClass() &&
                 this.myGameName.equals(((GamePrimaryKey) obj).myGameName) &&
                 this.myAuthorName.equals(((GamePrimaryKey) obj).myAuthorName);
     }

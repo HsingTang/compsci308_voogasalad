@@ -37,6 +37,12 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 
+/**
+ * @author Carrie Hunner
+ * This class creates a pane where the user can build their level. It accepts drag and drops from the
+ * UsercreatedTypesPane and will add those imageWithEntities to the Viewer. It also has a grid lining
+ * the back of the stackpane and snaps drag and drops to that grid.
+ */
 public class Viewer extends ScrollPane {
     private StackPane myStackPane;
     private static final int CELL_SIZE = 50;
@@ -57,9 +63,13 @@ public class Viewer extends ScrollPane {
 
     /**
      *
-     * @param authoringLevel
-     * @param userCreatedTypesPane
-     * @param objectProperty
+     * @param authoringLevel  This allows the Viewer to be a listener to the level size and to
+     *                        respond to the backend size updating
+     * @param userCreatedTypesPane This is where the Viewer can get dragged items from when a drop is received
+     * @param objectProperty This allows for when an entity is selected on screen, the properties panes can
+     *                       be updated with the correct information
+     * @param objectManager This is used to add and remove types from the screen (if a user created type
+     *                      is deleted, that effect will ripple through the Viewer)
      */
     public Viewer(AuthoringLevel authoringLevel, UserCreatedTypesPane userCreatedTypesPane,
                   ObjectProperty objectProperty, ObjectManager objectManager){
@@ -81,13 +91,10 @@ public class Viewer extends ScrollPane {
 
     private void addAllExistingEntities(AuthoringLevel authoringLevel) {
         List<AuthoringEntity> authoringEntityList = authoringLevel.getEntities();
-        authoringEntityList.sort(new Comparator<AuthoringEntity>() {
-            @Override
-            public int compare(AuthoringEntity o1, AuthoringEntity o2) {
-                int firstZ = (int) Double.parseDouble(o1.getPropertyMap().get(EntityField.Z));
-                int secondZ = (int) Double.parseDouble(o2.getPropertyMap().get(EntityField.Z));
-                return firstZ - secondZ;
-            }
+        authoringEntityList.sort((o1, o2) -> {
+            int firstZ = (int) Double.parseDouble(o1.getPropertyMap().get(EntityField.Z));
+            int secondZ = (int) Double.parseDouble(o2.getPropertyMap().get(EntityField.Z));
+            return firstZ - secondZ;
         });
 
         for(AuthoringEntity authoringEntity : authoringEntityList){

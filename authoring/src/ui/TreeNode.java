@@ -79,7 +79,7 @@ public class TreeNode {
 
     /**
      * Gets the TreeNode children associated with this node
-     * @return LIst<TreeNode>
+     * @return List<TreeNode>
      */
     public List<TreeNode> getNodeChildren(){
         List<TreeNode> nodeList = new ArrayList<>(myTreeNodeChildren);

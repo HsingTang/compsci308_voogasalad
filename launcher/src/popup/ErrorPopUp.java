@@ -2,7 +2,11 @@ package popup;
 
 import javafx.scene.control.Alert;
 import java.util.ResourceBundle;
-
+/**
+ * To have a uniform way for informing the user of an error, any page that may require displaying an error box passes its
+ * key to this class, which finds the associated message with that error in a resources file
+ * @author Anna Darwish
+ */
 public class ErrorPopUp extends Alert {
     private static final String ERROR = "Error";
     private static final String STYLE = "default_launcher.css";

@@ -30,27 +30,16 @@ public class AssetQuerier extends Querier {
     private static final String SQL_WILDCARD = "%";
 
     private static final String LOAD_ALL_ASSETS = "SELECT %s, %s FROM %s WHERE %s LIKE ?";
-
-    private static final String IMAGES_INSERT = String.format(INSERT_TWO_VALUES, IMAGES_TABLE_NAME, IMAGE_NAME_COLUMN,
-            IMAGE_DATA_COLUMN);
-    private static final String SOUNDS_INSERT = String.format(INSERT_TWO_VALUES, SOUNDS_TABLE_NAME, SOUND_NAME_COLUMN,
-            SOUND_DATA_COLUMN);
-    private static final String UPDATE_IMAGES =
-            String.format(UPDATE_ONE_COLUMN, IMAGES_INSERT, ON_DUPLICATE_UPDATE, IMAGE_DATA_COLUMN);
-    private static final String UPDATE_SOUNDS =
-            String.format(UPDATE_ONE_COLUMN, SOUNDS_INSERT, ON_DUPLICATE_UPDATE, SOUND_DATA_COLUMN);
-    private static final String LOAD_SOUND =
-            String.format(SELECT_ONE_COLUMN_ONE_CONDITION, SOUND_DATA_COLUMN, SOUNDS_TABLE_NAME, SOUND_NAME_COLUMN);
-    private static final String LOAD_IMAGE =
-            String.format(SELECT_ONE_COLUMN_ONE_CONDITION, IMAGE_DATA_COLUMN, IMAGES_TABLE_NAME, IMAGE_NAME_COLUMN);
-    private static final String REMOVE_IMAGE =
-            String.format(DELETE_ONE_CONDITION, IMAGES_TABLE_NAME, IMAGE_NAME_COLUMN);
-    private static final String REMOVE_SOUND =
-            String.format(DELETE_ONE_CONDITION, SOUNDS_TABLE_NAME, SOUND_NAME_COLUMN);
-    private static final String LOAD_ALL_IMAGES =
-            String.format(LOAD_ALL_ASSETS, IMAGE_NAME_COLUMN, IMAGE_DATA_COLUMN, IMAGES_TABLE_NAME, IMAGE_NAME_COLUMN);
-    private static final String LOAD_ALL_SOUNDS =
-            String.format(LOAD_ALL_ASSETS, SOUND_NAME_COLUMN, SOUND_DATA_COLUMN, SOUNDS_TABLE_NAME, SOUND_NAME_COLUMN);
+    private static final String IMAGES_INSERT = String.format(INSERT_TWO_VALUES, IMAGES_TABLE_NAME, IMAGE_NAME_COLUMN, IMAGE_DATA_COLUMN);
+    private static final String SOUNDS_INSERT = String.format(INSERT_TWO_VALUES, SOUNDS_TABLE_NAME, SOUND_NAME_COLUMN, SOUND_DATA_COLUMN);
+    private static final String UPDATE_IMAGES = String.format(UPDATE_ONE_COLUMN, IMAGES_INSERT, ON_DUPLICATE_UPDATE, IMAGE_DATA_COLUMN);
+    private static final String UPDATE_SOUNDS = String.format(UPDATE_ONE_COLUMN, SOUNDS_INSERT, ON_DUPLICATE_UPDATE, SOUND_DATA_COLUMN);
+    private static final String LOAD_SOUND = String.format(SELECT_ONE_COLUMN_ONE_CONDITION, SOUND_DATA_COLUMN, SOUNDS_TABLE_NAME, SOUND_NAME_COLUMN);
+    private static final String LOAD_IMAGE = String.format(SELECT_ONE_COLUMN_ONE_CONDITION, IMAGE_DATA_COLUMN, IMAGES_TABLE_NAME, IMAGE_NAME_COLUMN);
+    private static final String REMOVE_IMAGE = String.format(DELETE_ONE_CONDITION, IMAGES_TABLE_NAME, IMAGE_NAME_COLUMN);
+    private static final String REMOVE_SOUND = String.format(DELETE_ONE_CONDITION, SOUNDS_TABLE_NAME, SOUND_NAME_COLUMN);
+    private static final String LOAD_ALL_IMAGES = String.format(LOAD_ALL_ASSETS, IMAGE_NAME_COLUMN, IMAGE_DATA_COLUMN, IMAGES_TABLE_NAME, IMAGE_NAME_COLUMN);
+    private static final String LOAD_ALL_SOUNDS = String.format(LOAD_ALL_ASSETS, SOUND_NAME_COLUMN, SOUND_DATA_COLUMN, SOUNDS_TABLE_NAME, SOUND_NAME_COLUMN);
 
     private static final String COULD_NOT_LOAD_ASSET = "Could not load asset: ";
     private static final String COULD_NOT_SAVE_THE_ASSET = "Could not save the asset: ";
@@ -142,53 +131,20 @@ public class AssetQuerier extends Querier {
             }
         } catch (SQLException e) {
             System.out.println(COULD_NOT_LOAD_ASSET + e.getMessage());
-            e.printStackTrace();
         }
         return null;
     }
 
-//    private void saveAsset(String assetName, File assetToSave, PreparedStatement statement) {
-//        try {
-//            FileInputStream fileInputStream = new FileInputStream(assetToSave);
-//            BufferedInputStream assetData = new BufferedInputStream(fileInputStream);
-//
-//            FileInputStream fileInputStream1 = new FileInputStream(assetToSave);
-//            FileInputStream fileInputStream2 = new FileInputStream(assetToSave);
-//
-//            BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream1);
-//            BufferedInputStream bufferedInputStream1 = new BufferedInputStream(fileInputStream2);
-//            System.out.println(assetData);
-//            statement.setString(1, assetName);
-//            statement.setBinaryStream(2, bufferedInputStream);
-//            statement.setBinaryStream(3, bufferedInputStream1);
-//            statement.executeUpdate();
-//
-//
-//            fileInputStream.close();
-//            fileInputStream1.close();
-//            fileInputStream2.close();
-//            assetData.close();
-//            bufferedInputStream.close();
-//            bufferedInputStream1.close();
-//        } catch (SQLException e) {
-//            System.out.println(COULD_NOT_SAVE_THE_ASSET + e.getMessage());
-//        } catch (FileNotFoundException e) {
-//            System.out.println(COULD_NOT_FIND_THE_FILE + assetToSave.toString());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     private void saveAsset(String assetName, File assetToSave, PreparedStatement statement) {
-        try {
-            FileInputStream fileInputStream = new FileInputStream(assetToSave);
+        try (FileInputStream fileInputStream = new FileInputStream(assetToSave);
             BufferedInputStream assetData = new BufferedInputStream(fileInputStream);
 
             FileInputStream fileInputStream1 = new FileInputStream(assetToSave);
             FileInputStream fileInputStream2 = new FileInputStream(assetToSave);
 
             BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream1);
-            BufferedInputStream bufferedInputStream1 = new BufferedInputStream(fileInputStream2);
+            BufferedInputStream bufferedInputStream1 = new BufferedInputStream(fileInputStream2)) {
 
             System.out.println(assetData);
             statement.setString(1, assetName);
@@ -196,13 +152,6 @@ public class AssetQuerier extends Querier {
             statement.setBinaryStream(3, bufferedInputStream1);
             statement.executeUpdate();
 
-
-            fileInputStream.close();
-            fileInputStream1.close();
-            fileInputStream2.close();
-            assetData.close();
-            bufferedInputStream.close();
-            bufferedInputStream1.close();
         } catch (SQLException e) {
             System.out.println(COULD_NOT_SAVE_THE_ASSET + e.getMessage());
         } catch (FileNotFoundException e) {
@@ -212,10 +161,22 @@ public class AssetQuerier extends Querier {
         }
     }
 
+    /**
+     * Loads all the images involved in a game specified by prefix
+     *
+     * @param prefix the gameName + the authorName
+     * @return a map of the sound names to the input stream data
+     */
     public Map<String, InputStream> loadAllSounds(String prefix) throws SQLException {
         return loadAllAssets(prefix, myLoadAllSoundsStatement, SOUND_NAME_COLUMN, SOUND_DATA_COLUMN);
     }
 
+    /**
+     * Loads all the images involved in a game specified by prefix
+     *
+     * @param prefix the gameName + the authorName
+     * @return a map of the image names to the input stream data
+     */
     public Map<String, InputStream> loadAllImages(String prefix) throws SQLException {
         return loadAllAssets(prefix, myLoadAllImagesStatement, IMAGE_NAME_COLUMN, IMAGE_DATA_COLUMN);
     }
@@ -231,11 +192,23 @@ public class AssetQuerier extends Querier {
         return allAssets;
     }
 
+    /**
+     * Removes an image from the database for testing purposes
+     * @param imageName image to remove
+     * @return true if successful
+     * @throws SQLException if statement fails
+     */
     public boolean removeImage(String imageName) throws SQLException {
         myRemoveImageStatement.setString(1, imageName);
         return myRemoveImageStatement.executeUpdate() > 0;
     }
 
+    /**
+     * Removes a sound from the database for testing purposes
+     * @param soundName sound to remove
+     * @return true if successful
+     * @throws SQLException if statement fails
+     */
     public boolean removeSound(String soundName) throws SQLException {
         myRemoveSoundStatement.setString(1, soundName);
         return myRemoveSoundStatement.executeUpdate() > 0;

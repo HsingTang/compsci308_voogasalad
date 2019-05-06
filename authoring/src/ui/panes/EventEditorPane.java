@@ -10,17 +10,14 @@ import events.EventBuilder;
 import events.EventFactory;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ui.manager.RefreshEvents;
-import ui.manager.Refresher;
 import voogasalad.util.reflection.Reflection;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -35,6 +32,11 @@ class EventEditorPane extends Stage {
     private static final String STYLE = "default.css";
     private static final String STYLE_CLASS = "event-editor";
 
+    private static final String STYLE_CONTROLS = "event-builder";
+    private static final String STYLE_OPTIONS = "event-options";
+    private static final String STYLE_BUTTONS = "buttons-bar";
+    private static final String FINISH = "Finish Editing";
+
     private Stage myPopUpStage = new Stage();
 
     private static final ResourceBundle eventComponentResource = ResourceBundle.getBundle("event_editor");
@@ -48,6 +50,15 @@ class EventEditorPane extends Stage {
     private StringProperty triggerValue = new SimpleStringProperty();  //value bound to trigger the actions associated with this event
 
     private RefreshEvents myEventRefresher;
+    /**
+     * If a user wishes to modify an event by adding or removing conditions and actions, this class manages that display
+     * between two scroll-panes. This class uses methods from @EventFactory to generate bound controls that
+     * prompt the user in a similar manner to when they create new events. The methods here use resource files and
+     * events from @EventFactory so none of them have to be specific to a condition or an action
+     * @see EventFactory
+     * @see RefreshEvents
+     * @author Anna Darwish
+     */
     EventEditorPane(Event unfinishedEvent, RefreshEvents eventDisplayRefresher){
         VBox rootOfScene = new VBox();
 
@@ -70,8 +81,6 @@ class EventEditorPane extends Stage {
         Scene myScene = new Scene(rootOfScene);
         myScene.getStylesheets().add(STYLE);
         splitEditorPane.getStyleClass().add(STYLE_CLASS);
-
-        //this.setOnCloseRequest(windowEvent -> eventDisplayRefresher.refreshEventDisplay(unfinishedEvent));
         this.setScene(myScene);
     }
 
@@ -135,15 +144,15 @@ class EventEditorPane extends Stage {
 
     private VBox getEventControls(Event myEvent,VBox parent, String eventComponentName){
         VBox myDisplay = new VBox();
-        myDisplay.getStyleClass().add("event-builder");
+        myDisplay.getStyleClass().add(STYLE_CONTROLS);
         String promptText = eventComponentResource.getString(eventComponentName + PROMPT);
         String resourceName = eventComponentResource.getString(eventComponentName + RESOURCE);
 
         HBox controls = EventFactory.createEventComponentOptions(promptText,resourceName,componentName,conditionOperator,triggerValue);
-        controls.getStyleClass().add("event-options");
+        controls.getStyleClass().add(STYLE_OPTIONS);
         myDisplay.getChildren().add(controls);
         HBox buttonBar = new HBox(saveButton(myEvent, parent, eventComponentName));
-        buttonBar.getStyleClass().add("buttons-bar");
+        buttonBar.getStyleClass().add(STYLE_BUTTONS);
         myDisplay.getChildren().add(buttonBar);
         return myDisplay;
     }
@@ -165,7 +174,7 @@ class EventEditorPane extends Stage {
     }
 
     private Button doneButton(){
-        Button done = new Button("Finish Editing");
+        Button done = new Button(FINISH);
         done.setOnMouseClicked(mouseEvent -> closeStage());
         return done;
     }

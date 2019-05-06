@@ -21,7 +21,7 @@ public class EntityMenu extends TitledPane {
 
     /**
      * creates a new EntityMenu
-     * @param title Text tp be displayed at the top of the TitledPane
+     * @param title Text to be displayed at the top of the TitledPane
      */
     public EntityMenu(String title){
         this.setText(title);

@@ -15,6 +15,12 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Carrie Hunner
+ * This class extends AssetManager and provides a
+ * window for users to both upload and select previously
+ * uploaded audio
+ */
 public class AudioManager extends AssetManager {
 
     private static final String EXTENSION_KEY = "AcceptableAudioExtensions";
@@ -22,17 +28,30 @@ public class AudioManager extends AssetManager {
     private static final String ASSET_AUDIO_FOLDER_PATH = GENERAL_RESOURCES.getString("audio_filepath");
     private Map<Pane, ListView> myMap;
 
+    /**
+     * This is a default constructor that can be used whenever there is no level to bind to and
+     * you don't want to allow for uploading new assets.
+     */
     public AudioManager(){
         super(ASSET_AUDIO_FOLDER_PATH, TITLE_KEY, EXTENSION_KEY);
         myObjectManager = null;
         myPropertable = null;
     }
 
+    /**
+     * This is a constructor used when you want the selected audio to be added to the propertable (ie level)
+     * @param propertable Level to add the background music to
+     */
     public AudioManager(Propertable propertable){
         this();
         myPropertable = propertable;
     }
 
+    /**
+     * This constructor is for when you want to allow for uploading new audio. The ObjectManager
+     * contains the game and authorname and this allows for uploading and saving new assets
+     * @param objectManager
+     */
     public AudioManager(ObjectManager objectManager){
         this();
         myObjectManager = objectManager;
@@ -80,6 +99,10 @@ public class AudioManager extends AssetManager {
     }
 
 
+    /**
+     * This method creates a new listview
+     * @return Listview
+     */
     protected ListView createAndFormatNewListView() {
         ListView listView = new ListView();
         return listView;

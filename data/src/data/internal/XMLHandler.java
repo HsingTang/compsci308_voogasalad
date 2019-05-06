@@ -7,12 +7,20 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * Class used to handle XML reading and writing for the DataManager
+ */
 public class XMLHandler {
 
     private static final String COULD_NOT_CLOSE_FILES = "Could not close files";
     private static final String CANNOT_READ_XML_FILE = "Cannot read XML file";
     private static final String WRITE_FAILED = "Write Failed";
 
+    /**
+     * Writes a file of xml to the specified path
+     * @param path path of where to write
+     * @param rawXML xml to write to the file
+     */
     public void writeToXML(String path, String rawXML) {
         FileWriter fileWriter = null;
         try {
@@ -31,6 +39,12 @@ public class XMLHandler {
         }
     }
 
+    /**
+     * Reads xml from a file at a specified path
+     * @param path location of the file
+     * @return string of raw xml
+     * @throws FileNotFoundException if file is not found
+     */
     public String readFromXML(String path) throws FileNotFoundException {
         BufferedReader bufferedReader = null;
         FileReader fileReader = null;

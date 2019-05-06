@@ -6,9 +6,10 @@ import data.external.GameCenterData;
 
 public interface SwitchToNewGameAuthoring {
     /**
-     * In the future, this functional interface will take in a GameCenter object as a parameter in order to load in
-     * a particular game for the authoring environment or generate a new game. Currently it helps to switch to the authoring
-     * environment by referring to a method in SceneManager
+     * This functional interface takes in a GameCenter object as a parameter that contains information about the
+     * username, the image they chose to associate with the new game they are planning to author, and a description
+     * of the game that will be displayed in the game center. This functional interface is invoked when someone requests
+     * to create a new game
      * @author Anna Darwish
      */
     void switchScene(GameCenterData myGameData);

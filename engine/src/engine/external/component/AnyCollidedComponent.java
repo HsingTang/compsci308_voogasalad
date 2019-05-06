@@ -6,8 +6,7 @@ import java.util.Collection;
 
 /**
  * @author Hsingchih Tang
- *
- * Record the Entities currently colliding with the owner Entity from any of the four directions
+ * Record the Entities currently colliding with the owner Entity from any direction
  */
 public class AnyCollidedComponent extends Component<Collection<Entity>> {
 

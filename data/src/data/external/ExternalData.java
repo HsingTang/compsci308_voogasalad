@@ -36,14 +36,6 @@ public interface ExternalData {
     void saveGameData(String gameName, String authorName, Object gameObject);
 
     /**
-     * Deserializes the xml file stored at created_games/gameName/game_data.xml into an object
-     *
-     * @param gameName the game whose data is to be loaded
-     * @return the deserialized game data that should then be cast to a game object
-     */
-    Object loadGameData(String gameName) throws FileNotFoundException, SQLException;
-
-    /**
      * Saves game information (game center data) to the data base
      *
      * @param gameName       name of the game
@@ -121,18 +113,16 @@ public interface ExternalData {
      * Removes a user from the database
      *
      * @param userName user name of the user to remove
-     * @return true if the user was successfully removed
      */
-    boolean removeUser(String userName) throws SQLException;
+    void removeUser(String userName) throws SQLException;
 
     /**
      * Removes a game from the database
      *
      * @param gameName   name of the game to remove
      * @param authorName author of the game to remove
-     * @return true if game was successfully removed
      */
-    boolean removeGame(String gameName, String authorName) throws SQLException;
+    void removeGame(String gameName, String authorName) throws SQLException;
 
     /**
      * Remove an image from the database
@@ -195,100 +185,100 @@ public interface ExternalData {
     boolean updatePassword(String userName, String newPassword) throws SQLException;
 
     /**
-     *
-     * @param rating
-     * @throws SQLException
+     * Adds a rating to the database for a specific game
+     * @param rating GameRating object that contains the rating information
+     * @throws SQLException if statement fails
      */
     void addRating(GameRating rating) throws SQLException;
 
     /**
-     *
-     * @param gameName
-     * @return
-     * @throws SQLException
+     * Returns the average rating for a game
+     * @param gameName name to retrieve the average rating for
+     * @return the average rating for the game gameName
+     * @throws SQLException if statement fails
      */
     double getAverageRating(String gameName) throws SQLException;
 
     /**
-     *
-     * @param gameName
-     * @return
-     * @throws SQLException
+     * Returns a list of all the ratings for a specific game
+     * @param gameName name of the game to get the ratings for
+     * @return a list of all the ratings for a specific game
+     * @throws SQLException if statement fails
      */
     List<GameRating> getAllRatings(String gameName) throws SQLException;
 
     /**
-     *
-     * @param userName
-     * @return
+     * Loads a list of all GameCenterData objects for the games authored by a specific user
+     * @param userName user whose games to retrieve
+     * @return a list of all GameCenterData objects for the games authored by a specific user
      */
     List<GameCenterData> loadAllGameInfoObjects(String userName);
 
     /**
-     * 
-     * @param userName
-     * @param gameName
-     * @param authorName
-     * @return
-     * @throws SQLException
+     * Returns a map from the Timestamp to the deserialized checkpoint object
+     * @param userName of the person playing the game
+     * @param gameName of the game that's checkpoint should be loaded
+     * @param authorName author of the game that is being played
+     * @return a map from the Timestamp to the deserialized chekcpoint object
+     * @throws SQLException if statement fails
      */
     Map<Timestamp, Object> getCheckpoints(String userName, String gameName, String authorName) throws SQLException;
 
     /**
-     *
-     * @param userName
-     * @param gameName
-     * @param authorName
-     * @param checkpoint
-     * @throws SQLException
+     * Saves a checkpoint to the database
+     * @param userName of the person playing the game
+     * @param gameName of the game that's checkpoint should be loaded
+     * @param authorName author of the game that is being played
+     * @param checkpoint the object that should be serialized as a checkpoint
+     * @throws SQLException if statement fails
      */
     void saveCheckpoint(String userName, String gameName, String authorName, Object checkpoint) throws SQLException;
 
     /**
-     *
-     * @param userName
-     * @param profilePic
-     * @throws SQLException
+     * Sets the profile pic for a user in the database
+     * @param userName user's username
+     * @param profilePic profile pic to set
+     * @throws SQLException if statement fails
      */
     void setProfilePic(String userName, File profilePic) throws SQLException;
 
     /**
-     *
-     * @param userName
-     * @throws SQLException
+     * Sets the bio for a user in the database
+     * @param userName user's username
+     * @throws SQLException if statement fails
      */
     void setBio(String userName, String bio) throws SQLException;
 
     /**
-     *
-     * @param userName
-     * @return
-     * @throws SQLException
+     * Retrieves the profile picture of a user as an InputStream from the database
+     * @param userName user name of the user whose profile pic should be retrieved
+     * @return an InputStream of the profile picture for that user
+     * @throws SQLException if statement fails
      */
     InputStream getProfilePic(String userName) throws SQLException;
 
     /**
-     *
-     * @param userName
-     * @return
-     * @throws SQLException
+     * Retrieves the bio of a user in the database
+     * @param userName user whose bio should be retrieved
+     * @return bio
+     * @throws SQLException if statement fails
      */
     String getBio(String userName) throws SQLException;
 
     /**
-     *
-     * @param userName
-     * @param gameName
-     * @param authorName
-     * @param score
+     * Saves the score of a game and a user to the database
+     * @param userName person playing the game
+     * @param gameName name of the game
+     * @param authorName author of the game
+     * @param score score for the game
      */
     void saveScore(String userName, String gameName, String authorName, Double score);
 
     /**
-     *
-     * @param gameName
-     * @param authorName
-     * @return
+     * Loads all the scores for a given game
+     * @param gameName name of the game to get scores for
+     * @param authorName name of the author of the game
+     * @return list of the scores for a give game
      */
     List<UserScore> loadScores(String gameName, String authorName) throws SQLException;
 

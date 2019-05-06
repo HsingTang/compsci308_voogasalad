@@ -329,7 +329,7 @@ public class MainGUI {
         if (myGameData.getDescription() == null)
            myGameData.setDescription("A fun new game");
         if (myGameData.getAuthorName() == null)
-           myGameData.setAuthorName("default");
+           myGameData.setAuthorName("carrie");
     }
 
     private void saveFolderToDataBase(String outerDirectoryPath){
@@ -369,6 +369,11 @@ public class MainGUI {
         }
     }
 
+    /**
+     * This method takes in the path to the directory wished to be cleared and then
+     * iterates through each file and deletes it
+     * @param outerDirectoryPath
+     */
     public void clearFolder(String outerDirectoryPath){
         DatabaseEngine.getInstance().close();
         File outerDirectory = new File(outerDirectoryPath);

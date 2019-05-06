@@ -21,7 +21,12 @@ public class ImageWithEntity extends ImageView {
     private static final ResourceBundle myResources = ResourceBundle.getBundle("image_with_entity");
     private static final ResourceBundle myGeneralResources = ResourceBundle.getBundle("authoring_general");
 
-    public ImageWithEntity(FileInputStream s, AuthoringEntity authoringEntity) {    //closed 2
+    /**
+     * Creates an instance of ImageWithEntity with the FileInputStream and the AuthoringEntity provided
+     * @param s takes in a fileInputStream to create and set an image
+     * @param authoringEntity AuthoringEntity that is associated with this image
+     */
+    public ImageWithEntity(FileInputStream s, AuthoringEntity authoringEntity) {
         super(new Image(s, Double.parseDouble(authoringEntity.getPropertyMap().get(EntityField.XSCALE)), Double.parseDouble(authoringEntity.getPropertyMap().get(EntityField.YSCALE)), false, false));
         myAuthoringEntity = authoringEntity;
         updateX(authoringEntity.getPropertyMap().get(EntityField.X));
@@ -29,7 +34,7 @@ public class ImageWithEntity extends ImageView {
         updateVisibility(authoringEntity.getPropertyMap().get(EntityField.VISIBLE));
         myAuthoringEntity.getPropertyMap().addListener((MapChangeListener<Enum, String>) change -> {handleChange(change);
         });
-        Utility.closeInputStream(s);  //closed 2
+        Utility.closeInputStream(s);
     }
 
     //takes in a change and determines which method to call
@@ -47,6 +52,7 @@ public class ImageWithEntity extends ImageView {
         this.setTranslateY(Double.parseDouble(y));
     }
 
+    @SuppressWarnings("unused")
     private void updateWidth(String width){
         updateImage(myAuthoringEntity.getPropertyMap().get(EntityField.IMAGE));
         Double widthDouble = Double.parseDouble(width);
@@ -66,6 +72,7 @@ public class ImageWithEntity extends ImageView {
         this.setFitWidth(width);
     }
 
+    @SuppressWarnings("unused")
     private void updateHeight(String height){
         updateImage(myAuthoringEntity.getPropertyMap().get(EntityField.IMAGE));
         Double heightDouble = Double.parseDouble(height);

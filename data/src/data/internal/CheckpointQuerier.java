@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A Querier that is used to manage saving and loading checkpoints
+ */
 public class CheckpointQuerier extends Querier{
 
     private static final String CHECKPOINTS_TABLE_NAME = "Checkpoints";
@@ -44,6 +47,14 @@ public class CheckpointQuerier extends Querier{
         myPreparedStatements = List.of(mySaveStatement, myLoadStatement, myDeleteStatement);
     }
 
+    /**
+     * Returns a map from the Timestamp to the deserialized checkpoint object
+     * @param userName of the person playing the game
+     * @param gameName of the game that's checkpoint should be loaded
+     * @param authorName author of the game that is being played
+     * @return a map from the Timestamp to the deserialized chekcpoint object
+     * @throws SQLException if statement fails
+     */
     public Map<Timestamp, String> getCheckpoints(String userName, String gameName, String authorName) throws SQLException {
         Map<Timestamp, String> checkpoints = new HashMap<>();
         myLoadStatement.setString(1, userName);
@@ -56,6 +67,14 @@ public class CheckpointQuerier extends Querier{
         return checkpoints;
     }
 
+    /**
+     * Saves a checkpoint to the database
+     * @param userName of the person playing the game
+     * @param gameName of the game that's checkpoint should be loaded
+     * @param authorName author of the game that is being played
+     * @param rawXML the string of rawXML that is a serialized checkpoint
+     * @throws SQLException if statement fails
+     */
     public void saveCheckpoint(String userName, String gameName, String authorName, String rawXML) throws SQLException {
         mySaveStatement.setString(1, userName);
         mySaveStatement.setString(2, gameName);
@@ -64,6 +83,13 @@ public class CheckpointQuerier extends Querier{
         mySaveStatement.execute();
     }
 
+    /**
+     * Deletes a checkpoint from the database for testing purposes
+     * @param userName name of the user
+     * @param gameName name of the game
+     * @param authorName name of the author
+     * @throws SQLException if statement fails
+     */
     public void deleteCheckpoints(String userName, String gameName, String authorName) throws  SQLException {
         myDeleteStatement.setString(1, userName);
         myDeleteStatement.setString(2, gameName);

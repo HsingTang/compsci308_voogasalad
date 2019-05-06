@@ -35,6 +35,10 @@ public class ImageManager extends AssetManager {
     private Map<Pane, FlowPane> myMap;
 
 
+    /**
+     * This is a default constructor that can be used whenever there is no level to bind to and
+     * you don't want to allow for uploading new assets.
+     */
     public ImageManager(){
         super(ASSET_IMAGE_FOLDER_PATH, TITLE_KEY, EXTENSION_KEY);
         mySelectedImageView = null;
@@ -113,6 +117,11 @@ public class ImageManager extends AssetManager {
         pane.getChildren().add(flowpane);
     }
 
+    /**
+     * creates a new HashMap to be used
+     * This method needs to exist because it ensures that any variables specific
+     * to the subclasses are instantiated before other methods dependent on those variables are called
+     */
     @Override
     protected void initializeSubClassVariables() {
         myMap = new HashMap<>();

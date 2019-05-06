@@ -76,42 +76,82 @@ public class Level implements Serializable {
         return myEvents;
     }
 
+    /**
+     * Sets label to be associated with a Level for the purposes of distinguishing in Authoring Environment on reload
+     * @param label String level label
+     */
     public void setLabel(String label) {
         myLabel = label;
     }
 
+    /**
+     * Sets background image file path to display during gameplay
+     * @param imageResource String file path
+     */
     public void setBackground(String imageResource) {
         myBackground = imageResource;
     }
 
+    /**
+     * Sets width of Level
+     * @param width double width of Level
+     */
     public void setWidth(double width) {
         myWidth = width;
     }
 
+    /**
+     * Sets height of Level
+     * @param height height double height of Level
+     */
     public void setHeight(double height) {
         myHeight = height;
     }
 
+    /**
+     * Sets music file path to play during gameplay
+     * @param musicResource String music file path
+     */
     public void setMusic(String musicResource) {
         myMusic = musicResource;
     }
 
+    /**
+     * Returns Label associated with a Level for display
+     * @return String Level label
+     */
     public String getLabel() {
         return myLabel;
     }
 
+    /**
+     * Returns background image file path for Level
+     * @return String image file path
+     */
     public String getBackground() {
         return myBackground;
     }
 
+    /**
+     * Returns background music file path for Level
+     * @return String music file path
+     */
     public String getMusic() {
         return myMusic;
     }
 
+    /**
+     * Returns width of Level
+     * @return Double width of Level
+     */
     public Double getWidth() {
         return myWidth;
     }
 
+    /**
+     * Returns height of Level
+     * @return Double height of Level
+     */
     public Double getHeight() {
         return myHeight;
     }
